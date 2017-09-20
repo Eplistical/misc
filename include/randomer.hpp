@@ -10,6 +10,7 @@
 #include <random>
 #include <vector>
 #include "type_traiter.hpp"
+#include "types.hpp"
 
 namespace randomer {
     using namespace std;
@@ -17,40 +18,40 @@ namespace randomer {
 	static random_device rd;
 	static mt19937 rng(rd());
 
-	inline double rand(double lb = 0.0, double ub = 1.0) noexcept 
+	inline DOUBLE_T rand(DOUBLE_T lb = 0.0, DOUBLE_T ub = 1.0) noexcept 
     {
 		uniform_real_distribution<> dis(lb, ub);
 		return dis(rng);
 	}
 
-	inline vector<double> vrand(int N, double lb = 0.0, double ub = 1.0) noexcept 
+	inline vector<DOUBLE_T> vrand(INT_T N, DOUBLE_T lb = 0.0, DOUBLE_T ub = 1.0) noexcept 
     {
 		uniform_real_distribution<> dis(lb, ub);
-		vector<double> rst(N);
-		for(int j = 0; j < N; ++j)
+		vector<DOUBLE_T> rst(N);
+		for(INT_T j = 0; j < N; ++j)
 			rst[j] = dis(rng);
 		return rst;
 	}
 
-	inline double normal(double mu = 0.0, double sigma = 1.0) noexcept 
+	inline DOUBLE_T normal(DOUBLE_T mu = 0.0, DOUBLE_T sigma = 1.0) noexcept 
     {
-		normal_distribution<double> dis(mu, sigma);
+		normal_distribution<DOUBLE_T> dis(mu, sigma);
 		return dis(rng);
 	}
 
-	inline vector<double> vnormal(int N, double mu = 0.0, double sigma = 1.0) noexcept 
+	inline vector<DOUBLE_T> vnormal(INT_T N, DOUBLE_T mu = 0.0, DOUBLE_T sigma = 1.0) noexcept 
     {
-		normal_distribution<double> dis(mu, sigma);
-		vector<double> rst(N);
-		for(int j = 0; j < N; ++j)
+		normal_distribution<DOUBLE_T> dis(mu, sigma);
+		vector<DOUBLE_T> rst(N);
+		for(INT_T j = 0; j < N; ++j)
 			rst[j] = dis(rng);
 		return rst;
 	}
 
-	inline int discrete(const vector<double>& prob) noexcept 
+	inline INT_T discrete(const vector<DOUBLE_T>& prob) noexcept 
     {
-		discrete_distribution<int> dis(prob.begin(), prob.end());
-		int rst = dis(rng);
+		discrete_distribution<INT_T> dis(prob.begin(), prob.end());
+		INT_T rst = dis(rng);
 		return rst;
 	}
 };
