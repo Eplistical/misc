@@ -16,7 +16,7 @@ inline DOUBLE_T Fermi(DOUBLE_T x) noexcept
 
 inline COMPLEX_T Fermi(const COMPLEX_T& z) noexcept
 {
-    return 1.0 / (1.0 + std::exp(x));
+    return 1.0 / (1.0 + std::exp(z));
 }
 
 template <typename Type>
