@@ -9,7 +9,6 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
-#include <string>
 #include <sstream>
 #include <unordered_map>
 #include "types.hpp"
@@ -26,10 +25,10 @@ namespace timer {
 		tic_time[index] = system_clock::now();
 	}
 
-	inline string toc(INT_T index = 0) noexcept
+	inline STRING_T toc(INT_T index = 0) noexcept
     {
 		if (tic_time.find(index) == tic_time.end()) {
-			return string("timer::toc: error!, index not found");
+			return STRING_T("timer::toc: error!, index not found");
 		}
 		duration<double> elapsed = system_clock::now() - tic_time[index];
 		ostringstream buf;
@@ -43,7 +42,7 @@ namespace timer {
         return rst.count();
     }
 
-	inline string now() noexcept
+	inline STRING_T now() noexcept
     {
 		const time_t _now = system_clock::to_time_t(system_clock::now());
 		ostringstream buf;
