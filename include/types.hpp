@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <string>
+#include <complex>
 
 using VOID_T = void;
 using CHAR_T = char;
@@ -16,6 +17,7 @@ using SIZE_T = size_t;
 using FLOAT_T = float;
 using DOUBLE_T = double;
 using STRING_T = std::string;
+using COMPLEX_T = std::complex<double>;
 
 
 #endif

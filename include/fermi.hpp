@@ -22,9 +22,9 @@ inline COMPLEX_T Fermi(const COMPLEX_T& z) noexcept
 template <typename Type>
 inline std::vector<Type> Fermi(const std::vector<Type>& x) noexcept
 {
-    const UINT_T N(x.size());
+    const SIZE_T N(x.size());
     std::vector<Type> rst(N);
-    for (UINT_T i(0); i < N; ++i) {
+    for (SIZE_T i(0); i < N; ++i) {
         rst[i] = Fermi(x[i]);
     }
     return rst;
