@@ -12,35 +12,41 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include "types.hpp"
 
 namespace timer {
+    using namespace std;
 	using namespace std::chrono;
-	using TicTimeType = std::unordered_map<int, time_point<system_clock> >;
+	using TicTimeType = unordered_map<INT_T, time_point<system_clock> >;
 
 	static TicTimeType tic_time;
 
-	inline void tic(int index = 0) noexcept{
+	inline void tic(INT_T index = 0) noexcept
+    {
 		tic_time[index] = system_clock::now();
 	}
 
-	inline std::string toc(int index = 0) noexcept{
+	inline string toc(INT_T index = 0) noexcept
+    {
 		if (tic_time.find(index) == tic_time.end()) {
-			return std::string("timer::toc: error!, index not found");
+			return string("timer::toc: error!, index not found");
 		}
 		duration<double> elapsed = system_clock::now() - tic_time[index];
-		std::ostringstream buf;
+		ostringstream buf;
 		buf << "Time elapsed: " << elapsed.count() << " s" ;
 		return buf.str();
 	}
 
-    inline double elapsed(int index = 0) noexcept {
+    inline double elapsed(INT_T index = 0) noexcept 
+    {
 		duration<double> rst = system_clock::now() - tic_time[index];
         return rst.count();
     }
 
-	inline std::string now(void) noexcept{
+	inline string now() noexcept
+    {
 		const time_t _now = system_clock::to_time_t(system_clock::now());
-		std::ostringstream buf;
+		ostringstream buf;
 		buf << "now: " << ctime(&_now);
 		return buf.str();
 	}
