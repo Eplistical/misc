@@ -1,9 +1,16 @@
-#ifndef _MY_VECTOR_HPP
-#define _MY_VECTOR_HPP
-// for vector
+#ifndef _VECTOR_HPP
+#define _VECTOR_HPP
+/* module for vector operations
+ * require C++11
+ * written based on <vector>
+ *
+ * Gaohan
+ */
+#include <iostream>
 #include <cmath>
 #include <vector>
 #include <stdexcept>
+#include "types.hpp"
 
 template<typename T1, typename T2>
 void assertsize(const std::vector<T1>& v1, const std::vector<T2>& v2)
@@ -15,10 +22,10 @@ void assertsize(const std::vector<T1>& v1, const std::vector<T2>& v2)
 template<typename T1, typename T2>
 auto operator+(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) + v2.at(0))>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     assertsize(v1, v2);
     std::vector<decltype(v1.at(0) + v2.at(0))> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = v1[j] + v2[j];
 	return rst;
 }
@@ -26,9 +33,9 @@ auto operator+(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template<typename T1, typename T2>
 auto operator+(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) + a)>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     std::vector<decltype(v1.at(0) + a)> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = v1[j] + a;
 	return rst;
 }
@@ -42,10 +49,10 @@ auto operator+(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a
 template<typename T1, typename T2>
 auto operator-(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) - v2.at(0))>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     assertsize(v1, v2);
     std::vector<decltype(v1.at(0) - v2.at(0))> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = v1[j] - v2[j];
 	return rst;
 }
@@ -53,9 +60,9 @@ auto operator-(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template<typename T1, typename T2>
 auto operator-(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) - a)>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     std::vector<decltype(v1.at(0) - a)> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = v1[j] - a;
 	return rst;
 }
@@ -63,9 +70,9 @@ auto operator-(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v
 template<typename T1, typename T2>
 auto operator-(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a - v1.at(0))>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     std::vector<decltype(a - v1.at(0))> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = a - v1[j];
 	return rst;
 }
@@ -73,9 +80,9 @@ auto operator-(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a
 template<typename T>
 std::vector<T> operator-(const std::vector<T>& v1)
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     std::vector<T> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = -v1[j];
 	return rst;
 }
@@ -83,10 +90,10 @@ std::vector<T> operator-(const std::vector<T>& v1)
 template<typename T1, typename T2>
 auto operator*(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) * v2.at(0))>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     assertsize(v1, v2);
     std::vector<decltype(v1.at(0) * v2.at(0))> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = v1[j] * v2[j];
 	return rst;
 }
@@ -94,9 +101,9 @@ auto operator*(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template<typename T1, typename T2>
 auto operator*(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) * a)>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     std::vector<decltype(v1.at(0) * a)> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = v1[j] * a;
 	return rst;
 }
@@ -110,10 +117,10 @@ auto operator*(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a
 template<typename T1, typename T2>
 auto operator/(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) / v2.at(0))>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     assertsize(v1, v2);
     std::vector<decltype(v1.at(0) / v2.at(0))> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = v1[j] / v2[j];
 	return rst;
 }
@@ -121,9 +128,9 @@ auto operator/(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template<typename T1, typename T2>
 auto operator/(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) / a)>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     std::vector<decltype(v1.at(0) / a)> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = v1[j] / a;
 	return rst;
 }
@@ -131,9 +138,9 @@ auto operator/(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v
 template<typename T1, typename T2>
 auto operator/(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a / v1.at(0))>
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     std::vector<decltype(a / v1.at(0))> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = a / v1[j];
 	return rst;
 }
@@ -141,9 +148,9 @@ auto operator/(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a
 template<typename T>
 std::vector<T> abs(const std::vector<T>& v)
 {
-    const size_t N = v.size();
+    const SIZE_T N = v.size();
     std::vector<T> rst(N);
-    for(size_t j = 0;j < N;j++) 
+    for(SIZE_T j = 0;j < N;j++) 
 		rst[j] = abs(v[j]) ;
     return rst;
 }
@@ -151,15 +158,15 @@ std::vector<T> abs(const std::vector<T>& v)
 template<typename T1, typename T2>
 std::vector<T1> pow(const std::vector<T1>& v1, const T2& a)
 {
-    const size_t N = v1.size();
+    const SIZE_T N = v1.size();
     std::vector<T1> rst(N);
-    for(size_t j = 0; j < N; j++)
+    for(SIZE_T j = 0; j < N; j++)
         rst[j] = pow(v1[j], a);
 	return rst;
 }
 
 template<typename T>
-std::vector<T> subvec(const std::vector<T>& v, size_t start, size_t N)
+std::vector<T> subvec(const std::vector<T>& v, SIZE_T start, SIZE_T N)
 {
     return std::vector<T>(&v.at(start), &v.at(start + N));
 }
@@ -168,8 +175,8 @@ template<typename T>
 T sum(const std::vector<T>& v)
 {
     T rst = static_cast<T>(0);
-    const size_t N = v.size();
-    for(size_t j = 0;j < N;j++) 
+    const SIZE_T N = v.size();
+    for(SIZE_T j = 0;j < N;j++) 
 		rst += v.at(j);
     return rst;
 }
@@ -184,8 +191,8 @@ template<typename T>
 T product(const std::vector<T>& v)
 {
     T rst = static_cast<T>(1);
-    const size_t N = v.size();
-    for(size_t j = 0;j < N;j++) 
+    const SIZE_T N = v.size();
+    for(SIZE_T j = 0;j < N;j++) 
 		rst *= v.at(j);
     return rst;
 }
@@ -199,9 +206,9 @@ T norm(const std::vector<T>& v)
 template<typename T>
 T min(const std::vector<T>& v)
 {
-    const size_t N = v.size();
+    const SIZE_T N = v.size();
     T rst = v.at(0);
-    for(int j = 1;j < N;j++)
+    for(INT_T j = 1;j < N;j++)
         rst = (v[j] < rst)?v[j]:rst;
     return rst;
 }
@@ -209,10 +216,11 @@ T min(const std::vector<T>& v)
 template<typename T>
 T max(const std::vector<T>& v)
 {
-    const size_t N = v.size();
+    const SIZE_T N = v.size();
     T rst = v.at(0);
-    for(int j = 1;j < N;j++)
+    for(INT_T j = 1;j < N;j++)
         rst = (v[j] > rst)?v[j]:rst;
     return rst;
 }
+
 #endif
