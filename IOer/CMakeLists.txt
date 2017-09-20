@@ -1,0 +1,6 @@
+# include & link
+INCLUDE_DIRECTORIES(include)
+
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(ioer_test)
+ADD_SUBDIRECTORY(include)
