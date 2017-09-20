@@ -6,9 +6,9 @@
 
 To install:
 ```
- git clone https://github.com/Eplistical/IOer.git
+ git clone https://github.com/Eplistical/misc.git
  
- cd IOer
+ cd misc
  
  mkdir build
  
