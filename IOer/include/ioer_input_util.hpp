@@ -29,17 +29,12 @@ namespace ioer
 
 
 		public:
-			explicit input_t(const string& path = STDIO_PATH, ios::openmode mode = ios::in)
+			input_t(const string& path = STDIO_PATH, ios::openmode mode = ios::in) noexcept
 				: 	_path(path)
 			{ 
 				io_base_obj.open(path, mode | ios::in);
 			}
-			virtual ~input_t() = default;
 
-			// can move
-			input_t(input_t&&) = default;
-			input_t& operator=(input_t&&) = default;
-			
 			// no copy 
 			input_t(const input_t&) = delete;
 			input_t& operator=(const input_t&) = delete;

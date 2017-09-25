@@ -31,17 +31,8 @@ namespace ioer
 			bool _flush;
 
 		public:
-			explicit _pair_output_functor_t(const string& path, const string& dlm, size_t width, bool keyfirst, bool nonewline, bool flush) 
+			_pair_output_functor_t(const string& path, const string& dlm, size_t width, bool keyfirst, bool nonewline, bool flush) noexcept
 				: _path(path), _dlm(dlm), _width(width), _keyfirst(keyfirst), _nonewline(nonewline), _flush(flush) {  }
-			virtual ~_pair_output_functor_t() = default;
-
-			// can move
-			_pair_output_functor_t(_pair_output_functor_t&&) = default;
-			_pair_output_functor_t& operator=(_pair_output_functor_t&&) = default;
-
-			// no copy 
-			_pair_output_functor_t(const _pair_output_functor_t&) = delete;
-			_pair_output_functor_t& operator=(const _pair_output_functor_t&) = delete;
 
 			// setter
 			void config(const string& path, const string& dlm, size_t width, bool keyfirst, bool nonewline, bool flush) noexcept
@@ -101,17 +92,11 @@ namespace ioer
 			_pair_output_functor_t _pair_output_functor_obj;
 
 		public:
-			explicit output_t(const string& path = STDIO_PATH, ios::openmode mode = ios::out)
-				: 	_path(path), _pair_output_functor_obj(STDIO_PATH, _dlm, _width, true, false, false)
+			output_t(const string& path = STDIO_PATH, ios::openmode mode = ios::out) noexcept
+				: _path(path), _pair_output_functor_obj(STDIO_PATH, _dlm, _width, true, false, false)
 			{ 
 				open(path, mode | ios::out);
 			}
-
-			virtual ~output_t() = default;
-
-			// can move
-			output_t(output_t&&) = default;
-			output_t& operator=(output_t&&) = default;
 			
 			// no copy 
 			output_t(const output_t&) = delete;

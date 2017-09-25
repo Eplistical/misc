@@ -34,17 +34,12 @@ namespace ioer
 			}
 
 		public:
-			explicit io_base_t() = default;
-			explicit io_base_t(const string& path, ios::openmode mode)
+			io_base_t() = default;
+			io_base_t(const string& path, ios::openmode mode) noexcept
 			{ 
 				open(path, mode);	
 			}
-			// fstream dtor should be called due to RAII
 			virtual ~io_base_t() = default;
-
-			// can move 
-			io_base_t(io_base_t&& other) = default;
-			io_base_t& operator=(io_base_t&& other) = default;
 
 			// no copy 
 			io_base_t(const io_base_t& other) = delete;
