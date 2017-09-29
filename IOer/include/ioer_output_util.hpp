@@ -13,71 +13,26 @@
 #include "io_base_t.hpp"
 #include "ioer_var.hpp"
 #include "ioer_exceptions.hpp"
+#include "ioer_output_util_aux.hpp"
 
 namespace ioer 
 {
-    using namespace std;
-    using namespace type_traiter;
+    using std::string;
+    using std::size_t;
+    using std::iostream;
+    using std::streamsize;
+    using type_traiter::is_direct_outputable;
+    using type_traiter::is_sequence_container;
+    using type_traiter::is_complex;
+    using type_traiter::is_fundamental;
+    using type_traiter::is_vector;
+    using type_traiter::is_deque;
+    using type_traiter::is_list;
+    using type_traiter::is_forward_list;
+    using type_traiter::is_c_string;
+    using type_traiter::is_string;
+    using type_traiter::is_array_container;
     using ioer::io_base_obj;
-
-    class _pair_output_functor_t 
-    {
-        protected:
-            string _path; 
-            string _dlm;
-            size_t _width;
-            bool _keyfirst;
-            bool _nonewline;
-            bool _flush;
-
-        public:
-            _pair_output_functor_t(const string& path, const string& dlm, size_t width, bool keyfirst, bool nonewline, bool flush) noexcept
-                : _path(path), _dlm(dlm), _width(width), _keyfirst(keyfirst), _nonewline(nonewline), _flush(flush) {  }
-
-            // setter
-            void config(const string& path, const string& dlm, size_t width, bool keyfirst, bool nonewline, bool flush) noexcept
-            {
-                _path = path;
-                _dlm = dlm;
-                _width = width;
-                _keyfirst = keyfirst;
-                _nonewline = nonewline;
-                _flush = flush;
-            }
-
-            // operator()
-            template<typename KeyType, typename ValType>
-                typename enable_if< is_direct_outputable< ValType >::value, const _pair_output_functor_t&>::type
-                operator()(const KeyType& key, const ValType& val) const
-                {
-                    iostream& dest = io_base_obj.at(_path);
-                    if (_keyfirst) 
-                        dest << setw(_width) << key << _dlm << setw(_width) << val;
-                    else 
-                        dest <<  setw(_width) << val << _dlm << setw(_width) << key;
-                    if (!_nonewline) dest <<  "\n";
-                    if (_flush) dest << flush;
-                    return *this;
-                }
-
-            template<typename KeyType, typename ValType>
-                typename enable_if< is_sequence_container<ValType>::value, const _pair_output_functor_t& >::type
-                operator()(const KeyType& key, const ValType& val) const
-                {
-                    iostream& dest = io_base_obj.at(_path);
-                    if(_keyfirst) {
-                        dest <<  setw(_width) << key << _dlm;
-                        for(auto& it : val) dest <<  setw(_width) << it;
-                    }
-                    else{
-                        for(auto& it : val) dest <<  setw(_width) << it;
-                        dest <<  _dlm << setw(_width) << key ;
-                    }
-                    if(!_nonewline) dest <<  "\n";
-                    if (_flush) dest << flush;
-                    return *this;
-                }
-    }; // class _pair_output_functor_t
 
     class output_t 
     {
@@ -252,7 +207,7 @@ namespace ioer
                 _write(const ParamType& x)
                 {
                     io_base_obj.at(_path).write
-                        (reinterpret_cast<const char*>(&x), static_cast<std::streamsize>(sizeof(x)));
+                        (reinterpret_cast<const char*>(&x), static_cast<streamsize>(sizeof(x)));
                 }
 
             template<typename ParamType>
@@ -262,7 +217,7 @@ namespace ioer
                     using ValType = typename ParamType::value_type;
                     ValType tmp[] = {x.real(), x.imag()};
                     io_base_obj.at(_path).write
-                        (reinterpret_cast<const char*>(tmp), static_cast<std::streamsize>(2 * sizeof(ValType)));
+                        (reinterpret_cast<const char*>(tmp), static_cast<streamsize>(2 * sizeof(ValType)));
                 }
 
             template<typename ParamType>
@@ -272,7 +227,7 @@ namespace ioer
                     size_t N = 0;
                     while(x[N] != '\0') ++N;
                     io_base_obj.at(_path).write
-                        (reinterpret_cast<const char*>(&x), static_cast<std::streamsize>(N * sizeof(char)));
+                        (reinterpret_cast<const char*>(&x), static_cast<streamsize>(N * sizeof(char)));
                 }
 
             template<typename ParamType>
@@ -283,7 +238,7 @@ namespace ioer
                     _write(const ParamType& x)
                     {
                         io_base_obj.at(_path).write
-                            (reinterpret_cast<const char*>(x.data()), static_cast<std::streamsize>(x.size() * sizeof(typename ParamType::value_type)));
+                            (reinterpret_cast<const char*>(x.data()), static_cast<streamsize>(x.size() * sizeof(typename ParamType::value_type)));
                     }
 
             template<typename ParamType>
@@ -295,7 +250,7 @@ namespace ioer
                 {
                     for(auto& it : x) {
                         io_base_obj.at(_path).write
-                            (reinterpret_cast<const char*>(&x), static_cast<std::streamsize>(sizeof(typename ParamType::value_type)));
+                            (reinterpret_cast<const char*>(&x), static_cast<streamsize>(sizeof(typename ParamType::value_type)));
                     }
                 }
 
