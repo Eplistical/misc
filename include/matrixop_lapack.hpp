@@ -426,6 +426,45 @@ namespace matrixop {
         return rst;
     }
 
+
+    // --- innerproduct --- //
+
+
+    inline double innerproduct(const vector<double>& v1, 
+            const vector<double>& v2, 
+            int begin = 0, int len = -1)
+    {
+        /* calculate innerproduct of two vectors:
+         * v1[begin:begin + len] and v2[begin:begin + len]
+         *
+         *  param v1, v2: vectors
+         *  param begin: begin position
+         *  param len: length of the vector of interest, if -1 then v1.size()
+         */
+        int inc(1);
+        int N(len = -1 ? v1.size() : len);
+        return ddot(&N, &v1[begin], &inc, &v2[begin], &inc);
+    }
+
+
+    inline complex<double> innerproduct(const vector< complex<double> >& v1, 
+            const vector< complex<double> >& v2, 
+            int begin = 0, int len = -1)
+    {
+        /* calculate innerproduct of two vectors:
+         * v1[begin:begin + len] and v2[begin:begin + len]
+         *
+         *  param v1, v2: vectors
+         *  param begin: begin position
+         *  param len: length of the vector of interest, if -1 then v1.size()
+         */
+        int inc(1);
+        int N(len = -1 ? v1.size() : len);
+        complex<double> rst;
+        zdotc(&rst, &N, &v1[begin], &inc, &v2[begin], &inc);
+        return rst;
+    }
+
 };
 
 #endif
