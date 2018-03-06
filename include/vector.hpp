@@ -151,7 +151,7 @@ std::vector<T> abs(const std::vector<T>& v)
     const SIZE_T N = v.size();
     std::vector<T> rst(N);
     for(SIZE_T j = 0;j < N;j++) 
-		rst[j] = abs(v[j]) ;
+		rst[j] = std::abs(v[j]) ;
     return rst;
 }
 
@@ -161,7 +161,7 @@ std::vector<T1> pow(const std::vector<T1>& v1, const T2& a)
     const SIZE_T N = v1.size();
     std::vector<T1> rst(N);
     for(SIZE_T j = 0; j < N; j++)
-        rst[j] = pow(v1[j], a);
+        rst[j] = std::pow(v1[j], a);
 	return rst;
 }
 
@@ -200,7 +200,7 @@ T product(const std::vector<T>& v)
 template<typename T>
 T norm(const std::vector<T>& v)
 {
-    return sqrt(sum(v * v));
+    return std::sqrt(sum(v * v));
 }
 
 template<typename T>
