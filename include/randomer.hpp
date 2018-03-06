@@ -3,56 +3,64 @@
 /* module for random
  * require C++11
  * written based on <random> and <vector>
+ * using external lib: 
+ * 	boost/type_traits.hpp
+ * 	boost/spirit/home/support/container.hpp
  *
  * Gaohan
  */
 #include <cmath>
 #include <random>
 #include <vector>
-#include "type_traiter.hpp"
-#include "types.hpp"
+
+#include <boost/type_traits.hpp>
+#include <boost/spirit/home/support/container.hpp>
 
 namespace randomer {
-    using namespace std;
+	static std::random_device ran_dev;
+	static std::mt19937 gen(ran_dev());
 
-	static random_device rd;
-	static mt19937 rng(rd());
-
-	inline DOUBLE_T rand(DOUBLE_T lb = 0.0, DOUBLE_T ub = 1.0) noexcept 
-    {
-		uniform_real_distribution<> dis(lb, ub);
-		return dis(rng);
+	inline double rand(double lb = 0.0, double ub = 1.0) noexcept {
+		std::uniform_real_distribution<> dis(lb, ub);
+		return dis(gen);
 	}
 
-	inline vector<DOUBLE_T> vrand(INT_T N, DOUBLE_T lb = 0.0, DOUBLE_T ub = 1.0) noexcept 
-    {
-		uniform_real_distribution<> dis(lb, ub);
-		vector<DOUBLE_T> rst(N);
-		for(INT_T j = 0; j < N; ++j)
-			rst[j] = dis(rng);
+	inline std::vector<double> vrand(int N, double lb = 0.0, double ub = 1.0) noexcept {
+		std::uniform_real_distribution<> dis(lb, ub);
+		std::vector<double> rst(N);
+		for(int j = 0; j < N; ++j)
+			rst[j] = dis(gen);
 		return rst;
 	}
 
-	inline DOUBLE_T normal(DOUBLE_T mu = 0.0, DOUBLE_T sigma = 1.0) noexcept 
-    {
-		normal_distribution<DOUBLE_T> dis(mu, sigma);
-		return dis(rng);
+	inline double normal(double mu = 0.0, double sigma = 1.0) noexcept {
+		std::normal_distribution<double> dis(mu, sigma);
+		return dis(gen);
 	}
 
-	inline vector<DOUBLE_T> vnormal(INT_T N, DOUBLE_T mu = 0.0, DOUBLE_T sigma = 1.0) noexcept 
-    {
-		normal_distribution<DOUBLE_T> dis(mu, sigma);
-		vector<DOUBLE_T> rst(N);
-		for(INT_T j = 0; j < N; ++j)
-			rst[j] = dis(rng);
+	inline std::vector<double> vnormal(int N, double mu = 0.0, double sigma = 1.0) noexcept {
+		std::normal_distribution<double> dis(mu, sigma);
+		std::vector<double> rst(N);
+		for(int j = 0; j < N; ++j)
+			rst[j] = dis(gen);
 		return rst;
 	}
 
-	inline INT_T discrete(const vector<DOUBLE_T>& prob) noexcept 
-    {
-		discrete_distribution<INT_T> dis(prob.begin(), prob.end());
-		INT_T rst = dis(rng);
-		return rst;
+	inline int discrete(const std::vector<double>& prob) noexcept {
+		std::discrete_distribution<int> dis(prob.begin(), prob.end());
+		return dis(gen);
 	}
+
+    inline int choice(int N) noexcept {
+        // pick one number from 0 to N-1
+        std::uniform_int_distribution<> dis(0, N - 1);
+        return dis(gen);
+    }
+
+    template <typename ElementType>
+        inline ElementType choice(const std::vector<ElementType>& v) noexcept {
+            // pick one element from vector v
+            return v[choice(v.size())];
+        }
 };
 #endif
