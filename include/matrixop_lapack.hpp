@@ -1,7 +1,9 @@
 #ifndef _MATRIXOP_LAPACK_HPP
 #define _MATRIXOP_LAPACK_HPP
 
+#ifndef MKL_Complex16
 #define MKL_Complex16 std::complex<double>
+#endif
 
 #include <cmath>
 #include <complex>

@@ -22,7 +22,7 @@ namespace ioer
 
 	class input_t 
 	{
-		protected:
+		private:
 			string _path;
             // for formatted input
             map<string, string> _paradict;

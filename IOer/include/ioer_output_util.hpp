@@ -36,7 +36,7 @@ namespace ioer
 
     class output_t 
     {
-        protected:
+        private:
             string _path;
 
             size_t _width = 16;
