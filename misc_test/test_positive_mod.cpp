@@ -1,8 +1,8 @@
 #include <cassert>
 #include <vector>
 #include <iostream>
-using namespace std;
 #include "positive_mod.hpp"
+using namespace std;
 
 int main(int argc, char** argv) {
 	assert(positive_mod(7, 3) == 1);
