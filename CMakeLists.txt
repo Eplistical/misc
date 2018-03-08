@@ -27,3 +27,4 @@ ENABLE_TESTING()
 # sub directories
 ADD_SUBDIRECTORY(IOer)
 ADD_SUBDIRECTORY(include)
+ADD_SUBDIRECTORY(misc_test)
