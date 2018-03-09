@@ -20,7 +20,7 @@ namespace timer {
 
 	static TicTimeType tic_time;
 
-	inline void tic(INT_T index = 0) noexcept
+	inline VOID_T tic(INT_T index = 0) noexcept
     {
 		tic_time[index] = system_clock::now();
 	}
@@ -30,15 +30,15 @@ namespace timer {
 		if (tic_time.find(index) == tic_time.end()) {
 			return STRING_T("timer::toc: error!, index not found");
 		}
-		duration<double> elapsed = system_clock::now() - tic_time[index];
+		duration<DOUBLE_T> elapsed = system_clock::now() - tic_time[index];
 		ostringstream buf;
 		buf << "Time elapsed: " << elapsed.count() << " s" ;
 		return buf.str();
 	}
 
-    inline double elapsed(INT_T index = 0) noexcept 
+    inline DOUBLE_T elapsed(INT_T index = 0) noexcept 
     {
-		duration<double> rst = system_clock::now() - tic_time[index];
+		duration<DOUBLE_T> rst = system_clock::now() - tic_time[index];
         return rst.count();
     }
 
