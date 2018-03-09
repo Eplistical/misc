@@ -50,7 +50,7 @@ namespace randomer {
 
     inline INT_T choice(INT_T N) noexcept {
         // pick one number from 0 to N-1
-        std::uniform_INT_T_distribution<> dis(0, N - 1);
+        std::uniform_int_distribution<> dis(0, N - 1);
         return dis(gen);
     }
 
