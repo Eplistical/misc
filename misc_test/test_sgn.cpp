@@ -1,6 +1,8 @@
 #include <cassert>
 #include "sgn.hpp"
 
+using misc::sgn;
+
 int main(int argc, char** argv) {
 	for (int i(-10000); i < 10000; i += 1) {
 		if (i == 0) assert(sgn(i) == 0);

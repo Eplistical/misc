@@ -3,6 +3,7 @@
 #include <iostream>
 #include "positive_mod.hpp"
 using namespace std;
+using misc::positive_mod;
 
 int main(int argc, char** argv) {
 	assert(positive_mod(7, 3) == 1);
