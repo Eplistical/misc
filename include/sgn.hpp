@@ -4,11 +4,15 @@
 
 #include <cmath>
 
-template<typename T>
-inline int sgn(T x)
-{
-    if (x == 0) return 0;
-    else return x > 0 ? 1 : -1;
-}
+namespace misc {
+
+	template<typename T>
+	inline int sgn(T x)
+	{
+		if (x == 0) return 0;
+		else return x > 0 ? 1 : -1;
+	}
+
+};
 
 #endif

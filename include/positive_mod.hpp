@@ -12,82 +12,85 @@
 #include "types.hpp"
 #include "type_traiter.hpp"
 
-template <typename NumerType, typename DenumType>
-inline typename std::enable_if< std::is_fundamental<NumerType>::value && std::is_fundamental<DenumType>::value, DenumType>::type
-positive_mod(const NumerType& numer, const DenumType& denum, INT_T& qoutitent) {
-	// scalar - scalar
-	assert(denum > 0); 
-	qoutitent = static_cast<INT_T>(floor(1.0 * numer / denum));
-	return numer - denum * qoutitent;
-}
+namespace misc {
 
-template <typename NumerType, typename DenumType>
-inline typename std::enable_if< std::is_fundamental<NumerType>::value && std::is_fundamental<DenumType>::value, DenumType>::type
-positive_mod(const NumerType& numer, const DenumType& denum) {
-	// scalar - scalar
-	INT_T qoutitent;
-	return positive_mod(numer, denum, qoutitent);
-}
-
-template <typename NumerType, typename DenumType>
-inline typename std::enable_if< std::is_fundamental<NumerType>::value && std::is_fundamental<DenumType>::value, std::vector<DenumType> >::type
-positive_mod(	const std::vector<NumerType>& numer, 
-				const DenumType& denum,
-				std::vector<INT_T>& qoutitent) 
-{
-	// vector - scalar
-	const INT_T N(numer.size());
-	qoutitent.resize(N);
-	std::vector<DenumType> remainder(N);
-	for (INT_T i(0); i < N; ++i) {
-		remainder[i] = positive_mod(numer[i], denum, qoutitent[i]);
+	template <typename NumerType, typename DenumType>
+	inline typename std::enable_if< std::is_fundamental<NumerType>::value && std::is_fundamental<DenumType>::value, DenumType>::type
+	positive_mod(const NumerType& numer, const DenumType& denum, INT_T& qoutitent) {
+		// scalar - scalar
+		assert(denum > 0); 
+		qoutitent = static_cast<INT_T>(floor(1.0 * numer / denum));
+		return numer - denum * qoutitent;
 	}
-	return remainder;
-}
 
-template <typename NumerType, typename DenumType>
-inline typename std::enable_if< std::is_fundamental<NumerType>::value && std::is_fundamental<DenumType>::value, std::vector<DenumType> >::type
-positive_mod(	const std::vector<NumerType>& numer, 
-				const DenumType& denum)
-{
-	// vector - scalar
-	const INT_T N(numer.size());
-	std::vector<DenumType> remainder(N);
-	for (INT_T i(0); i < N; ++i) {
-		remainder[i] = positive_mod(numer[i], denum);
+	template <typename NumerType, typename DenumType>
+	inline typename std::enable_if< std::is_fundamental<NumerType>::value && std::is_fundamental<DenumType>::value, DenumType>::type
+	positive_mod(const NumerType& numer, const DenumType& denum) {
+		// scalar - scalar
+		INT_T qoutitent;
+		return positive_mod(numer, denum, qoutitent);
 	}
-	return remainder;
-}
 
-template <typename NumerType, typename DenumType>
-inline std::vector<DenumType> positive_mod(	const std::vector<NumerType>& numer, 
-											const std::vector<DenumType>& denum,
-											std::vector<INT_T>& qoutitent) 
-{
-	// vector - vector
-	assert(numer.size() == denum.size());
-	const INT_T N(numer.size());
-	qoutitent.resize(N);
-	std::vector<DenumType> remainder(N);
-	for (INT_T i(0); i < N; ++i) {
-		remainder[i] = positive_mod(numer[i], denum[i], qoutitent[i]);
+	template <typename NumerType, typename DenumType>
+	inline typename std::enable_if< std::is_fundamental<NumerType>::value && std::is_fundamental<DenumType>::value, std::vector<DenumType> >::type
+	positive_mod(	const std::vector<NumerType>& numer, 
+					const DenumType& denum,
+					std::vector<INT_T>& qoutitent) 
+	{
+		// vector - scalar
+		const INT_T N(numer.size());
+		qoutitent.resize(N);
+		std::vector<DenumType> remainder(N);
+		for (INT_T i(0); i < N; ++i) {
+			remainder[i] = positive_mod(numer[i], denum, qoutitent[i]);
+		}
+		return remainder;
 	}
-	return remainder;
-}
 
-template <typename NumerType, typename DenumType>
-inline std::vector<DenumType> positive_mod(	const std::vector<NumerType>& numer, 
-											const std::vector<DenumType>& denum)
-{
-	// vector - vector
-	assert(numer.size() == denum.size());
-	const INT_T N(numer.size());
-	std::vector<DenumType> remainder(N);
-	for (INT_T i(0); i < N; ++i) {
-		remainder[i] = positive_mod(numer[i], denum[i]);
+	template <typename NumerType, typename DenumType>
+	inline typename std::enable_if< std::is_fundamental<NumerType>::value && std::is_fundamental<DenumType>::value, std::vector<DenumType> >::type
+	positive_mod(	const std::vector<NumerType>& numer, 
+					const DenumType& denum)
+	{
+		// vector - scalar
+		const INT_T N(numer.size());
+		std::vector<DenumType> remainder(N);
+		for (INT_T i(0); i < N; ++i) {
+			remainder[i] = positive_mod(numer[i], denum);
+		}
+		return remainder;
 	}
-	return remainder;
-}
 
+	template <typename NumerType, typename DenumType>
+	inline std::vector<DenumType> positive_mod(	const std::vector<NumerType>& numer, 
+												const std::vector<DenumType>& denum,
+												std::vector<INT_T>& qoutitent) 
+	{
+		// vector - vector
+		assert(numer.size() == denum.size());
+		const INT_T N(numer.size());
+		qoutitent.resize(N);
+		std::vector<DenumType> remainder(N);
+		for (INT_T i(0); i < N; ++i) {
+			remainder[i] = positive_mod(numer[i], denum[i], qoutitent[i]);
+		}
+		return remainder;
+	}
+
+	template <typename NumerType, typename DenumType>
+	inline std::vector<DenumType> positive_mod(	const std::vector<NumerType>& numer, 
+												const std::vector<DenumType>& denum)
+	{
+		// vector - vector
+		assert(numer.size() == denum.size());
+		const INT_T N(numer.size());
+		std::vector<DenumType> remainder(N);
+		for (INT_T i(0); i < N; ++i) {
+			remainder[i] = positive_mod(numer[i], denum[i]);
+		}
+		return remainder;
+	}
+
+};
 
 #endif // _POSITIVE_MOD_HPP
