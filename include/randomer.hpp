@@ -90,7 +90,7 @@ namespace randomer {
 					++j;
 				}
 			}
-			std::random_shuffle(rst.begin(), rst.end());
+			std::shuffle(rst.begin(), rst.end(), gen);
 			return rst;
 		}
 	}
@@ -122,7 +122,7 @@ namespace randomer {
 					++j;
 				}
 			}
-			std::random_shuffle(rst.begin(), rst.end());
+			std::shuffle(rst.begin(), rst.end(), gen);
 			return rst;
 		}
 	}
