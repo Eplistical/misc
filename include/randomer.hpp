@@ -7,6 +7,7 @@
  * Gaohan
  */
 #include <cmath>
+#include <cassert>
 #include <random>
 #include <vector>
 #include <unordered_set>
@@ -73,7 +74,6 @@ namespace randomer {
 				record.insert(dis(gen));
 			}
 			std::vector<INT_T> rst(record.begin(), record.end());
-			std::sort(rst.begin(), rst.end());
 			return rst;
 		}
 		else {
@@ -90,6 +90,7 @@ namespace randomer {
 					++j;
 				}
 			}
+			std::random_shuffle(rst.begin(), rst.end());
 			return rst;
 		}
 	}
@@ -121,11 +122,13 @@ namespace randomer {
 					++j;
 				}
 			}
+			std::random_shuffle(rst.begin(), rst.end());
 			return rst;
 		}
 	}
 
 	inline std::vector<INT_T> choice(INT_T N, INT_T m) noexcept {
+		assert(N >= m);
 		if (N > 1000000 or static_cast<DOUBLE_T>(N) / m > 1000.0) {
 			return __choice_hash(N, m);
 		}
@@ -133,6 +136,16 @@ namespace randomer {
 			return __choice_bit(N, m);
 		}
 	}
-	
+
+    template <typename ElementType>
+        inline std::vector<ElementType> choice(const std::vector<ElementType>& v, INT_T m) noexcept {
+			std::vector<INT_T> idx(choice(v.size(), m));
+			std::vector<ElementType> rst(m);
+			for (INT_T i(0); i< m; ++i) {
+				rst[i] = v.at(idx.at(i));
+			}
+			return rst;
+        }
+
 };
 #endif // _RANDOMER_HPP
