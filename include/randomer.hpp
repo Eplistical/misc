@@ -19,6 +19,10 @@ namespace randomer {
 	static std::random_device ran_dev;
 	static std::mt19937 gen(ran_dev());
 
+	inline VOID_T seed(std::mt19937::result_type val = gen.default_seed) noexcept {
+		gen.seed(val);
+	}
+
 	inline DOUBLE_T rand(DOUBLE_T lb = 0.0, DOUBLE_T ub = 1.0) noexcept {
 		std::uniform_real_distribution<> dis(lb, ub);
 		return dis(gen);
@@ -146,6 +150,13 @@ namespace randomer {
 			}
 			return rst;
         }
+
+	// dim-dimensional maxwell distribution of velocisties for N particles
+	template<size_t dim = 3>
+		inline std::vector<double> maxwell_dist(double mass, double kT, size_t N = 1)
+		{
+			return vnormal(N * dim, 0.0, std::sqrt(kT / mass));
+		}
 
 };
 #endif // _RANDOMER_HPP
