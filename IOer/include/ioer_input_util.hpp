@@ -25,6 +25,7 @@ namespace ioer
 		private:
 			string _path;
             // for formatted input
+            string _raw_text;
             map<string, string> _paradict;
 
 
@@ -128,9 +129,12 @@ namespace ioer
 
                 string line, key, val;
                 bool firstchar(true), val_done(false);
+                _raw_text.clear();
 
                 while (!io_base_obj.at(_path).eof()) {
                     getline(io_base_obj.at(_path), line);
+                    _raw_text += line;
+                    _raw_text += "\n";
 
                     // a blank line
                     if (!line.empty()) {
@@ -166,6 +170,11 @@ namespace ioer
                         }
                     }
                 }
+            }
+
+            string get_raw_text() 
+            {
+                return _raw_text;
             }
 
 			template<typename ParamType>
