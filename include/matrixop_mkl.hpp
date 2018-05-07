@@ -194,7 +194,7 @@ namespace matrixop {
         vector<double> rst(M * N);
 
         dgemm("C", "N", &M, &N, &K, &alpha, 
-                &Mat1[0], &M, &Mat2[0], &K, 
+                &Mat1[0], &K, &Mat2[0], &K, 
                 &beta, &rst[0], &M);
 
         return rst;
@@ -219,7 +219,7 @@ namespace matrixop {
         vector< complex<double> > rst(M * N);
 
         zgemm("C", "N", &M, &N, &K, &alpha, 
-                &Mat1[0], &M, &Mat2[0], &K, 
+                &Mat1[0], &K, &Mat2[0], &K, 
                 &beta, &rst[0], &M);
 
         return rst;
