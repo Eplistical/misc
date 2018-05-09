@@ -416,8 +416,18 @@ namespace matrixop {
          *  param len: length of the vector of interest, if -1 then v1.size()
          */
         int inc(1);
-        int N(len = -1 ? v1.size() : len);
-        return ddot_(&N, &v1[begin], &inc, &v2[begin], &inc);
+        int N((len == -1) ? v1.size() : len);
+        //return ddot_(&N, &v1[begin], &inc, &v2[begin], &inc);
+		ioer::info("hahaha ", begin, "  ", N, "len = ", len);
+		ioer::info(v1);
+		ioer::info(v2);
+
+		double rst(0.0);
+		for (int k(0); k < N; ++k) {
+			rst += v1[k + begin] * v2[k + begin];
+			ioer::info("k = ", k, "rst goes to ", rst);
+		}
+		return rst;
     }
 
 
@@ -433,7 +443,7 @@ namespace matrixop {
          *  param len: length of the vector of interest, if -1 then v1.size()
          */
         int inc(1);
-        int N(len = -1 ? v1.size() : len);
+        int N((len == -1) ? v1.size() : len);
         complex<double> rst;
         //zdotc(&rst, &N, &v1[begin], &inc, &v2[begin], &inc);
         //return rst;
