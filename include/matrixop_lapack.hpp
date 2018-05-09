@@ -417,17 +417,7 @@ namespace matrixop {
          */
         int inc(1);
         int N((len == -1) ? v1.size() : len);
-        //return ddot_(&N, &v1[begin], &inc, &v2[begin], &inc);
-		ioer::info("hahaha ", begin, "  ", N, "len = ", len);
-		ioer::info(v1);
-		ioer::info(v2);
-
-		double rst(0.0);
-		for (int k(0); k < N; ++k) {
-			rst += v1[k + begin] * v2[k + begin];
-			ioer::info("k = ", k, "rst goes to ", rst);
-		}
-		return rst;
+        return ddot_(&N, &v1[begin], &inc, &v2[begin], &inc);
     }
 
 
