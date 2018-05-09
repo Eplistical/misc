@@ -5,6 +5,7 @@
 #include <complex>
 #include <vector>
 #include <algorithm>
+#include "matrixop_lapack_base.hpp"
 
 namespace matrixop {
     using std::complex;
@@ -28,17 +29,12 @@ namespace matrixop {
          */
 
         double beta(0.0);
-        const double* A_ptr = Mat.data();
-        const double* X_ptr = Vec.data();
-
         int M = static_cast<int>(Mat.size() / N);
-
         vector<double> rst(N);
-        double* Y_ptr = rst.data();
-        int lda(M), incx(1), incy(1);
 
-        dgemv("N", &M, &N, &alpha, A_ptr, &lda, 
-                X_ptr, &incx, &beta, Y_ptr, &incy);
+        dgemv_("N", &M, &N, &alpha, 
+				&Mat[0], &M, &Vec[0], &ONE_i,
+                &beta, &rst[0], &ONE_i);
 
         return rst;
     }
@@ -56,17 +52,12 @@ namespace matrixop {
          */
 
         complex<double> beta(0.0, 0.0);
-        const complex<double>* A_ptr = Mat.data();
-        const complex<double>* X_ptr = Vec.data();
-
         int M = static_cast<int>(Mat.size() / N);
-
         vector< complex<double> > rst(N);
-        complex<double>* Y_ptr = rst.data();
-        int lda(M), incx(1), incy(1);
 
-        zgemv("N", &M, &N, &alpha, A_ptr, &lda, 
-                X_ptr, &incx, &beta, Y_ptr, &incy);
+        zgemv_("N", &M, &N, &alpha, 
+                &Mat[0], &M, &Vec[0], &ONE_i, 
+                &beta, &rst[0], &ONE_i);
 
         return rst;
     }
@@ -85,13 +76,11 @@ namespace matrixop {
         double beta(0.0);
         int M = static_cast<int>(Mat1.size() / K);
         int N = static_cast<int>(Mat2.size() / K);
-
         vector<double> rst(M * N);
-        int lda(M), ldb(K), ldc(M);
 
-        dgemm("N", "N", &M, &N, &K, &alpha, 
-                &Mat1[0], &lda, &Mat2[0], &ldb, 
-                &beta, &rst[0], &ldc);
+        dgemm_("N", "N", &M, &N, &K, &alpha, 
+                &Mat1[0], &M, &Mat2[0], &K, 
+                &beta, &rst[0], &M);
 
         return rst;
     }
@@ -108,18 +97,13 @@ namespace matrixop {
          *
          */
         complex<double> beta(0.0, 0.0);
-        const complex<double>* A_ptr = Mat1.data();
-        const complex<double>* B_ptr = Mat2.data();
-
         int M = static_cast<int>(Mat1.size() / K);
         int N = static_cast<int>(Mat2.size() / K);
-
         vector< complex<double> > rst(M * N);
-        complex<double>* C_ptr = rst.data();
-        int lda(M), ldb(K), ldc(M);
 
-        zgemm("N", "N", &M, &N, &K, &alpha, 
-                A_ptr, &lda, B_ptr, &ldb, &beta, C_ptr, &ldc);
+        zgemm_("N", "N", &M, &N, &K, &alpha, 
+                &Mat1[0], &M, &Mat2[0], &K, 
+                &beta, &rst[0], &M);
 
         return rst;
     }
@@ -139,13 +123,11 @@ namespace matrixop {
         double beta(0.0);
         int M = static_cast<int>(Mat1.size() / K);
         int N = static_cast<int>(Mat2.size() / K);
-
         vector<double> rst(M * N);
-        int lda(M), ldb(K), ldc(M);
 
-        dgemm("C", "N", &M, &N, &K, &alpha, 
-                &Mat1[0], &lda, &Mat2[0], &ldb, 
-                &beta, &rst[0], &ldc);
+        dgemm_("C", "N", &M, &N, &K, &alpha, 
+                &Mat1[0], &K, &Mat2[0], &K, 
+                &beta, &rst[0], &M);
 
         return rst;
     }
@@ -164,18 +146,13 @@ namespace matrixop {
          *
          */
         complex<double> beta(0.0, 0.0);
-        const complex<double>* A_ptr = Mat1.data();
-        const complex<double>* B_ptr = Mat2.data();
-
         int M = static_cast<int>(Mat1.size() / K);
         int N = static_cast<int>(Mat2.size() / K);
-
         vector< complex<double> > rst(M * N);
-        complex<double>* C_ptr = rst.data();
-        int lda(M), ldb(K), ldc(M);
 
-        zgemm("C", "N", &M, &N, &K, &alpha, 
-                A_ptr, &lda, B_ptr, &ldb, &beta, C_ptr, &ldc);
+        zgemm_("C", "N", &M, &N, &K, &alpha, 
+                &Mat1[0], &K, &Mat2[0], &K, 
+                &beta, &rst[0], &M);
 
         return rst;
     }
@@ -186,7 +163,7 @@ namespace matrixop {
 
     inline void hdiag_(const vector<double>& Mat, 
             vector<double>& eva, vector<double>& evt,
-            const char* jobz)
+            char* jobz)
     {
         /*  calc eva and/or evt for Mat, double version 
          *
@@ -196,7 +173,7 @@ namespace matrixop {
          *
          */
 
-        const int N = static_cast<int>(sqrt(Mat.size()));
+        int N = static_cast<int>(sqrt(Mat.size()));
         vector<double> evt_(Mat);
 
         int lwork(-1), liwork(-1), info(-1);
@@ -204,7 +181,7 @@ namespace matrixop {
         vector<int> iwork(1);
         eva.resize(N);
 
-        dsyevd(jobz, "L", &N, &evt_[0], &N, &eva[0], 
+        dsyevd_(jobz, "L", &N, &evt_[0], &N, &eva[0], 
                 &work[0], &lwork, &iwork[0], &liwork, &info);
 
         lwork = work[0];
@@ -212,7 +189,7 @@ namespace matrixop {
         work.resize(lwork);
         iwork.resize(liwork);
 
-        dsyevd(jobz, "L", &N, &evt_[0], &N, &eva[0], 
+        dsyevd_(jobz, "L", &N, &evt_[0], &N, &eva[0], 
                 &work[0], &lwork, &iwork[0], &liwork, &info);
 
         evt = move(evt_);
@@ -221,7 +198,7 @@ namespace matrixop {
 
     inline void hdiag_(const vector< complex<double> >& Mat, 
             vector<double>& eva, vector< complex<double> >& evt,
-            const char* jobz)
+            char* jobz)
     {
         /*  calc eva and/or evt for Mat, complex<double> version 
          *
@@ -231,7 +208,7 @@ namespace matrixop {
          *
          */
 
-        const int N = static_cast<int>(sqrt(Mat.size()));
+        int N = static_cast<int>(sqrt(Mat.size()));
         vector< complex<double> > evt_(Mat);
         int lwork(-1), liwork(-1), lrwork(-1), info(-1);
         vector< complex<double> > work(1);
@@ -239,7 +216,7 @@ namespace matrixop {
         vector<int> iwork(1);
         eva.resize(N);
 
-        zheevd(jobz, "L", &N, &evt_[0], &N, &eva[0], 
+        zheevd_(jobz, "L", &N, &evt_[0], &N, &eva[0], 
                 &work[0], &lwork, &rwork[0], &lrwork, 
                 &iwork[0], &liwork, &info);
 
@@ -250,7 +227,7 @@ namespace matrixop {
         iwork.resize(liwork);
         rwork.resize(lrwork);
 
-        zheevd(jobz, "L", &N, &evt_[0], &N, &eva[0], 
+        zheevd_(jobz, "L", &N, &evt_[0], &N, &eva[0], 
                 &work[0], &lwork, &rwork[0], &lrwork, 
                 &iwork[0], &liwork, &info);
 
@@ -343,7 +320,7 @@ namespace matrixop {
 
     inline int per_sign(const vector<int>& nums)
     {
-        const int N(nums.size());
+        int N(nums.size());
         vector<bool> visited(N, false);
         int rst(1), next(0), L(0);
         for (int k(1); k <= N; ++k) {
@@ -370,12 +347,12 @@ namespace matrixop {
          *
          *  param Mat: N * N matrix
          */
-        const int N = static_cast<int>(sqrt(Mat.size()));
+        int N = static_cast<int>(sqrt(Mat.size()));
         vector<double> A(Mat);
         vector<int> ipiv(N);
         int info(0);
 
-        dgetrf(&N, &N, &A[0], &N, &ipiv[0], &info);
+        dgetrf_(&N, &N, &A[0], &N, &ipiv[0], &info);
 
         vector<int> per(N);
         for (int i(1); i <= N; ++i) {
@@ -400,12 +377,12 @@ namespace matrixop {
          *
          *  param Mat: N * N matrix
          */
-        const int N = static_cast<int>(sqrt(Mat.size()));
+        int N = static_cast<int>(sqrt(Mat.size()));
         vector< complex<double> > A(Mat);
         vector<int> ipiv(N);
         int info(0);
 
-        zgetrf(&N, &N, &A[0], &N, &ipiv[0], &info);
+        zgetrf_(&N, &N, &A[0], &N, &ipiv[0], &info);
 
         vector<int> per(N);
         for (int i(0); i < N; ++i) {
@@ -440,7 +417,7 @@ namespace matrixop {
          */
         int inc(1);
         int N(len = -1 ? v1.size() : len);
-        return ddot(&N, &v1[begin], &inc, &v2[begin], &inc);
+        return ddot_(&N, &v1[begin], &inc, &v2[begin], &inc);
     }
 
 
@@ -458,8 +435,9 @@ namespace matrixop {
         int inc(1);
         int N(len = -1 ? v1.size() : len);
         complex<double> rst;
-        zdotc(&rst, &N, &v1[begin], &inc, &v2[begin], &inc);
-        return rst;
+        //zdotc(&rst, &N, &v1[begin], &inc, &v2[begin], &inc);
+        //return rst;
+        return zdotc_(&N, &v1[begin], &inc, &v2[begin], &inc);
     }
 
 };
