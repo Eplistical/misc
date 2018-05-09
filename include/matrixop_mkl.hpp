@@ -35,7 +35,7 @@ namespace matrixop {
          *  param begin: begin position
          *  param len: length of the segment, if -1 then v.size()
          */
-        const int N(len == -1 ? v.size() : len);
+        int N((len == -1) ? v.size() : len);
         vector<double> rst(v.begin() + begin, v.begin() + begin + N);
         dscal(&N, &alpha, &rst[0], &ONE_i);
         return rst;
@@ -56,7 +56,7 @@ namespace matrixop {
          *  param begin: begin position
          *  param len: length of the segment, if -1 then v.size()
          */
-        const int N(len == -1 ? v.size() : len);
+        int N((len == -1) ? v.size() : len);
         vector< complex<double> > rst(v.begin() + begin, v.begin() + begin + N);
         zdscal(&N, &alpha, &rst[0], &ONE_i);
         return rst;
@@ -77,7 +77,7 @@ namespace matrixop {
          *  param begin: begin position
          *  param len: length of the segment, if -1 then v.size()
          */
-        const int N(len == -1 ? v.size() : len);
+        int N((len == -1) ? v.size() : len);
         vector< complex<double> > rst(v.begin() + begin, v.begin() + begin + N);
         zscal(&N, &alpha, &rst[0], &ONE_i);
         return rst;
@@ -486,7 +486,7 @@ namespace matrixop {
          *  param begin: begin position
          *  param len: length of the vector of interest, if -1 then v1.size()
          */
-        int N(len == -1 ? v1.size() : len);
+        int N((len == -1) ? v1.size() : len);
         return ddot(&N, &v1[begin], &ONE_i, &v2[begin], &ONE_i);
     }
 
@@ -502,7 +502,7 @@ namespace matrixop {
          *  param begin: begin position
          *  param len: length of the segment, if -1 then v.size()
          */
-        const int N(len == -1 ? v1.size() : len);
+        int N((len == -1) ? v1.size() : len);
         complex<double> rst;
         zdotc(&rst, &N, &v1[begin], &ONE_i, &v2[begin], &ONE_i);
         return rst;
@@ -520,7 +520,7 @@ namespace matrixop {
          *  param begin: begin position
          *  param len: length of the segment, if -1 then v.size()
          */
-        const int N(len == -1 ? v.size() : len);
+        int N((len == -1) ? v.size() : len);
         return dnrm2(&N, &v[begin], &ONE_i);
     }
 
@@ -533,7 +533,7 @@ namespace matrixop {
          *  param begin: begin position
          *  param len: length of the segment, if -1 then v.size()
          */
-        const int N(len == -1 ? v.size() : len);
+        int N((len == -1) ? v.size() : len);
         return dznrm2(&N, &v[begin], &ONE_i);
     }
 
