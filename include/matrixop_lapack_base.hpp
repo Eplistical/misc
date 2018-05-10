@@ -8,9 +8,9 @@
 
 
 namespace matrixop {
-    using std::complex;
-    using std::vector;
-    using std::conj;
+	using std::complex;
+	using std::vector;
+	using std::conj;
 
 	extern "C" {
 		extern void dgemv_(const char*, const int*, const int*, const double*, const double*, const int*, const double*, const int*, const double*, double*, const int*);
@@ -27,17 +27,20 @@ namespace matrixop {
 
 		extern double ddot_(int*, const double*, const int*, const double*, const int*);
 		extern complex<double> zdotc_(int*, const complex<double>*, const int*, const complex<double>*, const int*);
+
+		extern void zgees_(const char*, const char*, bool (const complex<double>*), const int*, complex<double>*, const int*, int*, complex<double>*, complex<double>*, const int*, complex<double>*, const int*, double*, bool*, int* );
+		bool f08pnf_(const complex<double>* p) { return true; }
 	};
 
-    static int ONE_i(1);
- 	static double ONE_d(1.0);
-    static complex<double> ONE_z(1.0, 0.0);
+	static int ONE_i(1);
+	static double ONE_d(1.0);
+	static complex<double> ONE_z(1.0, 0.0);
 
-    static int ZERO_i(0);
-    static double ZERO_d(0.0);
-    static complex<double> ZERO_z(0.0, 0.0);
+	static int ZERO_i(0);
+	static double ZERO_d(0.0);
+	static complex<double> ZERO_z(0.0, 0.0);
 
-    static complex<double> I_z(0.0, 1.0);
+	static complex<double> I_z(0.0, 1.0);
 };
 
 #endif // _MATRIXOP_LAPACK_BASE
