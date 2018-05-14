@@ -5,10 +5,15 @@
 #define MKL_Complex16 std::complex<double>
 #endif
 
+#ifndef MKL_INT
+#define MKL_INT int
+#endif
+
 #include <cmath>
 #include <complex>
 #include <vector>
 #include <algorithm>
+#include <stdexcept>
 #include "mkl.h"
 #include "matrixop_mkl_arithmetic.hpp"
 
@@ -18,6 +23,10 @@ namespace matrixop {
     using std::conj;
     using std::move;
     using std::swap;
+
+	extern "C" {
+		int f08pnf_(const complex<double>* p) { return 1; }
+	};
 
     // --- multiplication for matrix / vectors --- //
 
@@ -577,6 +586,123 @@ namespace matrixop {
         zgetri(&N, &Mat[0], &N, &ipiv[0], &work[0], &lwork, &info);
     }
 
+
+	// --- more advanced functions --- //
+
+
+	template<typename T>
+		inline vector<double> mpower(const vector<double>& Mat, T p, int N)
+		{
+			/*
+			 * calculate matrix power Mat^p
+			 *
+			 * - Mat must be symmetric
+			 */
+			static vector<double> eva;
+			static vector<double> evamat;
+			static vector<double> evt;
+			hdiag(Mat, eva, evt);
+			// construct evamat
+			evamat.resize(N * N);
+			for (int i(0); i < N; ++i) {
+				for (int j(0); j < N; ++j) {
+					if (i == j) {
+						if (p < 1.0 and eva[i] < 0.0) {
+        					throw std::runtime_error("matrixop::mpower : negative eigenvalues encountered while p < 1.0");
+						}
+						evamat[i + j * N] = std::pow(eva[i], p);
+					}
+					else {
+						evamat[i + j * N] = 0.0;
+					}
+				}
+			}
+			return matmat(evt, matmat(evamat, adjoint(evt, N, N), N), N);
+		}
+
+
+	// --- orthoginalization --- //
+
+
+	inline vector<double> lowdin_orthogonalize(const vector<double>& Mat, int N) 
+	{
+		/*
+		 * orthogonalize matrix with Lowdin algorithm
+		 *
+		 * U => U * (U^T * U)^(-1/2)
+		 */
+		return matmat(Mat, mpower(matCmat(Mat, Mat, N), -0.5, N), N);
+	}
+
+
+	// --- matrix log --- //
+
+
+	inline vector<double> mlog(const vector<double>& Mat, int N) 
+	{
+		/* 
+		 * calculate log(Mat)
+		 * 
+		 * - Mat must be orthogonal
+		 * - All diagonal elements M[k,k] must be positive
+		 */
+		// check orthogonality
+		vector<double> MM(matCmat(Mat, Mat, N));
+		for (int i(0); i < N; ++i) {
+			for (int j(0); j < N; ++j) {
+				if ((i == j and std::abs(MM[i + j * N] - 1.0) > 1e-10) or
+						(i != j and std::abs(MM[i + j * N]) > 1e-10))
+        		throw std::runtime_error("matrixop::mlog : input matrix is not orthogonal!");
+			}
+		}
+		// check positive elements
+		for (int i(0); i < N; ++i) {
+			if (Mat[i + i * N] <= 0.0)
+        		throw std::runtime_error("matrixop::mlog : non-positive diagonal elements found!");
+		}
+		// convert double to complex
+		static vector< complex<double> > A;
+		A.resize(N * N);
+		for (int i(0); i < A.size(); ++i) {
+			A[i] = Mat[i];
+		}
+		// Schur decomposition A = Q * T * Q'
+		static vector< complex<double> > w;
+		static vector< complex<double> > work;
+		static vector< complex<double> > vs;
+		static vector<double> rwork;
+		static int bwork[1];
+		int lwork, info, SDIM(0);
+		w.resize(N);
+		vs.resize(N * N);
+		rwork.resize(N);
+
+		lwork = -1;
+		work.resize(1);
+		zgees("V", "N", f08pnf_, &N, &A[0], &N, &SDIM, 
+				&w[0], &vs[0], &N, &work[0], &lwork, &rwork[0], &bwork[0], &info);
+
+		lwork = static_cast<int>(work[0].real());
+		work.resize(lwork);
+		zgees("V", "N", f08pnf_, &N, &A[0], &N, &SDIM, 
+				&w[0], &vs[0], &N, &work[0], &lwork, &rwork[0], &bwork[0], &info);
+		// construct diagonal unitary matrix logD (stored in A)
+		for (int i(0); i < N; ++i) {
+			for (int j(0); j < N; ++j) {
+				if (i == j) A[i + j * N] = std::log(A[i + j * N] / std::abs(A[i + j * N]));
+				else A[i + j * N] = 0.0;
+			}
+		}
+		// get Q * log(D) * Q'
+		A = matmat(vs, matmat(A, adjoint(vs, N, N), N), N);
+		// convert to double
+		vector<double>rst(N * N);
+		for (int i; i < rst.size(); ++i) {
+			rst[i] = A[i].real();
+		}
+		return rst;
+	}
+
 };
 
-#endif
+#endif // _MATRIXOP_MKL_HPP
