@@ -15,6 +15,26 @@ namespace matrixop {
 	using std::move;
 	using std::swap;
 
+
+	// --- helpers --- //
+
+
+	template <typename T>
+		bool is_identity(const vector<T>& Mat, int N, double threash = 1e-10) 
+		{
+			/*
+			 * check if a matrix is idenity
+			 */
+			for (int i(0); i < N; ++i) {
+				for (int j(0); j < N; ++j) {
+					if ((i == j and std::abs(Mat[i + j * N] - 1.0) > threash) or
+							(i != j and std::abs(Mat[i + j * N]) > threash))
+						return false;
+				}
+			}
+			return true;
+		}
+
 	// --- multiplication for matrix / vectors --- //
 
 	inline vector<double> matvec(
@@ -486,7 +506,13 @@ namespace matrixop {
 		 *
 		 * U => U * (U^T * U)^(-1/2)
 		 */
-		return matmat(Mat, mpower(matCmat(Mat, Mat, N), -0.5, N), N);
+		vector<double> MM(matCmat(Mat, Mat, N));
+		if (is_identity(MM, N)) {
+			return Mat;
+		}
+		else {
+			return matmat(Mat, mpower(MM, -0.5, N), N);
+		}
 	}
 
 
@@ -502,14 +528,8 @@ namespace matrixop {
 		 * - All diagonal elements M[k,k] must be positive
 		 */
 		// check orthogonality
-		vector<double> MM(matCmat(Mat, Mat, N));
-		for (int i(0); i < N; ++i) {
-			for (int j(0); j < N; ++j) {
-				if ((i == j and std::abs(MM[i + j * N] - 1.0) > 1e-10) or
-						(i != j and std::abs(MM[i + j * N]) > 1e-10))
-        		throw std::runtime_error("matrixop::mlog : input matrix is not orthogonal!");
-			}
-		}
+		if (not is_identity(matCmat(Mat, Mat, N), N)) 
+        	throw std::runtime_error("matrixop::mlog : input matrix is not orthogonal!");
 		// check positive elements
 		for (int i(0); i < N; ++i) {
 			if (Mat[i + i * N] <= 0.0)
