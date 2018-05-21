@@ -2,7 +2,7 @@
 
 * Some important helper headers
 
-* C++11 is required.
+* C++11 is required. (To be specific, GCC 5 is necessary to compile the package!)
 
 To install:
 ```
