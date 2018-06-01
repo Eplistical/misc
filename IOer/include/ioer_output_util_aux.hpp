@@ -26,10 +26,10 @@ namespace ioer
     class _pair_output_functor_t 
     {
         public:
-            _pair_output_functor_t(const string&, const string&, size_t, bool, bool, bool) noexcept;
+            _pair_output_functor_t(const string&, const string&, size_t, size_t, bool, bool, bool) noexcept;
 
         public:
-            void config(const string&, const string&, size_t, bool, bool, bool) noexcept;
+            void config(const string&, const string&, size_t, size_t, bool, bool, bool) noexcept;
 
             template<typename KeyType, typename ValType>
                 typename enable_if< is_direct_outputable< ValType >::value, 
@@ -45,6 +45,7 @@ namespace ioer
             string _path; 
             string _dlm;
             size_t _width;
+            size_t _precision;
             bool _keyfirst;
             bool _nonewline;
             bool _flush;
@@ -58,24 +59,26 @@ namespace ioer
     /*****************************************************************************/
 
     _pair_output_functor_t::_pair_output_functor_t(const string& path, 
-            const string& dlm, size_t width, 
+            const string& dlm, size_t width, size_t precision, 
             bool keyfirst, bool nonewline, 
             bool flush) noexcept : 
         _path(path), _dlm(dlm), 
-        _width(width), _keyfirst(keyfirst), 
+        _width(width), _precision(precision), 
+        _keyfirst(keyfirst), 
         _nonewline(nonewline), _flush(flush) 
         {}
 
     /*****************************************************************************/
 
     void _pair_output_functor_t::config(const string& path, 
-            const string& dlm, size_t width,
+            const string& dlm, size_t width, size_t precision,
             bool keyfirst, bool nonewline,
             bool flush) noexcept
     {
         _path = path;
         _dlm = dlm;
         _width = width;
+        _precision = precision;
         _keyfirst = keyfirst;
         _nonewline = nonewline;
         _flush = flush;
@@ -90,9 +93,11 @@ namespace ioer
         {
             iostream& dest = io_base_obj.at(_path);
             if (_keyfirst) 
-                dest << setw(_width) << key << _dlm << setw(_width) << val;
+                dest << setw(_width) << setprecision(_precision) << key << _dlm 
+					<< setw(_width) << setprecision(_precision) << val;
             else 
-                dest <<  setw(_width) << val << _dlm << setw(_width) << key;
+                dest << setw(_width) << setprecision(_precision) << val << _dlm 
+					<< setw(_width) << setprecision(_precision) << key;
             if (!_nonewline) dest <<  "\n";
             if (_flush) dest << flush;
             return *this;
@@ -107,12 +112,12 @@ namespace ioer
         {
             iostream& dest = io_base_obj.at(_path);
             if(_keyfirst) {
-                dest <<  setw(_width) << key << _dlm;
-                for(auto& it : val) dest <<  setw(_width) << it;
+                dest <<  setw(_width) << setprecision(_precision) << key << _dlm;
+                for(auto& it : val) dest <<  setw(_width) << setprecision(_precision) << it;
             }
             else{
-                for(auto& it : val) dest <<  setw(_width) << it;
-                dest <<  _dlm << setw(_width) << key ;
+                for(auto& it : val) dest <<  setw(_width) << setprecision(_precision) << it;
+                dest <<  _dlm << setw(_width) << setprecision(_precision) << key ;
             }
             if(!_nonewline) dest <<  "\n";
             if (_flush) dest << flush;

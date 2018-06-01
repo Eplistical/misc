@@ -51,7 +51,7 @@ namespace ioer
 
         public:
             output_t(const string& path = STDIO_PATH, ios::openmode mode = ios::out) noexcept
-                : _path(path), _pair_output_functor_obj(STDIO_PATH, _dlm, _width, true, false, false)
+                : _path(path), _pair_output_functor_obj(STDIO_PATH, _dlm, _width, _precision, true, false, false)
                 { 
                     open(_path, mode | ios::out);
                 }
@@ -210,7 +210,7 @@ namespace ioer
             const _pair_output_functor_t&
                 keyval(bool _keyfirst = true, bool _nonewline = false)
                 {
-                    _pair_output_functor_obj.config(_path, _dlm, _width, _keyfirst, _nonewline, _flush); 
+                    _pair_output_functor_obj.config(_path, _dlm, _width, _precision, _keyfirst, _nonewline, _flush); 
                     return _pair_output_functor_obj;
                 }
 
