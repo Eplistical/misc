@@ -21,6 +21,8 @@ namespace ioer
     using std::size_t;
     using std::iostream;
     using std::streamsize;
+    using std::setw;
+    using std::setprecision;
     using type_traiter::is_direct_outputable;
     using type_traiter::is_sequence_container;
     using type_traiter::is_complex;
@@ -40,6 +42,7 @@ namespace ioer
             string _path;
 
             size_t _width = 16;
+            size_t _precision = 8;
             string _dlm = " ";
             bool _flush = false;
 
@@ -50,7 +53,7 @@ namespace ioer
             output_t(const string& path = STDIO_PATH, ios::openmode mode = ios::out) noexcept
                 : _path(path), _pair_output_functor_obj(STDIO_PATH, _dlm, _width, true, false, false)
                 { 
-                    open(path, mode | ios::out);
+                    open(_path, mode | ios::out);
                 }
 
             // no copy 
@@ -61,6 +64,11 @@ namespace ioer
             size_t width(void) const noexcept
             {
                 return _width; 
+            }
+
+            size_t precision(void) const noexcept
+            {
+                return _precision; 
             }
 
             string dlm(void) const noexcept
@@ -77,6 +85,11 @@ namespace ioer
             void set_width(size_t width) noexcept
             {
                 _width = width; 
+            }
+
+            void set_precision(size_t precision)
+            {
+                _precision = precision; 
             }
 
             void set_dlm(const string& dlm) noexcept
@@ -160,7 +173,7 @@ namespace ioer
                 typename enable_if< is_direct_outputable<ParamType>::value, void>::type
                 _tabout(const ParamType& x) 
                 {
-                    io_base_obj.at(_path) << setw(_width) << x;
+                    io_base_obj.at(_path) << setw(_width) << setprecision(_precision) << x;
                 }
 
             template<typename ParamType>
@@ -168,7 +181,7 @@ namespace ioer
                 _tabout(const ParamType& x) 
                 {
                     for (auto& xi : x) {
-                        io_base_obj.at(_path) << setw(_width) << xi;
+                        io_base_obj.at(_path) << setw(_width) << setprecision(_precision) << xi;
                     }
                 }
 
