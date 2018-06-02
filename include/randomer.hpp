@@ -23,6 +23,20 @@ namespace randomer {
 		gen.seed(val);
 	}
 
+	inline INT_T randint(INT_T lb = 0, INT_T ub = 100) noexcept {
+		std::uniform_int_distribution<> dis(lb, ub);
+		return dis(gen);
+	}
+
+	inline std::vector<INT_T> vrandint(UINT_T N, INT_T lb = 0, INT_T ub = 100) noexcept {
+		std::uniform_int_distribution<> dis(lb, ub);
+		std::vector<INT_T> rst(N);
+		for(UINT_T j = 0; j < N; ++j) {
+			rst[j] = dis(gen);
+		}
+		return rst;
+    }
+
 	inline DOUBLE_T rand(DOUBLE_T lb = 0.0, DOUBLE_T ub = 1.0) noexcept {
 		std::uniform_real_distribution<> dis(lb, ub);
 		return dis(gen);
