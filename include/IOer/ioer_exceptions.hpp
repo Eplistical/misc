@@ -22,6 +22,17 @@ namespace ioer
             virtual const char* what() const noexcept{ return _msg.c_str(); }
     };
 
+    class FileOpenedError : public IOError
+    {
+        public:
+            explicit FileOpenedError(const std::string& msg = "")
+            {
+                _title = "FileOpenedError"; 
+                _msg = (msg == "")?_title:(_title + ":" + msg);
+            } 
+            ~FileOpenedError() = default;
+    };
+
     class FileNotOpenedError : public IOError
     {
         public:

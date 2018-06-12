@@ -8,10 +8,9 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
-#include "type_traiter.hpp"
+#include "../type_traiter.hpp"
 #include "ioer_macros.hpp"
-#include "io_base_t.hpp"
-#include "ioer_var.hpp"
+#include "stream_io_mgr.hpp"
 #include "ioer_exceptions.hpp"
 
 namespace ioer 
@@ -21,10 +20,12 @@ namespace ioer
     using std::iostream;
     using type_traiter::is_direct_outputable;
     using type_traiter::is_sequence_container;
-    using ioer::io_base_obj;
 
     class _pair_output_functor_t 
     {
+		private:
+			stream_io_mgr& stream_io_mgr_sing = stream_io_mgr::getInstance();
+
         public:
             _pair_output_functor_t(const string&, const string&, size_t, size_t, bool, bool, bool) noexcept;
 
@@ -91,7 +92,7 @@ namespace ioer
                  const _pair_output_functor_t&>::type
         _pair_output_functor_t::operator()(const KeyType& key, const ValType& val) const
         {
-            iostream& dest = io_base_obj.at(_path);
+            iostream& dest = stream_io_mgr_sing.at(_path);
             if (_keyfirst) 
                 dest << setw(_width) << setprecision(_precision) << key << _dlm 
 					<< setw(_width) << setprecision(_precision) << val;
@@ -110,7 +111,7 @@ namespace ioer
                  const _pair_output_functor_t& >::type
         _pair_output_functor_t::operator()(const KeyType& key, const ValType& val) const
         {
-            iostream& dest = io_base_obj.at(_path);
+            iostream& dest = stream_io_mgr_sing.at(_path);
             if(_keyfirst) {
                 dest <<  setw(_width) << setprecision(_precision) << key << _dlm;
                 for(auto& it : val) dest <<  setw(_width) << setprecision(_precision) << it;

@@ -6,7 +6,8 @@
 	#error "C++11 surpport is required."
 #endif 
 
-namespace ioer {
+namespace ioer 
+{
 	enum class filetype {
 		UNKNOWN,
 		STREAM,

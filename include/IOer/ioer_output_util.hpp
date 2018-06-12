@@ -8,10 +8,9 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
-#include "type_traiter.hpp"
+#include "../type_traiter.hpp"
 #include "ioer_macros.hpp"
-#include "io_base_t.hpp"
-#include "ioer_var.hpp"
+#include "stream_io_mgr.hpp"
 #include "ioer_exceptions.hpp"
 #include "ioer_output_util_aux.hpp"
 
@@ -34,10 +33,12 @@ namespace ioer
     using type_traiter::is_c_string;
     using type_traiter::is_string;
     using type_traiter::is_array_container;
-    using ioer::io_base_obj;
 
     class output_t 
     {
+		private:
+			stream_io_mgr& stream_io_mgr_sing = stream_io_mgr::getInstance();
+
         private:
             string _path;
 
@@ -105,13 +106,13 @@ namespace ioer
             // open/close
             void open(const string& path, ios::openmode mode = ios::out) 
             {
-                io_base_obj.open(path, mode);
+                stream_io_mgr_sing.open(path, mode);
                 _path = path;
             }
 
             void close(void) noexcept
             {
-                io_base_obj.close(_path);
+                stream_io_mgr_sing.close(_path);
                 _path = ioer::STDIO_PATH;
             }
 
@@ -120,14 +121,14 @@ namespace ioer
             // -- basic -- //
             void newline(void)
             {
-                io_base_obj.at(_path) << "\n"; 
-                if (_flush) io_base_obj.at(_path) << flush; 
+                stream_io_mgr_sing.at(_path) << "\n"; 
+                if (_flush) stream_io_mgr_sing.at(_path) << flush; 
             }
 
             void drawline(char c, size_t len = 32) 
             {
-                io_base_obj.at(_path) << string(len, c) << "\n"; 
-                if (_flush) io_base_obj.at(_path) << flush; 
+                stream_io_mgr_sing.at(_path) << string(len, c) << "\n"; 
+                if (_flush) stream_io_mgr_sing.at(_path) << flush; 
             }
 
             // -- info -- //
@@ -135,7 +136,7 @@ namespace ioer
                 typename enable_if< is_direct_outputable<ParamType>::value, void>::type
                 _info(const ParamType& x) 
                 {
-                    io_base_obj.at(_path) << x;
+                    stream_io_mgr_sing.at(_path) << x;
                 }
 
             template<typename ParamType>
@@ -143,7 +144,7 @@ namespace ioer
                 _info(const ParamType& x) 
                 {
                     for (auto& xi : x) {
-                        io_base_obj.at(_path) << xi << " ";
+                        stream_io_mgr_sing.at(_path) << xi << " ";
                     }
                 }
 
@@ -151,7 +152,7 @@ namespace ioer
                 void _info(const ParamType& x, const Types& ... otherx) 
                 {
                     _info(x);
-                    if (_flush) io_base_obj.at(_path) << flush; 
+                    if (_flush) stream_io_mgr_sing.at(_path) << flush; 
                     _info(otherx ...);
                 }
 
@@ -173,7 +174,7 @@ namespace ioer
                 typename enable_if< is_direct_outputable<ParamType>::value, void>::type
                 _tabout(const ParamType& x) 
                 {
-                    io_base_obj.at(_path) << setw(_width) << setprecision(_precision) << x;
+                    stream_io_mgr_sing.at(_path) << setw(_width) << setprecision(_precision) << x;
                 }
 
             template<typename ParamType>
@@ -181,7 +182,7 @@ namespace ioer
                 _tabout(const ParamType& x) 
                 {
                     for (auto& xi : x) {
-                        io_base_obj.at(_path) << setw(_width) << setprecision(_precision) << xi;
+                        stream_io_mgr_sing.at(_path) << setw(_width) << setprecision(_precision) << xi;
                     }
                 }
 
@@ -189,7 +190,7 @@ namespace ioer
                 void _tabout(const ParamType& x, const Types& ... otherx) 
                 {
                     _tabout(x);
-                    if (_flush) io_base_obj.at(_path) << flush; 
+                    if (_flush) stream_io_mgr_sing.at(_path) << flush; 
                     _tabout(otherx ...);
                 }
 
@@ -219,7 +220,7 @@ namespace ioer
                 typename enable_if<is_fundamental<ParamType>::value, void>::type
                 _write(const ParamType& x)
                 {
-                    io_base_obj.at(_path).write
+                    stream_io_mgr_sing.at(_path).write
                         (reinterpret_cast<const char*>(&x), static_cast<streamsize>(sizeof(x)));
                 }
 
@@ -229,7 +230,7 @@ namespace ioer
                 {
                     using ValType = typename ParamType::value_type;
                     ValType tmp[] = {x.real(), x.imag()};
-                    io_base_obj.at(_path).write
+                    stream_io_mgr_sing.at(_path).write
                         (reinterpret_cast<const char*>(tmp), static_cast<streamsize>(2 * sizeof(ValType)));
                 }
 
@@ -239,7 +240,7 @@ namespace ioer
                 {
                     size_t N = 0;
                     while(x[N] != '\0') ++N;
-                    io_base_obj.at(_path).write
+                    stream_io_mgr_sing.at(_path).write
                         (reinterpret_cast<const char*>(&x), static_cast<streamsize>(N * sizeof(char)));
                 }
 
@@ -250,7 +251,7 @@ namespace ioer
                 void>::type
                     _write(const ParamType& x)
                     {
-                        io_base_obj.at(_path).write
+                        stream_io_mgr_sing.at(_path).write
                             (reinterpret_cast<const char*>(x.data()), static_cast<streamsize>(x.size() * sizeof(typename ParamType::value_type)));
                     }
 
@@ -262,7 +263,7 @@ namespace ioer
                 _write(const ParamType& x)
                 {
                     for(auto& it : x) {
-                        io_base_obj.at(_path).write
+                        stream_io_mgr_sing.at(_path).write
                             (reinterpret_cast<const char*>(&x), static_cast<streamsize>(sizeof(typename ParamType::value_type)));
                     }
                 }
@@ -283,7 +284,8 @@ namespace ioer
     }; // class output_t
 
     // -- non-class functions for standard output -- //
-    extern output_t STDOUT;
+    //extern output_t STDOUT;
+	static output_t STDOUT;
 
     inline void newline(void) 
     {

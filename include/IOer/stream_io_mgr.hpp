@@ -1,6 +1,8 @@
-#ifndef _IOER_IO_BASE_T_HPP
-#define _IOER_IO_BASE_T_HPP
-// module for ioer::io_base_t
+#ifndef _IOER_STREAM_IO_MGR_HPP
+#define _IOER_STREAM_IO_MGR_HPP
+// module for ioer::stream_io_mgr
+// stream I/O manager class
+// THIS IS A SINGLETON
 
 #include <string>
 #include <fstream>
@@ -9,27 +11,29 @@
 #include <unordered_map>
 #include "ioer_macros.hpp"
 #include "ioer_exceptions.hpp"
+#include "io_pathtracker.hpp"
 
 namespace ioer 
 {
 	using namespace std;
 	const string STDIO_PATH("");
 
-	class io_base_t 
+	class stream_io_mgr 
 	{
-		public:
-			io_base_t() = default;
+		private:
+			stream_io_mgr() = default;
 
-			io_base_t(const string& path, ios::openmode mode) noexcept
+		public:
+			~stream_io_mgr() = default;
+			static stream_io_mgr& getInstance() 
 			{
-				open(path, mode);	
+				static stream_io_mgr stream_io_mgr_singleton;
+				return stream_io_mgr_singleton;
 			}
 
-			virtual ~io_base_t() = default;
-
 			// no copy
-			io_base_t(const io_base_t& other) = delete;
-			io_base_t& operator=(const io_base_t& other) = delete;
+			stream_io_mgr(const stream_io_mgr& other) = delete;
+			stream_io_mgr& operator=(const stream_io_mgr& other) = delete;
 
 		public:
 			void open(const string& path, ios::openmode mode)
@@ -40,7 +44,7 @@ namespace ioer
 					_fpdict[path] = fstream(path, mode);
 					if (not _fpdict.at(path).is_open()){
 						ostringstream errmsg;
-						errmsg << "ioer::io_base_t::open : Unable to open file "
+						errmsg << "ioer::stream_io_mgr::open : Unable to open file "
 							<< path << ".";
 						throw FileNotOpenedError(errmsg.str());
 					}
@@ -77,7 +81,7 @@ namespace ioer
 						( (is_stdio(path) ? cout : _fpdict.at(path)) );
 				} catch(const out_of_range& e) {
 					ostringstream errmsg;
-					errmsg << "ioer::io_base_t::at : "
+					errmsg << "ioer::stream_io_mgr::at : "
 						<< path << " not opened.";
 					throw FileNotOpenedError(errmsg.str());
 				}
@@ -99,8 +103,8 @@ namespace ioer
 		protected:
 			unordered_map<string, fstream> _fpdict;
 
-	}; // class io_base_t
+	}; // class stream_io_mgr
 
 }; // namespace ioer
 
-#endif // _IOER_IO_BASE_T_HPP
+#endif // _IOER_STREAM_IO_MGR_HPP
