@@ -1,5 +1,6 @@
 # include & link
 INCLUDE_DIRECTORIES(include)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(ioer_test)

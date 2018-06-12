@@ -103,6 +103,7 @@ namespace type_traiter
                 || is_string<T>::value
                 || is_c_string<T>::value
                 || is_complex<T>::value
+                || is_enum<T>::value
                 || is_same<char*, typename remove_cv<T>::type>::value;
         };
 
