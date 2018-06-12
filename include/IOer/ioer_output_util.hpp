@@ -110,7 +110,7 @@ namespace ioer
                 _path = path;
             }
 
-            void close(void) noexcept
+            void close() noexcept
             {
                 stream_io_mgr_sing.close(_path);
                 _path = ioer::STDIO_PATH;

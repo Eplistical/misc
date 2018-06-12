@@ -16,10 +16,14 @@
 namespace ioer 
 {
 	using namespace std;
-	const string STDIO_PATH("");
+	const std::string STDIO_PATH("");
 
 	class stream_io_mgr 
 	{
+		public:
+			using path_type = std::string;
+			using file_type = std::fstream;
+
 		private:
 			stream_io_mgr() = default;
 
@@ -36,11 +40,12 @@ namespace ioer
 			stream_io_mgr& operator=(const stream_io_mgr& other) = delete;
 
 		public:
-			void open(const string& path, ios::openmode mode)
+			void open(const path_type& path, ios::openmode mode)
 			{
-				if (!path.empty()) {
+				if (not is_stdio(path)) {
 					if (path_exist(path))
 						return;
+					_io_pathtracker_sing.insert(path, file_specification::STREAM);
 					_fpdict[path] = fstream(path, mode);
 					if (not _fpdict.at(path).is_open()){
 						ostringstream errmsg;
@@ -51,14 +56,12 @@ namespace ioer
 				}
 			}
 
-			void close(const string& path) noexcept
+			void close(const path_type& path) noexcept
 			{
-				if (path != STDIO_PATH) {
-					auto it = _fpdict.find(path);
-					if (it != _fpdict.end()) {
-						it->second.close();
-						_fpdict.erase(it);
-					}
+				if (path_exist(path)) {
+					_fpdict.at(path).close();
+					_fpdict.erase(path);
+					_io_pathtracker_sing.erase(path);
 				}
 			}
 
@@ -68,13 +71,13 @@ namespace ioer
 				return _fpdict.size(); 
 			}
 
-			iostream& operator[](const string& path) 
+			iostream& operator[](const path_type& path) 
 			{
 				return static_cast<iostream&>
 					( (is_stdio(path) ? cout : _fpdict[path]) );
 			}
 
-			iostream& at(const string& path)
+			iostream& at(const path_type& path)
 			{
 				try {
 					return static_cast<iostream&>
@@ -88,20 +91,21 @@ namespace ioer
 			}
 
 
-		protected:
-			bool path_exist(const string& path) const noexcept
+		private:
+			bool path_exist(const path_type& path) const noexcept
 			{ 
 				return (_fpdict.find(path) != _fpdict.end()); 
 			}
 
-			bool is_stdio(const string& path) const noexcept
+			bool is_stdio(const path_type& path) const noexcept
 			{ 
 				return (path == ioer::STDIO_PATH); 
 			}
 
 
-		protected:
-			unordered_map<string, fstream> _fpdict;
+		private:
+			unordered_map<path_type, file_type> _fpdict;
+			io_pathtracker& _io_pathtracker_sing = io_pathtracker::getInstance();
 
 	}; // class stream_io_mgr
 

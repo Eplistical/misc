@@ -46,7 +46,7 @@ namespace ioer
 			}
 
 		public:
-			void insert(const std::string& path, const filetype& ftype) 
+			void insert(const std::string& path, const file_specification& ftype) 
 			{
 				if (not contains(path)) {
 					_pathdict.insert(std::make_pair(path, ftype));
@@ -72,7 +72,7 @@ namespace ioer
 				}
 			}
 
-			filetype ftype(const std::string& path) 
+			file_specification ftype(const std::string& path) 
 			{
 				try {
 					return _pathdict.at(path);
@@ -86,7 +86,7 @@ namespace ioer
 
 
 		private:
-			std::unordered_map<std::string, filetype> _pathdict;
+			std::unordered_map<std::string, file_specification> _pathdict;
 	};
 
 }; // ioer

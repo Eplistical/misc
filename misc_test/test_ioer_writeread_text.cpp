@@ -28,6 +28,9 @@ int main(int argc, char** argv){
 	input_t inp(".formatted_input.in", ios::in);
     inp.read_text();
 
+	info(inp.get_raw_text());
+
+
     string name;
     int age;
     double h, w, randnum;
@@ -45,5 +48,6 @@ int main(int argc, char** argv){
         ("random_number", randnum)
         ;
 
+	info(1);
     inp.close();
 }

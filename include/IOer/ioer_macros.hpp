@@ -8,7 +8,7 @@
 
 namespace ioer 
 {
-	enum class filetype {
+	enum class file_specification {
 		UNKNOWN,
 		STREAM,
 		HDF5
