@@ -10,7 +10,8 @@
 #include "ioer_macros.hpp"
 #include "ioer_exceptions.hpp"
 
-namespace ioer {
+namespace ioer 
+{
     using namespace std;
     const string STDIO_PATH("");
 
