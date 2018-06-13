@@ -12,8 +12,9 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
-#include <stdint.h>
-#include <limits.h>
+#include <cstdint>
+#include <limits>
+#include <random>
 #include "types.hpp"
 #include "type_traiter.hpp"
 #include "mpi.h"
@@ -257,6 +258,18 @@ namespace MPIer {
 		std::vector<UINT_T> mybatch = assign_job(Jobs);
 		return mybatch;
 	}
+
+	inline UINT_T assign_random_seed(UINT_T raw_seed = 0) noexcept
+	{
+		std::mt19937 rng(raw_seed);
+		std::uniform_int_distribution<UINT_T> dist(0, std::numeric_limits<UINT_T>::max());
+		UINT_T rst(raw_seed);
+		for (UINT_T i(0); i < rank; ++i) {
+			rst = dist(rng);
+		}
+		return rst;
+	}
+
 
 	// -- setup_sm -- //
 	VOID_T setup_sm(VOID_T) {
