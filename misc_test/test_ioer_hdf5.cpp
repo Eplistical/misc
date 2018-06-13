@@ -17,6 +17,9 @@ using namespace std;
 using namespace ioer;
 
 int main(int argc, char** argv){
+
+#ifdef IOER_WITH_HDF5
+
 	h5file_t h5f("1.hdf5", ios::out);
 	vector<double> v {1,2,3,4,5};
 	vector<int> w {6,7,8,9,10};
@@ -49,6 +52,8 @@ int main(int argc, char** argv){
 	info(das2);
 	info(das3);
 	info(das4);
+
+#endif
 
 	return 0;
 }
