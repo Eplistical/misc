@@ -19,7 +19,7 @@ namespace ioer
 	using namespace std;
 	using namespace type_traiter;
 
-	static const std::map<type_index, H5::DataType> h5_dtype_dict
+	static const map<type_index, H5::DataType> h5_dtype_dict
 		= {
 			{typeid(char), H5::PredType::NATIVE_CHAR},
 			{typeid(int), H5::PredType::NATIVE_INT},
@@ -37,7 +37,7 @@ namespace ioer
 		public:
 			using path_type = hdf5_io_mgr::path_type;
 			using file_type = hdf5_io_mgr::file_type;
-			using key_type = std::string;
+			using key_type = string;
 
 		public:
 			h5file_t(const string& path, ios::openmode mode)
@@ -65,7 +65,7 @@ namespace ioer
 
 		public:
 			template <typename DType>
-				void create_dataset(const key_type& ds_key, const std::vector<DType>& buf) {
+				void create_dataset(const key_type& ds_key, const vector<DType>& buf) {
 					if (not buf.empty()) {
 						hsize_t dim(buf.size());
 						H5::DataType dtype(getH5PredType(buf.at(0)));
@@ -76,16 +76,28 @@ namespace ioer
 				}
 
 			template <typename AType>
-				void create_attr(const key_type& ds_key, const key_type& attr_key, const AType& val) {
+				typename enable_if<is_arithmetic<AType>::value and
+										not is_c_string<AType>::value, void>::type
+				create_attr(const key_type& ds_key, const key_type& attr_key, const AType& val) {
 					H5::DataType dtype(getH5PredType(val));
 					H5::DataSpace dspace(H5S_SCALAR);
 					_hdf5_io_mgr_sing.at(_path).openDataSet(ds_key).createAttribute(attr_key, dtype, dspace).write(dtype, &val);
 				}
 
+			template <typename AType>
+				typename enable_if<is_string<AType>::value or
+										is_c_string<AType>::value, void>::type
+				create_attr(const key_type& ds_key, const key_type& attr_key, const AType& val) {
+					string buf(val);
+					H5::StrType dtype(PredType::C_S1, buf.size());
+					H5::DataSpace dspace(H5S_SCALAR);
+					_hdf5_io_mgr_sing.at(_path).openDataSet(ds_key).createAttribute(attr_key, dtype, dspace).write(dtype, buf);
+				}
+
 		public:
 			template <typename DType>
-				void read_dataset(const key_type& ds_key, std::vector<DType>& buf) {
-					static std::vector<hsize_t> dims;
+				void read_dataset(const key_type& ds_key, vector<DType>& buf) {
+					static vector<hsize_t> dims;
 					H5::DataSet ds = _hdf5_io_mgr_sing.at(_path).openDataSet(ds_key);
 					H5::DataSpace dataspace = ds.getSpace();
 					dims.resize(dataspace.getSimpleExtentNdims());
@@ -97,9 +109,20 @@ namespace ioer
 				}
 
 			template <typename AType>
-				void read_attr(const key_type& ds_key, const key_type& attr_key, AType& val) {
+				typename enable_if<is_arithmetic<AType>::value, void>::type
+				read_attr(const key_type& ds_key, const key_type& attr_key, AType& val) {
 					H5::DataType dtype(getH5PredType(val));
 					_hdf5_io_mgr_sing.at(_path).openDataSet(ds_key).openAttribute(attr_key).read(dtype, &val);
+				}
+
+			template <typename AType>
+				typename enable_if<is_string<AType>::value, void>::type
+				read_attr(const key_type& ds_key, const key_type& attr_key, AType& val) {
+					H5::Attribute attr = _hdf5_io_mgr_sing.at(_path).openDataSet(ds_key).openAttribute(attr_key);
+					H5::StrType dtype(PredType::C_S1, attr.getStorageSize());
+					H5std_string buf; 
+					attr.read(dtype, buf);
+					val = buf;
 				}
 
 		private:

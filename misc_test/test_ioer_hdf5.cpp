@@ -25,6 +25,7 @@ int main(int argc, char** argv){
 
 	h5f.create_attr("testd", "das1", 1);
 	h5f.create_attr("testd", "das2", 2.5);
+	h5f.create_attr("testd", "das3", "kasdfhs");
 	h5f.create_attr("testd", "das4", 'c');
 
 	h5f.close();
@@ -36,14 +37,17 @@ int main(int argc, char** argv){
 	h5g.read_dataset("testi", wr);
 	int das1;
 	double das2;
+	string das3;
 	char das4;
 	h5g.read_attr("testd", "das1", das1);
 	h5g.read_attr("testd", "das2", das2);
+	h5g.read_attr("testd", "das3", das3);
 	h5g.read_attr("testd", "das4", das4);
 	info(vr);
 	info(wr);
 	info(das1);
 	info(das2);
+	info(das3);
 	info(das4);
 
 	return 0;
