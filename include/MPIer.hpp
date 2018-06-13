@@ -261,6 +261,10 @@ namespace MPIer {
 
 	inline UINT_T assign_random_seed(UINT_T raw_seed = 0) noexcept
 	{
+		/**
+		 * return a random seed to each process
+		 * those seeds are generated from raw_seed
+		 */
 		std::mt19937 rng(raw_seed);
 		std::uniform_int_distribution<UINT_T> dist(0, std::numeric_limits<UINT_T>::max());
 		UINT_T rst(raw_seed);
