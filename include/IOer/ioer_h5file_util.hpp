@@ -4,6 +4,9 @@
  *
  * Gaohan
  */
+
+#ifdef IOER_WITH_HDF5
+
 #include <iostream>
 #include <vector>
 #include <cassert>
@@ -139,4 +142,6 @@ namespace ioer
 
 	}; // class h5file_t
 };
+
+#endif // ifdef IOER_WITH_HDF5
 #endif

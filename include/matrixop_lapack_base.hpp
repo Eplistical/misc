@@ -41,6 +41,7 @@ namespace matrixop {
 	static complex<double> ZERO_z(0.0, 0.0);
 
 	static complex<double> I_z(0.0, 1.0);
+
 };
 
 #endif // _MATRIXOP_LAPACK_BASE
