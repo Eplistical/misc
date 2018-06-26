@@ -49,7 +49,7 @@ namespace MPIer {
 	static BOOL_T sm_flag;
 
 	// -- init/finalize --//
-	inline VOID_T setup(VOID_T) 
+	inline VOID_T setup() 
 	{
 		MPI::Init();
 		size = MPI::COMM_WORLD.Get_size();
@@ -60,7 +60,7 @@ namespace MPIer {
 		sm_flag = false;
 	}
 
-	inline VOID_T finalize(VOID_T) 
+	inline VOID_T finalize() 
 	{
 		MPI::Finalize();
 	}
@@ -71,7 +71,7 @@ namespace MPIer {
 	}
 
 	// -- barrier -- //
-	inline VOID_T barrier(VOID_T) 
+	inline VOID_T barrier() 
 	{
 		MPI::COMM_WORLD.Barrier();
 	}
@@ -276,7 +276,7 @@ namespace MPIer {
 
 
 	// -- setup_sm -- //
-	VOID_T setup_sm(VOID_T) {
+	VOID_T setup_sm() {
 		if (!sm_flag) {
 			MPI_Comm_split_type(MPI::COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &comm_sm);
 			MPI_Comm_rank(comm_sm, &rank_sm);
