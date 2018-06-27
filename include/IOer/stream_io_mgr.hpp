@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <unordered_map>
+#include <memory>
 #include "ioer_macros.hpp"
 #include "ioer_exceptions.hpp"
 #include "io_pathtracker.hpp"
@@ -16,13 +17,13 @@
 namespace ioer 
 {
 	using namespace std;
-	const std::string STDIO_PATH("");
+	const string STDIO_PATH("");
 
 	class stream_io_mgr 
 	{
 		public:
-			using path_type = std::string;
-			using file_type = std::fstream;
+			using path_type = string;
+			using file_type = unique_ptr<fstream>;
 
 		private:
 			stream_io_mgr() = default;
@@ -46,8 +47,8 @@ namespace ioer
 					if (path_exist(path))
 						return;
 					_io_pathtracker_sing.insert(path, file_specification::STREAM);
-					_fpdict[path] = fstream(path, mode);
-					if (not _fpdict.at(path).is_open()){
+					_fpdict[path] = unique_ptr<fstream>(new fstream(path, mode));
+					if (not _fpdict.at(path)->is_open()){
 						ostringstream errmsg;
 						errmsg << "ioer::stream_io_mgr::open : Unable to open file "
 							<< path << ".";
@@ -59,7 +60,7 @@ namespace ioer
 			void close(const path_type& path) noexcept
 			{
 				if (path_exist(path)) {
-					_fpdict.at(path).close();
+					_fpdict.at(path)->close();
 					_fpdict.erase(path);
 					_io_pathtracker_sing.erase(path);
 				}
@@ -74,14 +75,14 @@ namespace ioer
 			iostream& operator[](const path_type& path) 
 			{
 				return static_cast<iostream&>
-					( (is_stdio(path) ? cout : _fpdict[path]) );
+					( (is_stdio(path) ? cout : *_fpdict[path]) );
 			}
 
 			iostream& at(const path_type& path)
 			{
 				try {
 					return static_cast<iostream&>
-						( (is_stdio(path) ? cout : _fpdict.at(path)) );
+						( (is_stdio(path) ? cout : *_fpdict.at(path)) );
 				} catch(const out_of_range& e) {
 					ostringstream errmsg;
 					errmsg << "ioer::stream_io_mgr::at : "
