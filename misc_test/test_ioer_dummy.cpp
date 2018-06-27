@@ -22,4 +22,5 @@ int main(int argc, char** argv){
 	complex<int> a(100, 200);
 	F1.write(a);
 	F1.close();
+	return 0;
 }
