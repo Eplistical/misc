@@ -39,7 +39,6 @@ namespace MPIer {
 			{typeid(UNSIGNED_T), MPI_UNSIGNED},
 			{typeid(UNSIGNED_LONG_T), MPI_UNSIGNED_LONG},
 			{typeid(UNSIGNED_LONG_LONG_T), MPI_UNSIGNED_LONG_LONG},
-			{typeid(LONG_T), MPI_LONG_T},
 			{typeid(DOUBLE_T), MPI_DOUBLE},
 		};
 	// MPI Windows
