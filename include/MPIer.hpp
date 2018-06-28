@@ -29,8 +29,17 @@ namespace MPIer {
 	static std::unordered_map<type_index, MPI_PREDIFINED_DATA_T> typemap
 		= { 
 			{typeid(CHAR_T), MPI_CHAR},
-			{typeid(INT_T), MPI_INT32_T},
-			{typeid(UINT_T), MPI_UINT32_T},
+			{typeid(INT_T), MPI_INT},
+			{typeid(INT32_T), MPI_INT32_T},
+			{typeid(INT64_T), MPI_INT64_T},
+			{typeid(LONG_T), MPI_LONG},
+			{typeid(LONG_LONG_T), MPI_LONG_LONG},
+			{typeid(UINT32_T), MPI_UINT32_T},
+			{typeid(UINT64_T), MPI_UINT64_T},
+			{typeid(UNSIGNED_T), MPI_UNSIGNED},
+			{typeid(UNSIGNED_LONG_T), MPI_UNSIGNED_LONG},
+			{typeid(UNSIGNED_LONG_LONG_T), MPI_UNSIGNED_LONG_LONG},
+			{typeid(LONG_T), MPI_LONG_T},
 			{typeid(DOUBLE_T), MPI_DOUBLE},
 		};
 	// MPI Windows
