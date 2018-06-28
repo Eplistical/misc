@@ -13,6 +13,7 @@
 #include <map>
 #include <utility>
 #include "../type_traiter.hpp"
+#include "../types.hpp"
 #include "ioer_macros.hpp"
 #include "ioer_exceptions.hpp"
 #include "hdf5_io_mgr.hpp"
@@ -24,15 +25,19 @@ namespace ioer
 
 	static const map<type_index, H5::DataType> h5_dtype_dict
 		= {
-			{typeid(char), H5::PredType::NATIVE_CHAR},
-			{typeid(int), H5::PredType::NATIVE_INT},
-			{typeid(unsigned int), H5::PredType::NATIVE_UINT},
-			{typeid(long), H5::PredType::NATIVE_LONG},
-			{typeid(long long), H5::PredType::NATIVE_LLONG},
-			{typeid(uint32_t), H5::PredType::NATIVE_INT32},
-			{typeid(uint64_t), H5::PredType::NATIVE_INT64},
-			{typeid(double), H5::PredType::NATIVE_DOUBLE},
-			{typeid(long double), H5::PredType::NATIVE_LDOUBLE}
+			{typeid(CHAR_T), H5::PredType::NATIVE_CHAR},
+			{typeid(INT_T), H5::PredType::NATIVE_INT},
+			{typeid(UNSIGNED_T), H5::PredType::NATIVE_UINT},
+			{typeid(INT32_T), H5::PredType::NATIVE_INT32},
+			{typeid(INT64_T), H5::PredType::NATIVE_INT64},
+			{typeid(UINT32_T), H5::PredType::NATIVE_UINT32},
+			{typeid(UINT64_T), H5::PredType::NATIVE_UINT64},
+			{typeid(LONG_T), H5::PredType::NATIVE_LONG},
+			{typeid(LONG_LONG_T), H5::PredType::NATIVE_LLONG},
+			{typeid(UNSIGNED_LONG_T), H5::PredType::NATIVE_ULONG},
+			{typeid(UNSIGNED_LONG_LONG_T), H5::PredType::NATIVE_ULLONG},
+			{typeid(DOUBLE_T), H5::PredType::NATIVE_DOUBLE},
+			{typeid(LONG_DOUBLE_T), H5::PredType::NATIVE_LDOUBLE}
 		};
 
 	class h5file_t 
