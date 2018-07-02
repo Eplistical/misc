@@ -65,9 +65,9 @@ namespace randomer {
 		return rst;
 	}
 
-	inline INT_T discrete(const std::vector<DOUBLE_T>& prob) noexcept {
-		// pick one number from 0 - N-1, according to probability prob
-		std::discrete_distribution<> dis(prob.begin(), prob.end());
+	inline INT_T discrete(const std::vector<DOUBLE_T>::iterator& begin, const std::vector<DOUBLE_T>::iterator& end) noexcept {
+		// pick one number from 0 - N-1, according to range [*begin, *end]
+		std::discrete_distribution<> dis(begin, end);
 		return dis(gen);
 	}
 
