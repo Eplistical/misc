@@ -132,27 +132,31 @@ namespace ioer
             }
 
             // -- info -- //
-            template<typename ParamType>
-                typename enable_if< is_direct_outputable<ParamType>::value, void>::type
-                _info(const ParamType& x) 
-                {
-                    stream_io_mgr_sing.at(_path) << x;
-                }
-
-            template<typename ParamType>
-                typename enable_if< is_sequence_container<ParamType>::value, void>::type
-                _info(const ParamType& x) 
+            template<typename ParamType, typename enable_if< is_sequence_container<ParamType>::value, int>::type = 0>
+                void _info_helper(const ParamType& x, int) 
                 {
                     for (auto& xi : x) {
                         stream_io_mgr_sing.at(_path) << xi << " ";
                     }
                 }
 
+            template<typename ParamType>
+                void _info_helper(const ParamType& x, ...) 
+                {
+                    stream_io_mgr_sing.at(_path) << x;
+                }
+
+            template<typename ParamType>
+                void _info(const ParamType& x) 
+                {
+                    _info_helper(x, 0);
+                    if (_flush) stream_io_mgr_sing.at(_path) << flush; 
+                }
+
             template<typename ParamType, typename ... Types>
                 void _info(const ParamType& x, const Types& ... otherx) 
                 {
-                    _info(x);
-                    if (_flush) stream_io_mgr_sing.at(_path) << flush; 
+					_info(x);
                     _info(otherx ...);
                 }
 
@@ -170,27 +174,31 @@ namespace ioer
                 }
 
             // -- tabout -- //
-            template<typename ParamType>
-                typename enable_if< is_direct_outputable<ParamType>::value, void>::type
-                _tabout(const ParamType& x) 
-                {
-                    stream_io_mgr_sing.at(_path) << setw(_width) << setprecision(_precision) << x;
-                }
-
-            template<typename ParamType>
-                typename enable_if< is_sequence_container<ParamType>::value, void>::type
-                _tabout(const ParamType& x) 
+            template<typename ParamType, typename enable_if< is_sequence_container<ParamType>::value, int>::type = 0>
+                void _tabout_helper(const ParamType& x, int) 
                 {
                     for (auto& xi : x) {
                         stream_io_mgr_sing.at(_path) << setw(_width) << setprecision(_precision) << xi;
                     }
                 }
 
+            template<typename ParamType>
+                void _tabout_helper(const ParamType& x, ...) 
+                {
+                    stream_io_mgr_sing.at(_path) << setw(_width) << setprecision(_precision) << x;
+                }
+
+            template<typename ParamType>
+                void _tabout(const ParamType& x) 
+                {
+                    _tabout_helper(x, 0);
+                    if (_flush) stream_io_mgr_sing.at(_path) << flush; 
+                }
+
             template<typename ParamType, typename ... Types>
                 void _tabout(const ParamType& x, const Types& ... otherx) 
                 {
                     _tabout(x);
-                    if (_flush) stream_io_mgr_sing.at(_path) << flush; 
                     _tabout(otherx ...);
                 }
 
