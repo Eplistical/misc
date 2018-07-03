@@ -1,8 +1,8 @@
 # misc
 
-* Some important helper headers
+* Some useful helpers
 
-* C++11 is required. (To be specific, GCC 5 is necessary to compile the package!)
+* C++11 is required. 
 
 To install:
 ```
