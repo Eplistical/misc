@@ -17,64 +17,65 @@
 
 namespace randomer {
 	static std::random_device ran_dev;
-	static std::mt19937 gen(ran_dev());
+	static std::mt19937 rng(ran_dev());
 
-	inline VOID_T seed(std::mt19937::result_type val = gen.default_seed) noexcept {
-		gen.seed(val);
+	inline VOID_T seed(std::mt19937::result_type val = rng.default_seed) noexcept {
+		rng.seed(val);
 	}
 
 	inline INT_T randint(INT_T lb = 0, INT_T ub = 100) noexcept {
 		std::uniform_int_distribution<> dis(lb, ub);
-		return dis(gen);
+		return dis(rng);
 	}
 
 	inline std::vector<INT_T> vrandint(UINT_T N, INT_T lb = 0, INT_T ub = 100) noexcept {
 		std::uniform_int_distribution<> dis(lb, ub);
 		std::vector<INT_T> rst(N);
 		for(UINT_T j = 0; j < N; ++j) {
-			rst[j] = dis(gen);
+			rst[j] = dis(rng);
 		}
 		return rst;
     }
 
 	inline DOUBLE_T rand(DOUBLE_T lb = 0.0, DOUBLE_T ub = 1.0) noexcept {
 		std::uniform_real_distribution<> dis(lb, ub);
-		return dis(gen);
+		return dis(rng);
 	}
 
 	inline std::vector<DOUBLE_T> vrand(UINT_T N, DOUBLE_T lb = 0.0, DOUBLE_T ub = 1.0) noexcept {
 		std::uniform_real_distribution<> dis(lb, ub);
 		std::vector<DOUBLE_T> rst(N);
 		for(UINT_T j = 0; j < N; ++j) {
-			rst[j] = dis(gen);
+			rst[j] = dis(rng);
 		}
 		return rst;
 	}
 
 	inline DOUBLE_T normal(DOUBLE_T mu = 0.0, DOUBLE_T sigma = 1.0) noexcept {
 		std::normal_distribution<DOUBLE_T> dis(mu, sigma);
-		return dis(gen);
+		return dis(rng);
 	}
 
 	inline std::vector<DOUBLE_T> vnormal(UINT_T N, DOUBLE_T mu = 0.0, DOUBLE_T sigma = 1.0) noexcept {
 		std::normal_distribution<DOUBLE_T> dis(mu, sigma);
 		std::vector<DOUBLE_T> rst(N);
 		for(UINT_T j = 0; j < N; ++j) {
-			rst[j] = dis(gen);
+			rst[j] = dis(rng);
 		}
 		return rst;
 	}
 
-	inline INT_T discrete(const std::vector<DOUBLE_T>::iterator& begin, const std::vector<DOUBLE_T>::iterator& end) noexcept {
+	template <typename InputIterator>
+	inline INT_T discrete(const InputIterator& begin, const InputIterator& end) noexcept {
 		// pick one number from 0 - N-1, according to range [*begin, *end]
 		std::discrete_distribution<> dis(begin, end);
-		return dis(gen);
+		return dis(rng);
 	}
 
     inline INT_T choice(INT_T N) noexcept {
         // randomly pick one number from 0 to N-1
         std::uniform_int_distribution<> dis(0, N - 1);
-        return dis(gen);
+        return dis(rng);
     }
 
     template <typename ElementType>
@@ -89,7 +90,7 @@ namespace randomer {
 		std::unordered_set<INT_T> record;
 		if (2 * m <= N) {
 			while (record.size() < m) {
-				record.insert(dis(gen));
+				record.insert(dis(rng));
 			}
 			std::vector<INT_T> rst(record.begin(), record.end());
 			return rst;
@@ -97,7 +98,7 @@ namespace randomer {
 		else {
 			m = N - m;
 			while (record.size() < m) {
-				record.insert(dis(gen));
+				record.insert(dis(rng));
 			}
 			m = N - m;
 			std::vector<INT_T> rst(m);
@@ -108,7 +109,7 @@ namespace randomer {
 					++j;
 				}
 			}
-			std::shuffle(rst.begin(), rst.end(), gen);
+			std::shuffle(rst.begin(), rst.end(), rng);
 			return rst;
 		}
 	}
@@ -125,7 +126,7 @@ namespace randomer {
 
 			INT_T j(0);
 			while (j < Npick) {
-				INT_T tmp(dis(gen));
+				INT_T tmp(dis(rng));
 				if (!record.test(tmp)) {
 					record.set(tmp);
 					++j;
@@ -140,7 +141,7 @@ namespace randomer {
 					++j;
 				}
 			}
-			std::shuffle(rst.begin(), rst.end(), gen);
+			std::shuffle(rst.begin(), rst.end(), rng);
 			return rst;
 		}
 	}
@@ -165,9 +166,9 @@ namespace randomer {
 			return rst;
         }
 
-	// dim-dimensional maxwell distribution of velocisties for N particles
 	template<size_t dim = 3>
 		inline std::vector<double> maxwell_dist(double mass, double kT, size_t N = 1)
+		// dim-dimensional maxwell distribution of velocisties for N particles
 		{
 			return vnormal(N * dim, 0.0, std::sqrt(kT / mass));
 		}
