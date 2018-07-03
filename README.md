@@ -14,7 +14,7 @@ To install:
  
  cd build
  
- cmake -DCMAKE_INSTALL_PREFIX=<install_prefix> .. 
+ cmake -DCMAKE_INSTALL_PREFIX=<install_prefix> <-DWITH_HDF5=1> .. 
  
  make
  
