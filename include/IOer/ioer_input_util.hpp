@@ -57,17 +57,8 @@ namespace ioer
 			// utilities
 
 			// -- binary input -- //
-			template<typename ParamType>
-				typename enable_if<is_fundamental<ParamType>::value, void>::type
-				_read(ParamType& x)
-				{
-					stream_io_mgr_sing.at(_path).read
-						(reinterpret_cast<char*>(&x), static_cast<std::streamsize>(sizeof(x)));
-				}
-
-			template<typename ParamType>
-				typename enable_if<is_complex<ParamType>::value, void>::type
-				_read(ParamType& x)
+			template<typename ParamType, typename enable_if<is_complex<ParamType>::value, int>::type = 0>
+				void _read_helper(ParamType& x, int)
 				{
 					using ValType = typename ParamType::value_type;
 					ValType tmp[2];
@@ -77,28 +68,36 @@ namespace ioer
 					x.imag(tmp[1]);
 				}
 
-			template<typename ParamType>
-				typename enable_if<	is_array_container<ParamType>::value ||
-				is_vector<ParamType>::value ||
-				is_string<ParamType>::value,
-				void>::type
-					_read(ParamType& x)
+			template<typename ParamType,
+				typename enable_if<	is_array_container<ParamType>::value || is_vector<ParamType>::value || is_string<ParamType>::value, int>::type = 0>
+					void _read_helper(ParamType& x, int)
 					{
 						stream_io_mgr_sing.at(_path).read
 							(reinterpret_cast<char*>(&x[0]), static_cast<std::streamsize>(x.size() * sizeof(typename ParamType::value_type)));
 					}
 
-			template<typename ParamType>
-				typename enable_if<	is_deque<ParamType>::value ||
-				is_forward_list<ParamType>::value ||
-				is_list<ParamType>::value
-				, void>::type
-				_read(ParamType& x)
+			template<typename ParamType,
+				typename enable_if<	is_deque<ParamType>::value || is_forward_list<ParamType>::value || is_list<ParamType>::value, int>::type = 0>
+					void _read_helper(ParamType& x, int)
 				{
 					for(auto& it : x) {
 						stream_io_mgr_sing.at(_path).read
 							(reinterpret_cast<char*>(&x), static_cast<std::streamsize>(sizeof(typename ParamType::value_type)));
 					}
+				}
+
+			template<typename ParamType>
+				void _read_helper(ParamType& x, ...)
+				{
+					stream_io_mgr_sing.at(_path).read
+						(reinterpret_cast<char*>(&x), static_cast<std::streamsize>(sizeof(x)));
+				}
+
+
+			template<typename ParamType>
+				void _read(ParamType& x) 
+				{
+					_read_helper(x, 0);
 				}
 
 			template<typename ParamType, typename ... Types>

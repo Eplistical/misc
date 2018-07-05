@@ -224,17 +224,8 @@ namespace ioer
                 }
 
             // -- binary output -- //
-            template<typename ParamType>
-                typename enable_if<is_fundamental<ParamType>::value, void>::type
-                _write(const ParamType& x)
-                {
-                    stream_io_mgr_sing.at(_path).write
-                        (reinterpret_cast<const char*>(&x), static_cast<streamsize>(sizeof(x)));
-                }
-
-            template<typename ParamType>
-                typename enable_if<is_complex<ParamType>::value, void>::type
-                _write(const ParamType& x)
+            template<typename ParamType, typename enable_if<is_complex<ParamType>::value, int>::type = 0>
+                void _write_helper(const ParamType& x, int)
                 {
                     using ValType = typename ParamType::value_type;
                     ValType tmp[] = {x.real(), x.imag()};
@@ -242,9 +233,8 @@ namespace ioer
                         (reinterpret_cast<const char*>(tmp), static_cast<streamsize>(2 * sizeof(ValType)));
                 }
 
-            template<typename ParamType>
-                typename enable_if<is_c_string<ParamType>::value, void>::type
-                _write(const ParamType& x)
+            template<typename ParamType, typename enable_if<is_c_string<ParamType>::value, int>::type = 0>
+                void _write_helper(const ParamType& x, int)
                 {
                     size_t N = 0;
                     while(x[N] != '\0') ++N;
@@ -252,23 +242,17 @@ namespace ioer
                         (reinterpret_cast<const char*>(&x), static_cast<streamsize>(N * sizeof(char)));
                 }
 
-            template<typename ParamType>
-                typename enable_if<	is_array_container<ParamType>::value ||
-                is_vector<ParamType>::value ||
-                is_string<ParamType>::value,
-                void>::type
-                    _write(const ParamType& x)
+            template<typename ParamType, 
+				typename enable_if< is_array_container<ParamType>::value || is_vector<ParamType>::value || is_string<ParamType>::value, int>::type = 0>
+                    void _write_helper(const ParamType& x, int)
                     {
                         stream_io_mgr_sing.at(_path).write
                             (reinterpret_cast<const char*>(x.data()), static_cast<streamsize>(x.size() * sizeof(typename ParamType::value_type)));
                     }
 
-            template<typename ParamType>
-                typename enable_if<	is_deque<ParamType>::value ||
-                is_forward_list<ParamType>::value ||
-                is_list<ParamType>::value
-                , void>::type
-                _write(const ParamType& x)
+            template<typename ParamType,
+                typename enable_if<	is_deque<ParamType>::value || is_forward_list<ParamType>::value || is_list<ParamType>::value, int>::type = 0>
+					void _write_helper(const ParamType& x, int)
                 {
                     for(auto& it : x) {
                         stream_io_mgr_sing.at(_path).write
@@ -276,6 +260,19 @@ namespace ioer
                     }
                 }
 
+            template<typename ParamType>
+                void _write_helper(const ParamType& x, ...)
+                {
+                    stream_io_mgr_sing.at(_path).write
+                        (reinterpret_cast<const char*>(&x), static_cast<streamsize>(sizeof(x)));
+                }
+
+
+            template<typename ParamType>
+                void _write(const ParamType& x) 
+                {
+                    _write_helper(x, 0);
+                }
 
             template<typename ParamType, typename ... Types>
                 void _write(const ParamType& x, const Types& ... otherx) 

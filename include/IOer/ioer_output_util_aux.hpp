@@ -110,20 +110,20 @@ namespace ioer
         typename enable_if< is_sequence_container<ValType>::value,
                  const _pair_output_functor_t& >::type
         _pair_output_functor_t::operator()(const KeyType& key, const ValType& val) const
-        {
-            iostream& dest = stream_io_mgr_sing.at(_path);
-            if(_keyfirst) {
-                dest <<  setw(_width) << setprecision(_precision) << key << _dlm;
-                for(auto& it : val) dest <<  setw(_width) << setprecision(_precision) << it;
-            }
-            else{
-                for(auto& it : val) dest <<  setw(_width) << setprecision(_precision) << it;
-                dest <<  _dlm << setw(_width) << setprecision(_precision) << key ;
-            }
-            if(!_nonewline) dest <<  "\n";
-            if (_flush) dest << flush;
-            return *this;
-        }
+			{
+				iostream& dest = stream_io_mgr_sing.at(_path);
+				if(_keyfirst) {
+					dest <<  setw(_width) << setprecision(_precision) << key << _dlm;
+					for(auto& it : val) dest <<  setw(_width) << setprecision(_precision) << it;
+				}
+				else{
+					for(auto& it : val) dest <<  setw(_width) << setprecision(_precision) << it;
+					dest <<  _dlm << setw(_width) << setprecision(_precision) << key ;
+				}
+				if(!_nonewline) dest <<  "\n";
+				if (_flush) dest << flush;
+				return *this;
+			}
 
     /*****************************************************************************/
 
