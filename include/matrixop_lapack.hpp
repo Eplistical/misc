@@ -436,9 +436,8 @@ namespace matrixop {
 		 *  param begin: begin position
 		 *  param len: length of the vector of interest, if -1 then v1.size()
 		 */
-		int inc(1);
 		int N((len == -1) ? v1.size() : len);
-		return ddot_(&N, &v1[begin], &inc, &v2[begin], &inc);
+		return ddot_(&N, &v1[begin], &ONE_i, &v2[begin], &ONE_i);
 	}
 
 
@@ -453,13 +452,50 @@ namespace matrixop {
 		 *  param begin: begin position
 		 *  param len: length of the vector of interest, if -1 then v1.size()
 		 */
-		int inc(1);
 		int N((len == -1) ? v1.size() : len);
 		complex<double> rst;
-		//zdotc(&rst, &N, &v1[begin], &inc, &v2[begin], &inc);
-		//return rst;
-		return zdotc_(&N, &v1[begin], &inc, &v2[begin], &inc);
+		return zdotc_(&N, &v1[begin], &ONE_i, &v2[begin], &ONE_i);
 	}
+
+
+    // --- inverse --- //
+
+
+    inline void inv(vector<double>& Mat) 
+    {
+        // inplace inverse
+        const int N(static_cast<int>(sqrt(Mat.size())));
+        vector<int> ipiv(N);
+        int info(0);
+
+        dgetrf_(&N, &N, &Mat[0], &N, &ipiv[0], &info);
+
+        vector<double> work(1);
+        int lwork(-1);
+        dgetri_(&N, &Mat[0], &N, &ipiv[0], &work[0], &lwork, &info);
+
+        lwork = work[0];
+        work.resize(lwork);
+        dgetri_(&N, &Mat[0], &N, &ipiv[0], &work[0], &lwork, &info);
+    }
+
+    inline void inv(vector< complex<double> >& Mat) 
+    {
+        // inplace inverse
+        const int N(static_cast<int>(sqrt(Mat.size())));
+        vector<int> ipiv(N);
+        int info(0);
+
+        zgetrf_(&N, &N, &Mat[0], &N, &ipiv[0], &info);
+
+        vector< complex<double> > work(1);
+        int lwork(-1);
+        zgetri_(&N, &Mat[0], &N, &ipiv[0], &work[0], &lwork, &info);
+
+        lwork = work[0].real();
+        work.resize(lwork);
+        zgetri_(&N, &Mat[0], &N, &ipiv[0], &work[0], &lwork, &info);
+    }
 
 
 	// --- more advanced functions --- //
