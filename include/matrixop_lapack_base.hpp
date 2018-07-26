@@ -12,6 +12,16 @@ namespace matrixop {
 	using std::vector;
 	using std::conj;
 
+	const static int ONE_i(1);
+	const static double ONE_d(1.0);
+	const static complex<double> ONE_z(1.0, 0.0);
+
+	const static int ZERO_i(0);
+	const static double ZERO_d(0.0);
+	const static complex<double> ZERO_z(0.0, 0.0);
+
+	const static complex<double> I_z(0.0, 1.0);
+
 	extern "C" {
 		extern void dgemv_(const char*, const int*, const int*, const double*, const double*, const int*, const double*, const int*, const double*, double*, const int*);
 		extern void zgemv_(const char*, const int*, const int*, const complex<double>*, const complex<double>*, const int*, const complex<double>*, const int*, const complex<double>*, complex<double>*, const int*);
@@ -35,16 +45,6 @@ namespace matrixop {
 
 		bool f08pnf_(const complex<double>* p) { return true; }
 	};
-
-	static int ONE_i(1);
-	static double ONE_d(1.0);
-	static complex<double> ONE_z(1.0, 0.0);
-
-	static int ZERO_i(0);
-	static double ZERO_d(0.0);
-	static complex<double> ZERO_z(0.0, 0.0);
-
-	static complex<double> I_z(0.0, 1.0);
 
 };
 

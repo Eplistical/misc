@@ -28,7 +28,7 @@ namespace matrixop {
 			for (int i(0); i < N; ++i) {
 				for (int j(0); j < N; ++j) {
 					if ((i == j and std::abs(Mat[i + j * N] - 1.0) > threash) or
-							(i != j and std::abs(Mat[i + j * N]) > threash))
+							(i != j and std::abs(Mat[i + j * N]) > threash)) 
 						return false;
 				}
 			}
@@ -583,19 +583,19 @@ namespace matrixop {
 		static vector< complex<double> > vs;
 		static vector<double> rwork;
 		static bool bwork[1];
-		int lwork, info;
+		int lwork, sdim, info;
 		w.resize(N);
 		vs.resize(N * N);
 		rwork.resize(N);
 
 		lwork = -1;
 		work.resize(1);
-		zgees_("V", "N", f08pnf_, &N, &A[0], &N, &ZERO_i, 
+		zgees_("V", "N", f08pnf_, &N, &A[0], &N, &sdim, 
 				&w[0], &vs[0], &N, &work[0], &lwork, &rwork[0], &bwork[0], &info);
 
 		lwork = static_cast<int>(work[0].real());
 		work.resize(lwork);
-		zgees_("V", "N", f08pnf_, &N, &A[0], &N, &ZERO_i, 
+		zgees_("V", "N", f08pnf_, &N, &A[0], &N, &sdim, 
 				&w[0], &vs[0], &N, &work[0], &lwork, &rwork[0], &bwork[0], &info);
 		// construct diagonal unitary matrix logD (stored in A)
 		for (int i(0); i < N; ++i) {
