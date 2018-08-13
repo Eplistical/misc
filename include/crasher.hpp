@@ -22,7 +22,7 @@ namespace misc{
             }
 
         template <typename ExceptType = std::runtime_error>
-            inline void assert(BOOL_T condition, const STRING_T& info, ioer::output_t& out = ioer::STDOUT) 
+            inline void confirm(BOOL_T condition, const STRING_T& info, ioer::output_t& out = ioer::STDOUT) 
             {
                 crash<ExceptType>((not condition), info, out);
             }

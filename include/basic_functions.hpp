@@ -2,3 +2,4 @@
 #include "positive_mod.hpp"
 #include "fermi.hpp"
 #include "lorentian.hpp"
+#include "fmtstring.hpp"
