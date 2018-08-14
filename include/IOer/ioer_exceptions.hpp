@@ -3,12 +3,12 @@
 // module for ioer exceptions
 
 #include <string>
-#include <exception>
+#include <stdexcept>
 
 namespace ioer
 {
     // Exceptions
-    class IOError : std::exception
+    class IOError : public std::exception
     {
         protected:
             std::string _title;
