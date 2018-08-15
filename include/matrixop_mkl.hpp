@@ -671,7 +671,6 @@ namespace matrixop {
 		static vector< complex<double> > work;
 		static vector< complex<double> > vs;
 		static vector<double> rwork;
-		static int bwork[1];
 		int lwork, info, SDIM(0);
 		w.resize(N);
 		vs.resize(N * N);
@@ -680,12 +679,12 @@ namespace matrixop {
 		lwork = -1;
 		work.resize(1);
 		zgees("V", "N", nullptr, &N, &A[0], &N, &SDIM, 
-				&w[0], &vs[0], &N, &work[0], &lwork, &rwork[0], &bwork[0], &info);
+				&w[0], &vs[0], &N, &work[0], &lwork, &rwork[0], nullptr, &info);
 
 		lwork = static_cast<int>(work[0].real());
 		work.resize(lwork);
 		zgees("V", "N", nullptr, &N, &A[0], &N, &SDIM, 
-				&w[0], &vs[0], &N, &work[0], &lwork, &rwork[0], &bwork[0], &info);
+				&w[0], &vs[0], &N, &work[0], &lwork, &rwork[0], nullptr, &info);
 		// construct diagonal unitary matrix logD (stored in A)
 		for (int i(0); i < N; ++i) {
 			for (int j(0); j < N; ++j) {
@@ -697,7 +696,7 @@ namespace matrixop {
 		A = matmat(vs, matmat(A, adjoint(vs, N, N), N), N);
 		// convert to double
 		vector<double>rst(N * N);
-		for (int i; i < rst.size(); ++i) {
+		for (int i(0); i < rst.size(); ++i) {
 			rst[i] = A[i].real();
 		}
 		return rst;
