@@ -42,8 +42,6 @@ namespace matrixop {
 		extern complex<double> zdotc_(int*, const complex<double>*, const int*, const complex<double>*, const int*);
 
 		extern void zgees_(const char*, const char*, bool (const complex<double>*), const int*, complex<double>*, const int*, int*, complex<double>*, complex<double>*, const int*, complex<double>*, const int*, double*, bool*, int* );
-
-		bool f08pnf_(const complex<double>* p) { return true; }
 	};
 
 };

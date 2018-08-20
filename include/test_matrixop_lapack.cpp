@@ -3,6 +3,7 @@
 #include "ioer.hpp"
 #include "vector.hpp"
 #include "matrixop_lapack.hpp"
+#include "matrixop_lapack.hpp"
 
 using namespace std;
 
@@ -39,6 +40,14 @@ int main(int argc, char** argv) {
 
     vector<double> M2CMs = matrixop::matCmat(M2, Ms, 3);
     assert(close_enough(M2CMs, vector<double> {5,40,12,65,11,96}));
+
+
+    // mlog
+    vector<double> Mmlog {0.8, 0.6, -0.6, 0.8};
+    ioer::info(Mmlog);
+    ioer::info(matrixop::mlog(Mmlog, 2));
+
+
 
     return 0;
 }

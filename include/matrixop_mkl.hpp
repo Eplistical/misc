@@ -24,10 +24,6 @@ namespace matrixop {
     using std::move;
     using std::swap;
 
-	extern "C" {
-		int f08pnf_(const complex<double>* p) { return 1; }
-	};
-
     // --- multiplication for matrix / vectors --- //
 
     inline vector<double> scalvec(
