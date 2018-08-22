@@ -2,9 +2,10 @@
 #define _LABEL_INDEX_CONVERTER_HPP
 /* class to convert between label indice (vector) and number index (scalar)
 */
-#include <cassert>
 #include <vector>
+#include <stdexcept>
 #include "types.hpp"
+#include "crasher.hpp"
 
 namespace misc {
 
@@ -44,14 +45,14 @@ namespace misc {
             INT_T label_to_index(const std::vector<INT_T>& label) const {
                 INT_T index(0);
                 for (INT_T i(0); i < dim_; ++i) {
-                    assert(label[i] < N_per_row_[i]);
+					crasher::confirm<std::out_of_range>(label[i] < N_per_row_[i], "label_to_index: label outflow");
                     index += label[i] * factors[i];
                 }
                 return index;
             }
 
             std::vector<INT_T> index_to_label(INT_T index) const {
-                assert(index < maxindex_);
+				crasher::confirm<std::out_of_range>(index < maxindex_, "index_to_label: index outflow");
                 std::vector<INT_T> label(dim_);
                 for (INT_T i(dim_ - 1); i >= 0; --i) {
                     label[i] = index / factors[i];
