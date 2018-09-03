@@ -170,7 +170,7 @@ namespace MPIer {
 	
 
 	// -- isend -- //
-	inline VOID_T isend(INT_T to, Request& req){  }
+	inline VOID_T isend(INT_T to, Request& req) {  }
 
 	template<typename ParamType>
 		inline typename enable_if<is_fundamental<ParamType>::value && (!is_bool<ParamType>::value), VOID_T>::type
@@ -213,7 +213,7 @@ namespace MPIer {
 		}
 
 	// -- irecv -- //
-	inline VOID_T irecv(INT_T from){  }
+	inline VOID_T irecv(INT_T from, Request& req) {  }
 
 	template<typename ParamType>
 		inline typename enable_if<is_fundamental<ParamType>::value && (!is_bool<ParamType>::value), VOID_T>::type
