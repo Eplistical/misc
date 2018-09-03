@@ -23,6 +23,9 @@ namespace MPIer {
 	using namespace std;
 	using namespace type_traiter;
 
+	// types
+	using Request = MPI::Request;
+
 	// -- vars -- //
 	// normal type -> MPI TYPE mapping
 	using MPI_PREDIFINED_DATA_T = decltype(MPI_INT);
@@ -48,6 +51,7 @@ namespace MPIer {
 	static INT_T size;
 	static INT_T rank;
 	static BOOL_T master;
+	const static Request REQUEST_NULL = MPI::REQUEST_NULL;
 
 	// shared-memory communicator variable
 	static MPI_Comm comm_sm;
@@ -164,6 +168,95 @@ namespace MPIer {
 			recv(from, otherx ...);
 		}
 	
+
+	// -- isend -- //
+	inline VOID_T isend(INT_T to, Request& req){  }
+
+	template<typename ParamType>
+		inline typename enable_if<is_fundamental<ParamType>::value && (!is_bool<ParamType>::value), VOID_T>::type
+		isend(INT_T to, ParamType& x, Request& req)
+		{
+			INT_T tag = rank; // default tag: rank of from thread
+			req = MPI::COMM_WORLD.Isend(&x, 1, typemap[typeid(ParamType)], to, tag);
+		}
+
+	template<typename ParamType>
+		inline typename enable_if<is_bool<ParamType>::value, VOID_T>::type
+		isend(INT_T to, ParamType& x, Request& req)
+		{
+			INT_T tag = rank; // default tag: rank of from thread
+			INT_T tmp = static_cast<INT_T>(x);
+			req = MPI::COMM_WORLD.Isend(&tmp, 1, typemap[typeid(INT_T)], to, tag);
+		}
+
+	template<typename ParamType>
+		inline typename enable_if<is_vector<ParamType>::value || is_string<ParamType>::value, VOID_T>::type
+		isend(INT_T to, ParamType& x, Request& req)
+		{
+			INT_T tag = rank; // default tag: rank of from thread
+			UINT_T _size = x.size();
+			req = MPI::COMM_WORLD.Isend(&_size, 1, typemap[typeid(UINT_T)], to, tag);
+			req.Wait();
+			if (_size != 0) {
+				req = MPI::COMM_WORLD.Isend(&x[0], x.size(), typemap[typeid(typename ParamType::value_type)], to, tag);
+			}
+			else {
+				req = REQUEST_NULL;
+			}
+		}
+
+	template<typename ParamType, typename ... Types>
+		inline VOID_T isend(INT_T to, ParamType& x, Request& req, Types& ... otherx)
+		{
+			isend(to, x, req);
+			isend(to, otherx ...);
+		}
+
+	// -- irecv -- //
+	inline VOID_T irecv(INT_T from){  }
+
+	template<typename ParamType>
+		inline typename enable_if<is_fundamental<ParamType>::value && (!is_bool<ParamType>::value), VOID_T>::type
+		irecv(INT_T from, ParamType& x, Request& req)
+		{
+			INT_T tag = from; // default tag: rank of from thread
+			req = MPI::COMM_WORLD.Irecv(&x, 1, typemap[typeid(ParamType)], from, tag);
+		}
+
+	template<typename ParamType>
+		inline typename enable_if<is_bool<ParamType>::value, VOID_T>::type
+		irecv(INT_T from, ParamType& x, Request& req) 
+		{
+			INT_T tag = from; // default tag: rank of from thread
+			INT_T tmp;
+			req = MPI::COMM_WORLD.Irecv(&tmp, 1, typemap[typeid(INT_T)], from, tag);
+			x = static_cast<BOOL_T>(tmp);
+		}
+
+	template<typename ParamType>
+		inline typename enable_if<is_vector<ParamType>::value || is_string<ParamType>::value, VOID_T>::type
+		irecv(INT_T from, ParamType& x, Request& req)
+		{
+			INT_T tag = from; // default tag: rank of from thread
+			UINT_T _size;
+			req = MPI::COMM_WORLD.Irecv(&_size, 1, typemap[typeid(UINT_T)], from, tag);
+			req.Wait();
+			x.resize(_size);
+			if (_size != 0) {
+				req = MPI::COMM_WORLD.Irecv(&x[0], x.size(), typemap[typeid(typename ParamType::value_type)], from, tag);
+			}
+			else {
+				req = REQUEST_NULL;
+			}
+		}
+
+	template<typename ParamType, typename ... Types>
+		inline VOID_T irecv(INT_T from, ParamType& x, Request& req, Types& ... otherx)
+		{
+			irecv(from, x, req);
+			irecv(from, otherx ...);
+		}
+	
 	
 	// -- bcast -- //
 	inline VOID_T bcast(INT_T root){  }
@@ -203,15 +296,16 @@ namespace MPIer {
 
 
 	// -- utilities -- //
-	inline std::vector<UINT_T> assign_job_start_and_num(UINT_T Njob)
+	template <typename T>
+	inline std::vector<T> assign_job_start_and_num(T Njob)
 	{
 		/**
 		 * given a total Njobs
 		 * return a vector {StartJobIndex, JobNumber} for current process
 		 */
-		UINT_T quotient = Njob / size;
-		UINT_T remainder = Njob % size;
-		std::vector<UINT_T> rst(2);
+		T quotient = Njob / size;
+		T remainder = Njob % size;
+		std::vector<T> rst(2);
 		if (rank < remainder) {
 			rst[0] = (quotient + 1) * rank;
 			rst[1] = quotient + 1;
@@ -230,41 +324,41 @@ namespace MPIer {
 		 * given a vector of all jobs,
 		 * return a vector of jobs for current process
 		 */
-		std::vector<UINT_T> mybatch = assign_job_start_and_num(Jobs.size());
+		std::vector<T> mybatch = assign_job_start_and_num(static_cast<T>(Jobs.size()));
 		return std::vector<T>(Jobs.begin() + mybatch[0], Jobs.begin() + mybatch[0] + mybatch[1]);
 	}
 
-	inline std::vector<UINT_T> assign_job(UINT_T Njob)
+	template<typename T>
+	inline std::vector<T> assign_job(T Njob)
 	{
 		/**
 		 * given total # of jobs
 		 * return a vector continuous job indices
 		 */
-		vector<UINT_T> Jobs(Njob);
+		vector<T> Jobs(Njob);
 		if (master) {
-			for (UINT_T i = 0; i < Jobs.size(); ++i) 
+			for (T i = 0; i < static_cast<T>(Jobs.size()); ++i) 
 				Jobs[i] = i;
 		}
 		bcast(0, Jobs);
-		std::vector<UINT_T> mybatch = assign_job(Jobs);
-		return mybatch;
+		return assign_job(Jobs);
 	}
 
-	inline std::vector<UINT_T> assign_job_random(UINT_T Njob)
+	template<typename T>
+	inline std::vector<T> assign_job_random(T Njob)
 	{
 		/**
 		 * given total # of jobs
 		 * return a vector of random job indices
 		 */
-		vector<UINT_T> Jobs(Njob);
+		vector<T> Jobs(Njob);
 		if (master) {
-			for (UINT_T i = 0; i < Jobs.size(); ++i) 
+			for (T i = 0; i < static_cast<T>(Jobs.size()); ++i) 
 				Jobs[i] = i;
 			std::random_shuffle(Jobs.begin(), Jobs.end()); 
 		}
 		bcast(0, Jobs);
-		std::vector<UINT_T> mybatch = assign_job(Jobs);
-		return mybatch;
+		return assign_job(Jobs);
 	}
 
 	inline UINT_T assign_random_seed(UINT_T raw_seed = 0) noexcept
