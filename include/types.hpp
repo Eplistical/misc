@@ -25,7 +25,8 @@ using FLOAT_T = float;
 using DOUBLE_T = double;
 using LONG_DOUBLE_T = long double;
 using STRING_T = std::string;
+using COMPLEX_FLOAT_T = std::complex<float>;
+using COMPLEX_DOUBLE_T = std::complex<double>;
 using COMPLEX_T = std::complex<double>;
-
 
 #endif
