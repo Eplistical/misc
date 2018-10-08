@@ -58,22 +58,22 @@ namespace matrixop {
     // interfaces
     inline STYPE nrm2(const vector<STYPE>& V) 
     { 
-        return _nrm2(&V[0], V.size());
+        return _nrm2(&V[0], static_cast<ITYPE>(V.size()));
     }
 
     inline DTYPE nrm2(const vector<DTYPE>& V) 
     { 
-        return _nrm2(&V[0], V.size());
+        return _nrm2(&V[0], static_cast<ITYPE>(V.size()));
     }
 
     inline STYPE nrm2(const vector<CTYPE>& V) 
     { 
-        return _nrm2(&V[0], V.size());
+        return _nrm2(&V[0], static_cast<ITYPE>(V.size()));
     }
 
     inline DTYPE nrm2(const vector<ZTYPE>& V) 
     { 
-        return _nrm2(&V[0], V.size());
+        return _nrm2(&V[0], static_cast<ITYPE>(V.size()));
     }
 
     inline STYPE nrm(const vector<STYPE>& V) 

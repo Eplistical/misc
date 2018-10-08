@@ -78,12 +78,12 @@ namespace matrixop {
     // interfaces
     template<typename T>
         inline T dot(const vector<T>& V, const vector<T>& W) {
-            return _dot(V, W, V.size());
+            return _dot(&V[0], &W[0], static_cast<ITYPE>(V.size()));
         }
 
     template<typename T>
         inline T dotc(const vector<T>& V, const vector<T>& W) {
-            return _dotc(V, W, V.size());
+            return _dotc(&V[0], &W[0], static_cast<ITYPE>(V.size()));
         }
 
 };
