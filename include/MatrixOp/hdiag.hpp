@@ -26,7 +26,7 @@ namespace matrixop {
 	using std::vector;
 
     // single
-	VOID hdiag_(const vector<STYPE>& A, vector<STYPE>& eva, vector<STYPE>& evt, CNST_CHAR jobz)
+	VOID _hdiag(const vector<STYPE>& A, vector<STYPE>& eva, vector<STYPE>& evt, CNST_CHAR jobz)
 	{
 		MATRIXOP_STATIC vector<STYPE> work;
 		MATRIXOP_STATIC vector<ITYPE> iwork;
@@ -60,7 +60,7 @@ namespace matrixop {
 	}
 
     // double
-	VOID hdiag_(const vector<DTYPE>& A, vector<DTYPE>& eva, vector<DTYPE>& evt, CNST_CHAR jobz)
+	VOID _hdiag(const vector<DTYPE>& A, vector<DTYPE>& eva, vector<DTYPE>& evt, CNST_CHAR jobz)
 	{
 		MATRIXOP_STATIC vector<DTYPE> work;
 		MATRIXOP_STATIC vector<ITYPE> iwork;
@@ -96,7 +96,7 @@ namespace matrixop {
 	}
 
     // complex
-    VOID hdiag_(const vector<CTYPE>& A, vector<STYPE>& eva, vector<CTYPE>& evt, CNST_CHAR jobz)
+    VOID _hdiag(const vector<CTYPE>& A, vector<STYPE>& eva, vector<CTYPE>& evt, CNST_CHAR jobz)
 	{
 		MATRIXOP_STATIC vector<CTYPE> work;
 		MATRIXOP_STATIC vector<STYPE> rwork;
@@ -136,7 +136,7 @@ namespace matrixop {
 	}
 
     // complex*16
-    VOID hdiag_(const vector<ZTYPE>& A, vector<DTYPE>& eva, vector<ZTYPE>& evt, CNST_CHAR jobz)
+    VOID _hdiag(const vector<ZTYPE>& A, vector<DTYPE>& eva, vector<ZTYPE>& evt, CNST_CHAR jobz)
 	{
 		MATRIXOP_STATIC vector<ZTYPE> work(1);
 		MATRIXOP_STATIC vector<DTYPE> rwork(1);
@@ -179,7 +179,7 @@ namespace matrixop {
     template <typename MatType, typename EvaType>
         VOID hdiag(const MatType& A, EvaType& eva, MatType& evt)
         {
-            hdiag_(A, eva, evt, CHARV);
+            _hdiag(A, eva, evt, CHARV);
         }
 
     template <typename MatType, typename EvaType>
@@ -187,7 +187,7 @@ namespace matrixop {
         {
 		    MATRIXOP_STATIC MatType evt;
 
-            hdiag_(A, eva, evt, CHARN);
+            _hdiag(A, eva, evt, CHARN);
         }
 
 };

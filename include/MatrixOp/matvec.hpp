@@ -6,8 +6,8 @@
  *
  *  function for matrix-vector multiplication
  *
- * 	param   A:  matrix
- * 	param   V:  vector
+ * 	param   A:  matrix (M*N)
+ * 	param   V:  vector (N)
  *
  */
 
@@ -19,61 +19,45 @@ namespace matrixop {
 	using std::vector;
 
     // single
-	vector<STYPE> matvec_(const vector<STYPE>& A, const vector<STYPE>& V)
+	inline VOID _matvec(CNST_STYPE* A, CNST_STYPE* V, CNST_ITYPE M, CNST_ITYPE N, STYPE* rst)
 	{
-        CNST_ITYPE N(static_cast<ITYPE>(V.size()));
-        CNST_ITYPE M(static_cast<ITYPE>(A.size() / N));
-		vector<STYPE> rst(N);
-
         SGEMV(&CHARN, &M, &N, &ONES, 
-                &A[0], &M, &V[0], &ONEI,
-                &ZEROS, &rst[0], &ONEI);
-		return rst;
+                A, &M, V, &ONEI,
+                &ZEROS, rst, &ONEI);
 	}
 
     // double
-	vector<DTYPE> matvec_(const vector<DTYPE>& A, const vector<DTYPE>& V)
+	inline VOID _matvec(CNST_DTYPE* A, CNST_DTYPE* V, CNST_ITYPE M, CNST_ITYPE N, DTYPE* rst)
 	{
-        CNST_ITYPE N(static_cast<ITYPE>(V.size()));
-        CNST_ITYPE M(static_cast<ITYPE>(A.size() / N));
-		vector<DTYPE> rst(N);
-
         DGEMV(&CHARN, &M, &N, &ONED, 
-                &A[0], &M, &V[0], &ONEI,
-                &ZEROD, &rst[0], &ONEI);
-		return rst;
+                A, &M, V, &ONEI,
+                &ZEROD, rst, &ONEI);
 	}
 
     // complex
-	vector<CTYPE> matvec_(const vector<CTYPE>& A, const vector<CTYPE>& V)
+	inline VOID _matvec(CNST_CTYPE* A, CNST_CTYPE* V, CNST_ITYPE M, CNST_ITYPE N, CTYPE* rst)
 	{
-        CNST_ITYPE N(static_cast<ITYPE>(V.size()));
-        CNST_ITYPE M(static_cast<ITYPE>(A.size() / N));
-		vector<CTYPE> rst(N);
-
         CGEMV(&CHARN, &M, &N, &ONEC, 
-                &A[0], &M, &V[0], &ONEI,
-                &ZEROC, &rst[0], &ONEI);
-		return rst;
+                A, &M, V, &ONEI,
+                &ZEROC, rst, &ONEI);
 	}
 
     // complex*16
-	vector<ZTYPE> matvec_(const vector<ZTYPE>& A, const vector<ZTYPE>& V)
+	inline VOID _matvec(CNST_ZTYPE* A, CNST_ZTYPE* V, CNST_ITYPE M, CNST_ITYPE N, ZTYPE* rst)
 	{
-        CNST_ITYPE N(static_cast<ITYPE>(V.size()));
-        CNST_ITYPE M(static_cast<ITYPE>(A.size() / N));
-		vector<ZTYPE> rst(N);
-
         ZGEMV(&CHARN, &M, &N, &ONEZ, 
-                &A[0], &M, &V[0], &ONEI,
-                &ZEROZ, &rst[0], &ONEI);
-		return rst;
+                A, &M, V, &ONEI,
+                &ZEROZ, rst, &ONEI);
 	}
 
     // interfaces
     template<typename T>
         vector<T> matvec(const vector<T>& A, const vector<T>& V) {
-            return matvec_(A, V);
+            CNST_ITYPE N(static_cast<ITYPE>(V.size()));
+            CNST_ITYPE M(static_cast<ITYPE>(A.size() / N));
+            vector<T> rst(N * M);
+            _matvec(&A[0], &V[0], M, N, &rst[0]);
+            return rst;
         }
 };
 

@@ -22,61 +22,45 @@ namespace matrixop {
 	using std::vector;
 
     // single
-	vector<STYPE> matmat_(const vector<STYPE>& A, const vector<STYPE>& B, CNST_ITYPE K)
+	inline VOID _matmat(CNST_STYPE* A, CNST_STYPE* B, CNST_ITYPE M, CNST_ITYPE K, CNST_ITYPE N, STYPE* rst)
 	{
-        CNST_ITYPE M(static_cast<ITYPE>(A.size() / K));
-        CNST_ITYPE N(static_cast<ITYPE>(B.size() / K));
-		vector<STYPE> rst(N * M);
-
         SGEMM(&CHARN, &CHARN, &M, &N, &K, &ONES, 
-                &A[0], &M, &B[0], &K, 
-                &ZEROS, &rst[0], &M);
-		return rst;
+                A, &M, B, &K, 
+                &ZEROS, rst, &M);
 	}
 
     // double
-	vector<DTYPE> matmat_(const vector<DTYPE>& A, const vector<DTYPE>& B, CNST_ITYPE K)
+	inline VOID _matmat(CNST_DTYPE* A, CNST_DTYPE* B, CNST_ITYPE M, CNST_ITYPE K, CNST_ITYPE N, DTYPE* rst)
 	{
-        CNST_ITYPE M(static_cast<ITYPE>(A.size() / K));
-        CNST_ITYPE N(static_cast<ITYPE>(B.size() / K));
-		vector<DTYPE> rst(N * M);
-
         DGEMM(&CHARN, &CHARN, &M, &N, &K, &ONED, 
-                &A[0], &M, &B[0], &K, 
-                &ZEROD, &rst[0], &M);
-		return rst;
+                A, &M, B, &K, 
+                &ZEROD, rst, &M);
 	}
 
     // complex
-	vector<CTYPE> matmat_(const vector<CTYPE>& A, const vector<CTYPE>& B, CNST_ITYPE K)
+	inline VOID _matmat(CNST_CTYPE* A, CNST_CTYPE* B, CNST_ITYPE M, CNST_ITYPE K, CNST_ITYPE N, CTYPE* rst)
 	{
-        CNST_ITYPE M(static_cast<ITYPE>(A.size() / K));
-        CNST_ITYPE N(static_cast<ITYPE>(B.size() / K));
-		vector<CTYPE> rst(N * M);
-
         CGEMM(&CHARN, &CHARN, &M, &N, &K, &ONEC, 
-                &A[0], &M, &B[0], &K, 
-                &ZEROC, &rst[0], &M);
-		return rst;
+                A, &M, B, &K, 
+                &ZEROC, rst, &M);
 	}
 
     // complex*16
-	vector<ZTYPE> matmat_(const vector<ZTYPE>& A, const vector<ZTYPE>& B, CNST_ITYPE K)
+	inline VOID _matmat(CNST_ZTYPE* A, CNST_ZTYPE* B, CNST_ITYPE M, CNST_ITYPE K, CNST_ITYPE N, ZTYPE* rst)
 	{
-        CNST_ITYPE M(static_cast<ITYPE>(A.size() / K));
-        CNST_ITYPE N(static_cast<ITYPE>(B.size() / K));
-		vector<ZTYPE> rst(N * M);
-
         ZGEMM(&CHARN, &CHARN, &M, &N, &K, &ONEZ, 
-                &A[0], &M, &B[0], &K, 
-                &ZEROZ, &rst[0], &M);
-		return rst;
+                A, &M, B, &K, 
+                &ZEROZ, rst, &M);
 	}
 
     // interfaces
     template<typename T>
         vector<T> matmat(const vector<T>& A, const vector<T>& B, CNST_ITYPE K) {
-            return matmat_(A, B, K);
+            CNST_ITYPE M(static_cast<ITYPE>(A.size() / K));
+            CNST_ITYPE N(static_cast<ITYPE>(B.size() / K));
+            vector<T> rst(N * M);
+            _matmat(&A[0], &B[0], M, K, N, &rst[0]);
+            return rst;
         }
 };
 
