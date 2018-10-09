@@ -116,9 +116,9 @@ namespace matrixop {
     // complex*16
 	VOID _hdiag(ZTYPE* A, DTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
 	{
-		MATRIXOP_STATIC vector<ZTYPE> work(1);
-		MATRIXOP_STATIC vector<DTYPE> rwork(1);
-		MATRIXOP_STATIC vector<ITYPE> iwork(1);
+		MATRIXOP_STATIC vector<ZTYPE> work;
+		MATRIXOP_STATIC vector<DTYPE> rwork;
+		MATRIXOP_STATIC vector<ITYPE> iwork;
 
 		ITYPE lwork(-1), liwork(-1), lrwork(-1), info(-1);
         work.resize(1);
@@ -156,7 +156,7 @@ namespace matrixop {
     template <typename T1, typename T2>
         VOID hdiag(const vector<T1>& A, vector<T2>& eva)
         {
-		    MATRIXOP_STATIC vector<T1> evt(1);
+		    MATRIXOP_STATIC vector<T1> evt;
 
             CNST_ITYPE N(static_cast<ITYPE>(sqrt(A.size())));
 		    eva.resize(N);
