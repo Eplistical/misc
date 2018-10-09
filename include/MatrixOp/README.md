@@ -1,10 +1,12 @@
 # MatrixOP
 
-* Matrix operation functions
+* Useful linear algebra functions for matrices & vectors, headers only
 
-* C++11 is required. 
+* Most functions are BLAS/Lapack subroutine wrappers, external BLAS/LAPACK libraray required
 
-* Mainly BLAS/Lapack subroutine wrapper, provide interfaces that connect C++ vectors & BLAS/LAPACK subroutines
+* Provide interfaces that connect C++ vectors & BLAS/LAPACK subroutines
 
 * Compatible with intel MKL, OpenBLAS, Netlib BLAS/Lapack, etc
+
+* C++11 is required. 
 
