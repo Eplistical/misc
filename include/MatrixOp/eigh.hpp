@@ -1,8 +1,8 @@
-#ifndef _MATRIXOP_HDIAG_HPP
-#define _MATRIXOP_HDIAG_HPP
+#ifndef _MATRIXOP_EIGH_HPP
+#define _MATRIXOP_EIGH_HPP
 
 /*  
- *  matrixop::hdiag(A, eva, [evt])
+ *  matrixop::eigh(A, eva, [evt])  matrixop::hdiag(A, eva, [evt])
  *
  *  function for diaganalizing a Hermitian matrix A
  *
@@ -16,7 +16,7 @@
  *
  ****************************************
  *
- *  matrixop::hdiag_inplace(A, eva)
+ *  matrixop::eigh_inplace(A, eva)  matrixop::hdiag_inplace(A, eva)
  *
  *  function for inplace diaganalizing a Hermitian matrix A
  *
@@ -42,7 +42,7 @@ namespace matrixop {
 	using std::vector;
 
     // single
-	VOID _hdiag(STYPE* A, STYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
+	VOID _eigh(STYPE* A, STYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
 	{
 		MATRIXOP_STATIC vector<STYPE> work;
 		MATRIXOP_STATIC vector<ITYPE> iwork;
@@ -64,7 +64,7 @@ namespace matrixop {
 	}
 
     // double
-	VOID _hdiag(DTYPE* A, DTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
+	VOID _eigh(DTYPE* A, DTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
 	{
 		MATRIXOP_STATIC vector<DTYPE> work;
 		MATRIXOP_STATIC vector<ITYPE> iwork;
@@ -86,7 +86,7 @@ namespace matrixop {
 	}
 
     // complex
-	VOID _hdiag(CTYPE* A, STYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
+	VOID _eigh(CTYPE* A, STYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
 	{
 		MATRIXOP_STATIC vector<CTYPE> work;
 		MATRIXOP_STATIC vector<STYPE> rwork;
@@ -114,7 +114,7 @@ namespace matrixop {
 	}
 
     // complex*16
-	VOID _hdiag(ZTYPE* A, DTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
+	VOID _eigh(ZTYPE* A, DTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
 	{
 		MATRIXOP_STATIC vector<ZTYPE> work;
 		MATRIXOP_STATIC vector<DTYPE> rwork;
@@ -143,18 +143,24 @@ namespace matrixop {
 
     // interfaces
     template <typename T1, typename T2>
-        VOID hdiag(const vector<T1>& A, vector<T2>& eva, vector<T1>& evt)
+        VOID eigh(const vector<T1>& A, vector<T2>& eva, vector<T1>& evt)
         {
             CNST_ITYPE N(static_cast<ITYPE>(sqrt(A.size())));
 		    eva.resize(N);
             evt.resize(A.size());
             copy(A.begin(), A.end(), evt.begin());
 
-            _hdiag(&evt[0], &eva[0], N, CHARV);
+            _eigh(&evt[0], &eva[0], N, CHARV);
         }
 
     template <typename T1, typename T2>
-        VOID hdiag(const vector<T1>& A, vector<T2>& eva)
+        VOID hdiag(const vector<T1>& A, vector<T2>& eva, vector<T1>& evt)
+        {
+            eigh(A, eva, evt);
+        }
+
+    template <typename T1, typename T2>
+        VOID eigh(const vector<T1>& A, vector<T2>& eva)
         {
 		    MATRIXOP_STATIC vector<T1> evt;
 
@@ -163,17 +169,29 @@ namespace matrixop {
             evt.resize(A.size());
             copy(A.begin(), A.end(), evt.begin());
 
-            _hdiag(&evt[0], &eva[0], N, CHARN);
+            _eigh(&evt[0], &eva[0], N, CHARN);
+        }
+
+    template <typename T1, typename T2>
+        VOID hdiag(const vector<T1>& A, vector<T2>& eva)
+        {
+            eigh(A, eva);
+        }
+
+    template <typename T1, typename T2>
+        VOID eigh_inplace(vector<T1>& A, vector<T2>& eva)
+        {
+            CNST_ITYPE N(static_cast<ITYPE>(sqrt(A.size())));
+		    eva.resize(N);
+            _eigh(&A[0], &eva[0], N, CHARV);
         }
 
     template <typename T1, typename T2>
         VOID hdiag_inplace(vector<T1>& A, vector<T2>& eva)
         {
-            CNST_ITYPE N(static_cast<ITYPE>(sqrt(A.size())));
-		    eva.resize(N);
-            _hdiag(&A[0], &eva[0], N, CHARV);
+            eigh_inplace(A, eva);
         }
 
 };
 
-#endif // _MATRIXOP_HDIAG_HPP
+#endif // _MATRIXOP_EIGH_HPP

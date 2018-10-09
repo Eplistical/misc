@@ -2,7 +2,7 @@
 #define _MATRIXOP_ADJOINT_HPP
 
 /*  
- *  matrixop::transpose(A, M)
+ *  matrixop::transpose(A, M)  matrixop::trans(A, M)
  *
  *  function for caluclating matrix transpose
  *
@@ -13,7 +13,7 @@
  *
  ****************************************
  *
- *  matrixop::adjoint(A, M)
+ *  matrixop::adjoint(A, M)  matrixop::adj(A, M)
  *
  *  function for caluclating matrix adjoint
  *
@@ -31,6 +31,7 @@
 
 namespace matrixop {
 	using std::vector;
+	using std::forward;
 	using std::complex;
 	using std::conj;
 
@@ -76,9 +77,19 @@ namespace matrixop {
         }
 
     template<typename T>
-        inline vector<T> transpose(const vector<T>& A, CNST_ITYPE M) {
+        inline vector<T> trans(const vector<T>& A, CNST_ITYPE M) {
+            return transpose(A, M);
+        }
+
+    template<typename T>
+        inline vector<T> adjoint(const vector<T>& A, CNST_ITYPE M) {
             CNST_ITYPE N(static_cast<ITYPE>(A.size() / M));
             return _adjoint(A, M, N);
+        }
+
+    template<typename T>
+        inline vector<T> adj(const vector<T>& A, CNST_ITYPE M) {
+            return adjoint(A, M);
         }
 
 };

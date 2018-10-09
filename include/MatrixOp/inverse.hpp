@@ -1,10 +1,10 @@
-#ifndef _MATRIXOP_INV_HPP
-#define _MATRIXOP_INV_HPP
+#ifndef _MATRIXOP_INVERSE_HPP
+#define _MATRIXOP_INVERSE_HPP
 
 /*  
- *  matrixop::inv(A)
+ *  matrixop::inverse(A)  matrixop::inv(A)
  *
- *  function for inversing a matrix A
+ *  function for inverseersing a matrix A
  *
  *
  * 	param   A:  matrix A (N*N)
@@ -13,9 +13,9 @@
  *
  ****************************************
  *
- *  matrixop::inv_inplace(A)
+ *  matrixop::inverse_inplace(A)  martixop::inv_inplace(A)
  *
- *  function for inversing a matrix A inplace
+ *  function for inverseersing a matrix A inplace
  *
  *
  * 	param   A:  matrix A (N*N)
@@ -34,7 +34,7 @@ namespace matrixop {
 	using std::vector;
 
     // single
-    VOID _inv(STYPE* A, CNST_ITYPE N) 
+    VOID _inverse(STYPE* A, CNST_ITYPE N) 
     {
         MATRIXOP_STATIC vector<ITYPE> ipiv;
         MATRIXOP_STATIC vector<STYPE> work;
@@ -53,7 +53,7 @@ namespace matrixop {
     }
 
     // double
-    VOID _inv(DTYPE* A, CNST_ITYPE N) 
+    VOID _inverse(DTYPE* A, CNST_ITYPE N) 
     {
         MATRIXOP_STATIC vector<ITYPE> ipiv;
         MATRIXOP_STATIC vector<DTYPE> work;
@@ -72,7 +72,7 @@ namespace matrixop {
     }
 
     // complex
-    VOID _inv(CTYPE* A, CNST_ITYPE N) 
+    VOID _inverse(CTYPE* A, CNST_ITYPE N) 
     {
         MATRIXOP_STATIC vector<ITYPE> ipiv;
         MATRIXOP_STATIC vector<CTYPE> work;
@@ -91,7 +91,7 @@ namespace matrixop {
     }
 
     // complex*16
-    VOID _inv(ZTYPE* A, CNST_ITYPE N) 
+    VOID _inverse(ZTYPE* A, CNST_ITYPE N) 
     {
         MATRIXOP_STATIC vector<ITYPE> ipiv;
         MATRIXOP_STATIC vector<ZTYPE> work;
@@ -111,19 +111,32 @@ namespace matrixop {
 
     // interfaces
     template <typename T>
+        inline vector<T> inverse(const vector<T>& A)
+        {
+            MATRIXOP_STATIC vector<T> rst;
+            rst.assign(A.begin(), A.end());
+            _inverse(&rst[0], static_cast<ITYPE>(sqrt(rst.size())));
+            return rst;
+        }
+
+    template <typename T>
         inline vector<T> inv(const vector<T>& A)
         {
-            vector<T> rst(A);
-            _inv(&rst[0], static_cast<ITYPE>(sqrt(A.size())));
-            return rst;
+            return inverse(A)
+        }
+
+
+    template <typename T>
+        inline VOID inverse_inplace(vector<T>& A)
+        {
+            _inverse(&A[0], static_cast<ITYPE>(sqrt(A.size())));
         }
 
     template <typename T>
         inline VOID inv_inplace(vector<T>& A)
         {
-            _inv(&A[0], static_cast<ITYPE>(sqrt(A.size())));
+            inverse_inplace(A);
         }
-
 };
 
-#endif // _MATRIXOP_INV_HPP
+#endif // _MATRIXOP_INVERSE_HPP
