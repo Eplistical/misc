@@ -122,7 +122,7 @@ namespace matrixop {
     template <typename T>
         inline vector<T> inv(const vector<T>& A)
         {
-            return inverse(A)
+            return inverse(A);
         }
 
 
