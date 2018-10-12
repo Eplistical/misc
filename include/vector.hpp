@@ -152,6 +152,7 @@ auto operator/(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a
 
 // vector utilities
 
+// element-wise operations
 template <typename T>
 std::vector<T> abs(const std::vector<T>& v)
 {
@@ -159,6 +160,16 @@ std::vector<T> abs(const std::vector<T>& v)
     std::vector<T> rst(N);
     for(SIZE_T j = 0; j < N; j++) 
 		rst[j] = std::abs(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> sqrt(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::sqrt(v[j]) ;
     return rst;
 }
 
@@ -183,10 +194,116 @@ std::vector<T> exp(const std::vector<T>& v)
 }
 
 template <typename T>
-std::vector<T> subvec(const std::vector<T>& v, SIZE_T start, SIZE_T N)
+std::vector<T> log(const std::vector<T>& v)
 {
-    return std::vector<T>(&v.at(start), &v.at(start + N));
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::log(v[j]) ;
+    return rst;
 }
+
+template <typename T>
+std::vector<T> log10(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::log10(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> sin(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::sin(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> cos(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::cos(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> tan(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::tan(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> asin(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::asin(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> acos(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::acos(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> atan(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::atan(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> sinh(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::sinh(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> cosh(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::cosh(v[j]) ;
+    return rst;
+}
+
+template <typename T>
+std::vector<T> tanh(const std::vector<T>& v)
+{
+    const SIZE_T N = v.size();
+    std::vector<T> rst(N);
+    for(SIZE_T j = 0; j < N; j++) 
+		rst[j] = std::tanh(v[j]) ;
+    return rst;
+}
+
+// collective operations
 
 template <typename T>
 T sum(const std::vector<T>& v)
@@ -217,14 +334,18 @@ T product(const std::vector<T>& v)
 template <typename T>
 T norm(const std::vector<T>& v)
 {
-    return std::sqrt(sum(v * v));
+	T rst = 0.0;
+    const SIZE_T N = v.size();
+	for(SIZE_T j = 0;j < N;j++)
+		rst += v[j] * v[j];
+    return std::sqrt(rst);
 }
 
 template <typename T>
 T min(const std::vector<T>& v)
 {
     const SIZE_T N = v.size();
-    T rst = v.at(0);
+    T rst = v[0];
     for(INT_T j = 1;j < N;j++)
         rst = (v[j] < rst)?v[j]:rst;
     return rst;
@@ -234,11 +355,20 @@ template <typename T>
 T max(const std::vector<T>& v)
 {
     const SIZE_T N = v.size();
-    T rst = v.at(0);
+    T rst = v[0];
     for(INT_T j = 1;j < N;j++)
         rst = (v[j] > rst)?v[j]:rst;
     return rst;
 }
+
+// others
+
+template <typename T>
+std::vector<T> subvec(const std::vector<T>& v, SIZE_T start, SIZE_T N)
+{
+    return std::vector<T>(v.begin() + start, v.begin() + start + N);
+}
+
 
 std::vector<DOUBLE_T> linspace(DOUBLE_T xmin, DOUBLE_T xmax, SIZE_T Nx, BOOL_T endpoint = true) 
 {
@@ -269,6 +399,24 @@ template <typename T>
 std::vector<T> arange(T end) 
 {
 	return arange(static_cast<T>(0), end);
+}
+
+
+template <typename T>
+void meshgrid(const std::vector<T>& X, const std::vector<T>& Y, std::vector<T>& meshX, std::vector<T>& meshY) 
+{
+	const SIZE_T Nx(X.size());
+	const SIZE_T Ny(Y.size());
+
+	meshX.resize(Nx * Ny);
+	meshY.resize(Nx * Ny);
+
+	for (SIZE_T j(0); j < Nx; ++j) {
+		for (SIZE_T k(0); k < Ny; ++k) {
+			meshX[k + j * Ny] = X[j];
+			meshY[k + j * Ny] = Y[k];
+		}
+	}
 }
 
 #endif
