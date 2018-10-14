@@ -498,7 +498,7 @@ T mean(const std::vector<T>& v)
 }
 
 template <typename T>
-T product(const std::vector<T>& v)
+T prod(const std::vector<T>& v)
 {
 	// return v[0] * v[1] * ... * v[N-1]
     T rst = static_cast<T>(1);
@@ -541,7 +541,7 @@ T max(const std::vector<T>& v)
     return rst;
 }
 
-// others
+// other utilities
 
 template <typename T>
 std::vector<T> subvec(const std::vector<T>& v, SIZE_T start, SIZE_T N)
@@ -580,11 +580,24 @@ subvec(const std::vector<T>& v, const std::vector<T1>& idx)
 }
 
 
-std::vector<DOUBLE_T> linspace(DOUBLE_T xmin, DOUBLE_T xmax, SIZE_T Nx, BOOL_T endpoint = true) 
+template <typename T> 
+std::vector<T> linspace(const T& xmin, const T& xmax, SIZE_T Nx, BOOL_T endpoint = true) 
 {
-	// see matlab linspace
-	std::vector<DOUBLE_T> x(Nx, 0.0);
-	const DOUBLE_T dx(endpoint ? (xmax - xmin) / (Nx - 1) : (xmax - xmin) / Nx);
+	// see numpy linspace
+	std::vector<T> x(Nx);
+	const T dx(endpoint ? (xmax - xmin) / (Nx - 1) : (xmax - xmin) / Nx);
+	for (SIZE_T j(0); j < Nx; ++j) {
+		x[j] = xmin + j * dx;
+	}
+	return x;
+}
+
+template <typename T> 
+std::vector<T> linspace(const T& xmin, const T& xmax, SIZE_T Nx, T& dx, BOOL_T endpoint = true) 
+{
+	// see numpy linspace, dx requested 
+	std::vector<T> x(Nx);
+	dx = (endpoint ? (xmax - xmin) / (Nx - 1) : (xmax - xmin) / Nx);
 	for (SIZE_T j(0); j < Nx; ++j) {
 		x[j] = xmin + j * dx;
 	}
