@@ -135,7 +135,7 @@ namespace ioer
             template<typename ParamType, typename enable_if< is_sequence_container<ParamType>::value, int>::type = 0>
                 void _info_helper(const ParamType& x, int) 
                 {
-                    for (auto& xi : x) {
+                    for (const auto& xi : x) {
                         stream_io_mgr_sing.at(_path) << xi << " ";
                     }
                 }
@@ -177,7 +177,7 @@ namespace ioer
             template<typename ParamType, typename enable_if< is_sequence_container<ParamType>::value, int>::type = 0>
                 void _tabout_helper(const ParamType& x, int) 
                 {
-                    for (auto& xi : x) {
+                    for (const auto& xi : x) {
                         stream_io_mgr_sing.at(_path) << setw(_width) << setprecision(_precision) << xi;
                     }
                 }
@@ -254,7 +254,7 @@ namespace ioer
                 typename enable_if<	is_deque<ParamType>::value || is_forward_list<ParamType>::value || is_list<ParamType>::value, int>::type = 0>
 					void _write_helper(const ParamType& x, int)
                 {
-                    for(auto& it : x) {
+                    for(const auto& it : x) {
                         stream_io_mgr_sing.at(_path).write
                             (reinterpret_cast<const char*>(&x), static_cast<streamsize>(sizeof(typename ParamType::value_type)));
                     }
