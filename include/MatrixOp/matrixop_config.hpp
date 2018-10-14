@@ -230,24 +230,28 @@
 #define SGETRF      sgetrf_
 #define SGETRI      sgetri_
 #define SSYEVD      ssyevd_
+#define SGESV       sgesv_
 
 // double
 #define DGEES       dgees_
 #define DGETRF      dgetrf_
 #define DGETRI      dgetri_
 #define DSYEVD      dsyevd_
+#define DGESV       dgesv_
 
 // complex
 #define CGEES       cgees_
 #define CGETRF      cgetrf_
 #define CGETRI      cgetri_
 #define CHEEVD      cheevd_
+#define CGESV       cgesv_
 
 // complex*16
 #define ZGEES       zgees_
 #define ZGETRF      zgetrf_
 #define ZGETRI      zgetri_
 #define ZHEEVD      zheevd_
+#define ZGESV       zgesv_
 
 
 // -- LAPACK END -- //
@@ -523,7 +527,11 @@ namespace matrixop {
         extern VOID		DSYEVD		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      DTYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*, CNST_ITYPE*,      ITYPE*);
         extern VOID		CHEEVD		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      CTYPE*, CNST_ITYPE*,      STYPE*,      CTYPE*, CNST_ITYPE*,      STYPE*, CNST_ITYPE*,      ITYPE*, CNST_ITYPE*,      ITYPE*);
         extern VOID		ZHEEVD		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      ZTYPE*, CNST_ITYPE*,      DTYPE*,      ZTYPE*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*, CNST_ITYPE*,      ITYPE*);
-
+        // gesv
+        extern VOID     SGESV       (CNST_ITYPE*, CNST_ITYPE*,      STYPE*, CNST_ITYPE*,      ITYPE*,      STYPE*, CNST_ITYPE*,      ITYPE*);
+        extern VOID     DGESV       (CNST_ITYPE*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*);
+        extern VOID     CGESV       (CNST_ITYPE*, CNST_ITYPE*,      CTYPE*, CNST_ITYPE*,      ITYPE*,      CTYPE*, CNST_ITYPE*,      ITYPE*);
+        extern VOID     ZGESV       (CNST_ITYPE*, CNST_ITYPE*,      ZTYPE*, CNST_ITYPE*,      ITYPE*,      ZTYPE*, CNST_ITYPE*,      ITYPE*);
 
         // -- LAPACK END-- //
 	};
