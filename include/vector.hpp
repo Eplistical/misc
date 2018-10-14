@@ -582,7 +582,7 @@ subvec(const std::vector<T>& v, const std::vector<T1>& idx)
 
 std::vector<DOUBLE_T> linspace(DOUBLE_T xmin, DOUBLE_T xmax, SIZE_T Nx, BOOL_T endpoint = true) 
 {
-	// return a uniformly discretized vector with size Nx in [xmin, xmax], see matlab linspace function
+	// see matlab linspace
 	std::vector<DOUBLE_T> x(Nx, 0.0);
 	const DOUBLE_T dx(endpoint ? (xmax - xmin) / (Nx - 1) : (xmax - xmin) / Nx);
 	for (SIZE_T j(0); j < Nx; ++j) {
@@ -595,8 +595,7 @@ std::vector<DOUBLE_T> linspace(DOUBLE_T xmin, DOUBLE_T xmax, SIZE_T Nx, BOOL_T e
 template <typename T>
 std::vector<T> arange(T start, T end, T step = 1) 
 {
-	// return a vector (start, start+step, start+2*step, ..., start + (N-1) * step)
-	// 					where start + (N-1) * step < end & start + N * step >= end
+	// see numpy.arange
 	std::vector<T> rst;
 	rst.reserve(static_cast<SIZE_T>((end - start) / step + 1));
 
@@ -611,7 +610,7 @@ std::vector<T> arange(T start, T end, T step = 1)
 template <typename T>
 std::vector<T> arange(T end) 
 {
-	// return vector (0, 1, 2, ..., end-1)
+	// see numpy.arange
 	return arange(static_cast<T>(0), end);
 }
 
@@ -619,6 +618,7 @@ std::vector<T> arange(T end)
 template <typename T>
 void meshgrid(const std::vector<T>& X, const std::vector<T>& Y, std::vector<T>& meshX, std::vector<T>& meshY) 
 {
+	// see matlab meshgrid
 	const SIZE_T Nx(X.size());
 	const SIZE_T Ny(Y.size());
 
