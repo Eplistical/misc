@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <type_traits>
 #include "../type_traiter.hpp"
 #include "ioer_macros.hpp"
 #include "stream_io_mgr.hpp"
@@ -18,10 +19,15 @@ namespace ioer
 {
     using std::string;
     using std::size_t;
+    using std::ios;
+    using std::ios_base;
     using std::iostream;
+    using std::ostream;
     using std::streamsize;
     using std::setw;
     using std::setprecision;
+    using std::is_arithmetic;
+	using std::is_same;
     using type_traiter::is_direct_outputable;
     using type_traiter::is_sequence_container;
     using type_traiter::is_complex;
@@ -131,8 +137,34 @@ namespace ioer
                 if (_flush) stream_io_mgr_sing.at(_path) << flush; 
             }
 
+			// -- operator<< -- //
+			template <typename ParamType>
+				typename enable_if<is_direct_outputable<ParamType>::value, output_t&>::type
+				operator<<(const ParamType& x) 
+				{
+                    stream_io_mgr_sing.at(_path) << x;
+					return *this;
+				}
+
+			template <typename ParamType>
+				typename enable_if< is_same<ParamType, ostream>::value || 
+									is_same<ParamType, ios>::value || 
+									is_same<ParamType, ios_base>::value, 
+									output_t&>::type
+				operator<<(ParamType& (*x)(ParamType&)) 
+				{
+                    stream_io_mgr_sing.at(_path) << x;
+					return *this;
+				}
+
+			output_t& operator<<(streambuf* x) 
+			{
+				stream_io_mgr_sing.at(_path) << x;
+				return *this;
+			}
+
             // -- info -- //
-            template<typename ParamType, typename enable_if< is_sequence_container<ParamType>::value, int>::type = 0>
+            template <typename ParamType, typename enable_if< is_sequence_container<ParamType>::value, int>::type = 0>
                 void _info_helper(const ParamType& x, int) 
                 {
                     for (const auto& xi : x) {
@@ -140,33 +172,33 @@ namespace ioer
                     }
                 }
 
-            template<typename ParamType>
+            template <typename ParamType>
                 void _info_helper(const ParamType& x, ...) 
                 {
                     stream_io_mgr_sing.at(_path) << x;
                 }
 
-            template<typename ParamType>
+            template <typename ParamType>
                 void _info(const ParamType& x) 
                 {
                     _info_helper(x, 0);
                     if (_flush) stream_io_mgr_sing.at(_path) << flush; 
                 }
 
-            template<typename ParamType, typename ... Types>
+            template <typename ParamType, typename ... Types>
                 void _info(const ParamType& x, const Types& ... otherx) 
                 {
 					_info(x);
                     _info(otherx ...);
                 }
 
-            template<typename ... Types>
+            template <typename ... Types>
                 void info_nonewline(const Types& ... x) 
                 {
                     _info(x ...);
                 }
 
-            template<typename ... Types>
+            template <typename ... Types>
                 void info(const Types& ... x) 
                 {
                     info_nonewline(x ...);
@@ -174,7 +206,7 @@ namespace ioer
                 }
 
             // -- tabout -- //
-            template<typename ParamType, typename enable_if< is_sequence_container<ParamType>::value, int>::type = 0>
+            template <typename ParamType, typename enable_if< is_sequence_container<ParamType>::value, int>::type = 0>
                 void _tabout_helper(const ParamType& x, int) 
                 {
                     for (const auto& xi : x) {
@@ -182,33 +214,33 @@ namespace ioer
                     }
                 }
 
-            template<typename ParamType>
+            template <typename ParamType>
                 void _tabout_helper(const ParamType& x, ...) 
                 {
                     stream_io_mgr_sing.at(_path) << setw(_width) << setprecision(_precision) << x;
                 }
 
-            template<typename ParamType>
+            template <typename ParamType>
                 void _tabout(const ParamType& x) 
                 {
                     _tabout_helper(x, 0);
                     if (_flush) stream_io_mgr_sing.at(_path) << flush; 
                 }
 
-            template<typename ParamType, typename ... Types>
+            template <typename ParamType, typename ... Types>
                 void _tabout(const ParamType& x, const Types& ... otherx) 
                 {
                     _tabout(x);
                     _tabout(otherx ...);
                 }
 
-            template<typename ... Types>
+            template <typename ... Types>
                 void tabout_nonewline(const Types& ... x) 
                 {
                     _tabout(x ...);
                 }
 
-            template<typename ... Types>
+            template <typename ... Types>
                 void tabout(const Types& ... x) 
                 {
                     tabout_nonewline(x ...);
@@ -224,7 +256,7 @@ namespace ioer
                 }
 
             // -- binary output -- //
-            template<typename ParamType, typename enable_if<is_complex<ParamType>::value, int>::type = 0>
+            template <typename ParamType, typename enable_if<is_complex<ParamType>::value, int>::type = 0>
                 void _write_helper(const ParamType& x, int)
                 {
                     using ValType = typename ParamType::value_type;
@@ -233,7 +265,7 @@ namespace ioer
                         (reinterpret_cast<const char*>(tmp), static_cast<streamsize>(2 * sizeof(ValType)));
                 }
 
-            template<typename ParamType, typename enable_if<is_c_string<ParamType>::value, int>::type = 0>
+            template <typename ParamType, typename enable_if<is_c_string<ParamType>::value, int>::type = 0>
                 void _write_helper(const ParamType& x, int)
                 {
                     size_t N = 0;
@@ -242,7 +274,7 @@ namespace ioer
                         (reinterpret_cast<const char*>(&x), static_cast<streamsize>(N * sizeof(char)));
                 }
 
-            template<typename ParamType, 
+            template <typename ParamType, 
 				typename enable_if< is_array_container<ParamType>::value || is_vector<ParamType>::value || is_string<ParamType>::value, int>::type = 0>
                     void _write_helper(const ParamType& x, int)
                     {
@@ -250,7 +282,7 @@ namespace ioer
                             (reinterpret_cast<const char*>(x.data()), static_cast<streamsize>(x.size() * sizeof(typename ParamType::value_type)));
                     }
 
-            template<typename ParamType,
+            template <typename ParamType,
                 typename enable_if<	is_deque<ParamType>::value || is_forward_list<ParamType>::value || is_list<ParamType>::value, int>::type = 0>
 					void _write_helper(const ParamType& x, int)
                 {
@@ -260,7 +292,7 @@ namespace ioer
                     }
                 }
 
-            template<typename ParamType>
+            template <typename ParamType>
                 void _write_helper(const ParamType& x, ...)
                 {
                     stream_io_mgr_sing.at(_path).write
@@ -268,20 +300,20 @@ namespace ioer
                 }
 
 
-            template<typename ParamType>
+            template <typename ParamType>
                 void _write(const ParamType& x) 
                 {
                     _write_helper(x, 0);
                 }
 
-            template<typename ParamType, typename ... Types>
+            template <typename ParamType, typename ... Types>
                 void _write(const ParamType& x, const Types& ... otherx) 
                 {
                     _write(x);
                     _write(otherx ...);
                 }
 
-            template<typename ... Types>
+            template <typename ... Types>
                 void write(const Types& ... x) 
                 {
                     _write(x ...);
@@ -302,31 +334,31 @@ namespace ioer
         STDOUT.drawline(c, len);
     }
 
-    template<typename ... Types>
+    template <typename ... Types>
         inline void info_nonewline(const Types& ... x) 
         {
             STDOUT.info_nonewline(x ...);
         }
 
-    template<typename ... Types>
+    template <typename ... Types>
         inline void info(const Types& ... x) 
         {
             STDOUT.info(x ...);
         }
 
-    template<typename ... Types>
+    template <typename ... Types>
         inline void tabout(const Types& ... x) 
         {
             STDOUT.tabout(x ...);
         }
 
-    template<typename ... Types>
+    template <typename ... Types>
         inline void tabout_nonewline(const Types& ... x) 
         {
             STDOUT.tabout_nonewline(x ...);
         }
 
-    template<typename ... Types>
+    template <typename ... Types>
         inline void write(const Types& ... x) 
         {
             STDOUT.write(x ...);
