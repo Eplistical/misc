@@ -25,12 +25,6 @@ void assertsize(const std::vector<T1>& v1, const std::vector<T2>& v2)
 }
 
 template <typename T>
-typename std::enable_if< std::is_arithmetic<T>::value, std::complex<T> >::type
-conj(const std::complex<T>& a) {
-	return std::conj(a);
-}
-
-template <typename T>
 typename std::enable_if< std::is_arithmetic<T>::value, T >::type
 conj(const T& a) {
 	return a;
@@ -1057,11 +1051,15 @@ operator>>=(std::vector<T1>& v1, const T2& a)
 
 
 template <typename T1>
-std::vector<T1> operator~(const std::vector<T1>& v1)
+auto operator~(const std::vector<T1>& v1) -> std::vector<decltype(v1.at(0) / norm(v1))>
 {
 	// ~v => extract unit vector along v1 direction
-	std::vector<T1> rst(v1);
-	
+	const auto v1nrm(norm(v1));
+	const SIZE_T N(v1.size());
+	std::vector<decltype(v1[0] / v1nrm)> rst(N);
+	for (SIZE_T j(0); j < N; ++j) {
+		rst[j] = v1[j] / v1nrm;
+	}
 	return rst;
 }
 
