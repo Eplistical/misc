@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 #include <type_traits>
 #include <stdexcept>
 #include "types.hpp"
@@ -655,6 +656,66 @@ std::vector<T1>& operator|=(std::vector<T1>& v1, const T2& a)
 	return v1;
 }
 
+template <typename T1, typename T2>
+typename std::enable_if< std::is_integral<T2>::value, std::vector<T1> >::type
+operator<<(const std::vector<T1>& v1, const T2& a)
+{
+	// vec<<scal
+	const SIZE_T N(v1.size());
+	if (N < 2) {
+		return v1;
+	}
+
+	if (a == 0) {
+		return v1;
+	}
+	else {
+		std::vector<T1> rst(v1);
+		if (a > 0) {
+			std::rotate(rst.begin(), rst.begin() + a % N, rst.end());
+		}
+		else {
+			std::rotate(rst.begin(), rst.begin() + N - (-a) % N, rst.end());
+		}
+		return rst;
+	}
+}
+
+template <typename T1, typename T2>
+typename std::enable_if< std::is_integral<T2>::value, std::vector<T1>& >::type
+operator<<=(std::vector<T1>& v1, const T2& a)
+{
+	// vec<<=scal
+	const SIZE_T N(v1.size());
+	if (N < 2) {
+		return v1;
+	}
+
+	if (a > 0) {
+		std::rotate(v1.begin(), v1.begin() + a % N, v1.end());
+	}
+	else if (a < 0) {
+		std::rotate(v1.begin(), v1.begin() + N - (-a) % N, v1.end());
+	}
+	return v1;
+}
+
+template <typename T1, typename T2>
+typename std::enable_if< std::is_integral<T2>::value, std::vector<T1> >::type
+operator>>(const std::vector<T1>& v1, const T2& a)
+{
+	// vec>>scal
+	return v1 << -a;
+}
+
+template <typename T1, typename T2>
+typename std::enable_if< std::is_integral<T2>::value, std::vector<T1>& >::type
+operator>>=(std::vector<T1>& v1, const T2& a)
+{
+	// vec>>=scal
+	v1<<=-a;
+	return v1;
+}
 
 // element-wise math operations
 
