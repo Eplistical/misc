@@ -78,13 +78,24 @@ std::vector<T1>& operator+=(std::vector<T1>& v1, const std::vector<T2>& v2)
 }
 
 template <typename T1>
-std::vector<t1>& operator++(std::vector<t1>& v1)
+std::vector<T1>& operator++(std::vector<T1>& v1)
 {
 	// ++vec
     const SIZE_T N(v1.size());
     for(SIZE_T j(0); j < N; ++j)
 		v1[j] += static_cast<T1>(1.0);
 	return v1;
+}
+
+template <typename T1>
+std::vector<T1> operator++(std::vector<T1>& v1, int)
+{
+	// vec++
+	std::vector<T1> rst(v1);
+    const SIZE_T N(v1.size());
+    for(SIZE_T j(0); j < N; ++j)
+		v1[j] += static_cast<T1>(1.0);
+	return rst;
 }
 
 template <typename T1, typename T2>
@@ -143,13 +154,24 @@ std::vector<T1>& operator-=(std::vector<T1>& v1, const std::vector<T2>& v2)
 }
 
 template <typename T1>
-std::vector<t1>& operator--(std::vector<t1>& v1)
+std::vector<T1>& operator--(std::vector<T1>& v1)
 {
-	// ++vec
+	// --vec
     const SIZE_T N(v1.size());
     for(SIZE_T j(0); j < N; ++j)
 		v1[j] -= static_cast<T1>(1.0);
 	return v1;
+}
+
+template <typename T1>
+std::vector<T1> operator--(std::vector<T1>& v1, int)
+{
+	// vec--
+	std::vector<T1> rst(v1);
+    const SIZE_T N(v1.size());
+    for(SIZE_T j(0); j < N; ++j)
+		v1[j] -= static_cast<T1>(1.0);
+	return rst;
 }
 
 template <typename T>
