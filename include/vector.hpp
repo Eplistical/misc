@@ -33,13 +33,21 @@ conj(const T& a) {
 // element-wise math operations
 
 template <typename T>
-std::vector<T> conj(const std::vector<T>& v)
+typename std::enable_if< std::is_arithmetic<T>::value, std::vector< std::complex<T> > >::type
+conj(const std::vector< std::complex<T> >& v)
 {
     const SIZE_T N(v.size());
-    std::vector<T> rst(N);
+    std::vector< std::complex<T> > rst(N);
     for(SIZE_T j(0); j < N; ++j) 
-		rst[j] = conj(v[j]) ;
+		rst[j] = std::conj(v[j]) ;
     return rst;
+}
+
+template <typename T>
+typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
+conj(const std::vector<T>& v)
+{
+	return v;
 }
 
 template <typename T>
