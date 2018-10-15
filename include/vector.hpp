@@ -1066,24 +1066,45 @@ template <typename T1, typename T2>
 typename std::enable_if< std::is_floating_point<T1>::value and std::is_arithmetic<T2>::value, std::vector<T1> >::type
 operator&(const std::vector<T1>& v, const std::vector<T2>& n)
 {
-	// vec&vec => extract v components along the direction n
+	// vec&vec => get projection of v along the direction n
 	assertsize(v, n);
 
-	const T1 threash(1e-20);
 	const auto nnrm2(pow(norm(n), 2));
 
-	misc::crasher::confirm( nnrm2 > threash, "operator&: n is zero vector!" );
+	misc::crasher::confirm( nnrm2 > 0.0, "operator&: n is zero vector!" );
 
 	const SIZE_T N(v.size());
-	std::vector<T1> rst(N, 0.0);
 	const T1 vdotn_nnrm2(inner_product(v.begin(), v.end(), n.begin(), 0.0) / nnrm2);
+	std::vector<T1> rst(N, 0.0);
 
-	if (std::abs(vdotn_nnrm2) > threash) {
+	if (std::abs(vdotn_nnrm2) > 0.0) {
 		for (SIZE_T j(0); j < N; ++j) {
 			rst[j] = vdotn_nnrm2 * static_cast<T1>(n[j]); 
 		}
 	}
 	return rst;
+}
+
+template <typename T1, typename T2>
+typename std::enable_if< std::is_floating_point<T1>::value and std::is_arithmetic<T2>::value, std::vector<T1>& >::type
+operator&=(std::vector<T1>& v, const std::vector<T2>& n)
+{
+	// vec&=vec 
+	assertsize(v, n);
+
+	const auto nnrm2(pow(norm(n), 2));
+
+	misc::crasher::confirm( nnrm2 > 0.0, "operator&: n is zero vector!" );
+
+	const SIZE_T N(v.size());
+	const T1 vdotn_nnrm2(inner_product(v.begin(), v.end(), n.begin(), 0.0) / nnrm2);
+
+	if (std::abs(vdotn_nnrm2) > 0.0) {
+		for (SIZE_T j(0); j < N; ++j) {
+			v[j] = vdotn_nnrm2 * static_cast<T1>(n[j]); 
+		}
+	}
+	return v;
 }
 
 // other utilities
