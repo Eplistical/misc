@@ -1049,7 +1049,6 @@ operator>>=(std::vector<T1>& v1, const T2& a)
 	return v1;
 }
 
-
 template <typename T1>
 auto operator~(const std::vector<T1>& v1) -> std::vector<decltype(v1.at(0) / norm(v1))>
 {
@@ -1059,6 +1058,30 @@ auto operator~(const std::vector<T1>& v1) -> std::vector<decltype(v1.at(0) / nor
 	std::vector<decltype(v1[0] / v1nrm)> rst(N);
 	for (SIZE_T j(0); j < N; ++j) {
 		rst[j] = v1[j] / v1nrm;
+	}
+	return rst;
+}
+
+template <typename T1, typename T2>
+typename std::enable_if< std::is_floating_point<T1>::value and std::is_arithmetic<T2>::value, std::vector<T1> >::type
+operator&(const std::vector<T1>& v, const std::vector<T2>& n)
+{
+	// vec&vec => extract v components along the direction n
+	assertsize(v, n);
+
+	const T1 threash(1e-20);
+	const auto nnrm2(pow(norm(n), 2));
+
+	misc::crasher::confirm( nnrm2 > threash, "operator&: n is zero vector!" );
+
+	const SIZE_T N(v.size());
+	std::vector<T1> rst(N, 0.0);
+	const T1 vdotn_nnrm2(inner_product(v.begin(), v.end(), n.begin(), 0.0) / nnrm2);
+
+	if (std::abs(vdotn_nnrm2) > threash) {
+		for (SIZE_T j(0); j < N; ++j) {
+			rst[j] = vdotn_nnrm2 * static_cast<T1>(n[j]); 
+		}
 	}
 	return rst;
 }
