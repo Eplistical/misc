@@ -246,6 +246,57 @@ std::vector<T1>& operator/=(std::vector<T1>& v1, const std::vector<T2>& v2)
 	return v1;
 }
 
+template <typename T1, typename T2>
+auto operator%(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) % v2.at(0))>
+{
+	// vec % vec
+    assertsize(v1, v2);
+    const SIZE_T N(v1.size());
+    std::vector<decltype(v1.at(0) % v2.at(0))> rst(N);
+    for(SIZE_T j(0); j < N; ++j)
+        rst[j] = v1[j] % v2[j];
+	return rst;
+}
+
+template <typename T1, typename T2>
+auto operator%(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) % a)>
+{
+	// vec % scal
+	return v1 * (static_cast<T2>(1.0) % a);
+}
+
+template <typename T1, typename T2>
+auto operator%(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a % v1.at(0))>
+{
+	// scal % vec
+    const SIZE_T N(v1.size());
+    std::vector<decltype(a % v1.at(0))> rst(N);
+    for(SIZE_T j(0); j < N; ++j)
+        rst[j] = a % v1[j];
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<T1>& operator%=(std::vector<T1>& v1, const T2& a)
+{
+	// vec %= scal
+    const SIZE_T N(v1.size());
+    for(SIZE_T j(0); j < N; ++j)
+		v1[j] %= a;
+	return v1;
+}
+
+template <typename T1, typename T2>
+std::vector<T1>& operator%=(std::vector<T1>& v1, const std::vector<T2>& v2)
+{
+	// vec %= vec
+	assertsize(v1, v2);
+    const SIZE_T N(v1.size());
+    for(SIZE_T j(0); j < N; ++j)
+		v1[j] %= v2[j];
+	return v1;
+}
+
 // relational operators
 
 template <typename T1, typename T2>
