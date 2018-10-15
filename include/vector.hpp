@@ -504,6 +504,18 @@ std::vector<BOOL_T> operator||(const T2& a, const std::vector<T1>& v1)
 // other operators
 
 template <typename T1, typename T2>
+auto operator^(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(std::pow(v1.at(0), v2.at(0)))>
+{
+	// vec^vec
+    assertsize(v1, v2);
+    const SIZE_T N(v1.size());
+    std::vector<decltype(std::pow(v1.at(0), v2.at(0)))> rst(N);
+    for(size_t j(0); j < N; ++j)
+		rst[j] = std::pow(v1[j], v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
 auto operator^(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(std::pow(v1.at(0), a))>
 {
 	// vec^scal
@@ -513,6 +525,85 @@ auto operator^(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(s
 		rst[j] = std::pow(v1[j], a);
 	return rst;
 }
+
+template <typename T1, typename T2>
+auto operator^(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(std::pow(a, v1.at(0)))>
+{
+	// scal^vec
+    const SIZE_T N(v1.size());
+    std::vector<decltype(a, std::pow(v1.at(0)))> rst(N);
+    for(size_t j(0); j < N; ++j)
+		rst[j] = std::pow(a, v1[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<T1>& operator^=(std::vector<T1>& v1, const std::vector<T2>& v2)
+{
+	// vec^=vec
+    assertsize(v1, v2);
+    const SIZE_T N(v1.size());
+    for(size_t j(0); j < N; ++j)
+		v1[j] = std::pow(v1[j], v2[j]);
+	return v1;
+}
+
+template <typename T1, typename T2>
+std::vector<T1> operator^=(std::vector<T1>& v1, const T2& a)
+{
+	// vec^=scal
+    const SIZE_T N(v1.size());
+    for(size_t j(0); j < N; ++j)
+		v1[j] = std::pow(v1[j], a);
+	return v1;
+}
+
+template <typename T1>
+std::vector<T1> operator|(const std::vector<T1>& v1, const std::vector<T1>& v2)
+{
+	// vec|vec
+	std::vector<T1> rst(v1);
+	rst.insert(rst.end(), v2.begin(), v2.end());
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<T1> operator|(const std::vector<T1>& v1, const T2& a)
+{
+	// vec|scal
+	std::vector<T1> rst;
+	rst.reserve(v1.size() + 1);
+	rst.insert(rst.end(), v1.begin(), v1.end());
+	rst.push_back(static_cast<T1>(a));
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<T1> operator|(const T2& a, const std::vector<T1>& v1)
+{
+	// scal|vec
+	std::vector<T1> rst(1, static_cast<T1>(a));
+	rst.reserve(v1.size() + 1);
+	rst.insert(rst.end(), v1.begin(), v1.end());
+	return rst;
+}
+
+template <typename T1>
+std::vector<T1>& operator|=(std::vector<T1>& v1, const std::vector<T1>& v2)
+{
+	// vec|=vec
+	v1.insert(v1.end(), v2.begin(), v2.end());
+	return v1;
+}
+
+template <typename T1, typename T2>
+std::vector<T1>& operator|=(std::vector<T1>& v1, const T2& a)
+{
+	// vec|=scal
+	v1.push_back(static_cast<T1>(a));
+	return v1;
+}
+
 
 // element-wise math operations
 
@@ -530,9 +621,9 @@ template <typename T>
 std::vector<T> sqrt(const std::vector<T>& v)
 {
     const SIZE_T N(v.size());
-    std::vector<T> rst(N);
+	std::vector<T> rst(N);
     for(SIZE_T j(0); j < N; ++j) 
-		rst[j] = std::sqrt(v[j]) ;
+		rst[j] = std::sqrt(v[j]);
     return rst;
 }
 
