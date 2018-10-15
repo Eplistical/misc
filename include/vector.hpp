@@ -501,6 +501,19 @@ std::vector<BOOL_T> operator||(const T2& a, const std::vector<T1>& v1)
 	return v1 || a;
 }
 
+// other operators
+
+template <typename T1, typename T2>
+auto operator^(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(std::pow(v1.at(0), a))>
+{
+	// vec^scal
+    const SIZE_T N(v1.size());
+    std::vector<decltype(std::pow(v1.at(0), a))> rst(N);
+    for(size_t j(0); j < N; ++j)
+		rst[j] = std::pow(v1[j], a);
+	return rst;
+}
+
 // element-wise math operations
 
 template <typename T>
@@ -524,13 +537,9 @@ std::vector<T> sqrt(const std::vector<T>& v)
 }
 
 template <typename T1, typename T2>
-std::vector<T1> pow(const std::vector<T1>& v1, const T2& a)
+auto pow(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(std::pow(v1.at(0), a))>
 {
-    const SIZE_T N(v1.size());
-    std::vector<T1> rst(N);
-    for(SIZE_T j(0); j < N; ++j)
-        rst[j] = std::pow(v1[j], a);
-	return rst;
+	return v1^a;
 }
 
 template <typename T>
