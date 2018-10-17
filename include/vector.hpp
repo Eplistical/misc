@@ -33,6 +33,28 @@ conj(const T& a) {
 // element-wise math operations
 
 template <typename T>
+typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
+real(const std::vector< std::complex<T> >& v)
+{
+	const SIZE_T N(v.size());
+	std::vector<T> rst(N);
+	for(SIZE_T j(0); j < N; ++j) 
+		rst[j] = std::real(v[j]);
+	return rst;
+}
+
+template <typename T>
+typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
+imag(const std::vector< std::complex<T> >& v)
+{
+	const SIZE_T N(v.size());
+	std::vector<T> rst(N);
+	for(SIZE_T j(0); j < N; ++j) 
+		rst[j] = std::imag(v[j]);
+	return rst;
+}
+
+template <typename T>
 typename std::enable_if< std::is_arithmetic<T>::value, std::vector< std::complex<T> > >::type
 conj(const std::vector< std::complex<T> >& v)
 {
@@ -1217,6 +1239,22 @@ void meshgrid(const std::vector<T>& X, const std::vector<T>& Y, std::vector<T>& 
 			meshY[k + j * Ny] = Y[k];
 		}
 	}
+}
+
+
+template <typename T1, typename T2>
+typename std::enable_if< std::is_floating_point<T1>::value and std::is_arithmetic<T2>::value, std::vector<T1> >::type
+component(const std::vector<T1>& v, const std::vector<T2>& n)
+{
+	// extract projection of v on n direction
+	return v&n;
+}
+
+template <typename T>
+auto unit(const std::vector<T>& v) -> std::vector<decltype(v.at(0) / norm(v))>
+{
+	// return unit vector on v direction
+	return ~v; 
 }
 
 #endif
