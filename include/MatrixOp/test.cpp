@@ -3,7 +3,7 @@
 #include "matrixop_config.hpp"
 #include "matmat.hpp"
 #include "matCmat.hpp"
-#include "eigh.hpp"
+#include "eig.hpp"
 #include "scal.hpp"
 #include "nrm.hpp"
 #include "dot.hpp"

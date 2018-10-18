@@ -1,5 +1,5 @@
-#ifndef _MATRIXOP_EIGH_HPP
-#define _MATRIXOP_EIGH_HPP
+#ifndef _MATRIXOP_EIG_HPP
+#define _MATRIXOP_EIG_HPP
 
 /*  
  *  matrixop::eigh(A, eva, [evt])  matrixop::hdiag(A, eva, [evt])
@@ -193,4 +193,4 @@ namespace matrixop {
         }
 };
 
-#endif // _MATRIXOP_EIGH_HPP
+#endif // _MATRIXOP_EIG_HPP
