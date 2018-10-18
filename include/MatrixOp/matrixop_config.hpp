@@ -230,6 +230,7 @@
 #define SGETRF      sgetrf_
 #define SGETRI      sgetri_
 #define SSYEVD      ssyevd_
+#define SGEEV       sgeev_
 #define SGESV       sgesv_
 
 // double
@@ -237,6 +238,7 @@
 #define DGETRF      dgetrf_
 #define DGETRI      dgetri_
 #define DSYEVD      dsyevd_
+#define DGEEV       dgeev_
 #define DGESV       dgesv_
 
 // complex
@@ -244,6 +246,7 @@
 #define CGETRF      cgetrf_
 #define CGETRI      cgetri_
 #define CHEEVD      cheevd_
+#define CGEEV       cgeev_
 #define CGESV       cgesv_
 
 // complex*16
@@ -251,6 +254,7 @@
 #define ZGETRF      zgetrf_
 #define ZGETRI      zgetri_
 #define ZHEEVD      zheevd_
+#define ZGEEV       zgeev_
 #define ZGESV       zgesv_
 
 
@@ -527,6 +531,11 @@ namespace matrixop {
         extern VOID		DSYEVD		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      DTYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*, CNST_ITYPE*,      ITYPE*);
         extern VOID		CHEEVD		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      CTYPE*, CNST_ITYPE*,      STYPE*,      CTYPE*, CNST_ITYPE*,      STYPE*, CNST_ITYPE*,      ITYPE*, CNST_ITYPE*,      ITYPE*);
         extern VOID		ZHEEVD		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      ZTYPE*, CNST_ITYPE*,      DTYPE*,      ZTYPE*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*, CNST_ITYPE*,      ITYPE*);
+        // geev
+        extern VOID		SGEEV		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      STYPE*, CNST_ITYPE*,      STYPE*,      STYPE*,      STYPE*, CNST_ITYPE*,      STYPE*, CNST_ITYPE*,      STYPE*, CNST_ITYPE*,      ITYPE*);
+        extern VOID		DGEEV		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      DTYPE*,      DTYPE*,      DTYPE*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*);
+        extern VOID		CGEEV		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      CTYPE*, CNST_ITYPE*,      CTYPE*,      CTYPE*, CNST_ITYPE*,      CTYPE*, CNST_ITYPE*,      CTYPE*, CNST_ITYPE*,      STYPE*,      ITYPE*);
+        extern VOID		ZGEEV		( CNST_CHAR*,  CNST_CHAR*, CNST_ITYPE*,      ZTYPE*, CNST_ITYPE*,      ZTYPE*,      ZTYPE*, CNST_ITYPE*,      ZTYPE*, CNST_ITYPE*,      ZTYPE*, CNST_ITYPE*,      DTYPE*,      ITYPE*);
         // gesv
         extern VOID     SGESV       (CNST_ITYPE*, CNST_ITYPE*,      STYPE*, CNST_ITYPE*,      ITYPE*,      STYPE*, CNST_ITYPE*,      ITYPE*);
         extern VOID     DGESV       (CNST_ITYPE*, CNST_ITYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*,      DTYPE*, CNST_ITYPE*,      ITYPE*);
