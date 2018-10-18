@@ -191,7 +191,6 @@ namespace matrixop {
         {
             eigh_inplace(A, eva);
         }
-
 };
 
 #endif // _MATRIXOP_EIGH_HPP

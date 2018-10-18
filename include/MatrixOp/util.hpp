@@ -28,9 +28,6 @@
  *
  * 	return A' * B * C (M*N)
  *
- *
- ****************************************
- *  
  */
 
 #include <vector>
@@ -50,12 +47,10 @@ namespace matrixop {
             return dotc(V, matvec(A, W));
         }
 
-
     template <typename T>
         inline T vecCmatvec(const vector<T>& A, const vector<T>& B, const vector<T>& C, CNST_ITYPE L, CNST_ITYPE K) {
             return matCmat(A, matmat(B, C, K), L);
         }
-
 };
 
 #endif
