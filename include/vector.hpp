@@ -18,16 +18,246 @@
 // helpers
 
 template <typename T1, typename T2>
-void assertsize(const std::vector<T1>& v1, const std::vector<T2>& v2)
+inline void assertsize(const std::vector<T1>& v1, const std::vector<T2>& v2)
 {
 	misc::crasher::confirm<std::runtime_error>(v1.size() == v2.size(), 
 			"assertsize: v1 & v2 have different sizes!");
 }
 
 template <typename T>
-typename std::enable_if< std::is_arithmetic<T>::value, T >::type
+inline typename std::enable_if< std::is_arithmetic<T>::value, T >::type
 conj(const T& a) {
 	return a;
+}
+
+// element-wise logical operations
+
+template <typename T>
+std::vector<BOOL_T> logical_not(const std::vector<T>& v) 
+{
+	const SIZE_T N(v.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = static_cast<BOOL_T>(!v[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> logical_and(const std::vector<T1>& v1, const std::vector<T2>& v2) 
+{
+	assertsize(v1, v2);
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = static_cast<BOOL_T>(v1[j] && v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> logical_and(const std::vector<T1>& v1, const T2& a) 
+{
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = static_cast<BOOL_T>(v1[j] && a);
+	return rst;
+}
+
+template <typename T1, typename T2>
+inline std::vector<BOOL_T> logical_and(const T2& a, const std::vector<T1>& v1) 
+{
+	return logical_and(v1, a);
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> logical_or(const std::vector<T1>& v1, const std::vector<T2>& v2) 
+{
+	assertsize(v1, v2);
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = static_cast<BOOL_T>(v1[j] || v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> logical_or(const std::vector<T1>& v1, const T2& a) 
+{
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = static_cast<BOOL_T>(v1[j] || a);
+	return rst;
+}
+
+template <typename T1, typename T2>
+inline std::vector<BOOL_T> logical_or(const T2& a, const std::vector<T1>& v1) 
+{
+	return logical_or(v1, a);
+}
+
+// element-wise relational operations
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> equal(const std::vector<T1>& v1, const std::vector<T2>& v2)
+{
+	assertsize(v1, v2);
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] == v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> equal(const std::vector<T1>& v1, const T2& a)
+{
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] == a);
+	return rst;
+}
+
+template <typename T1, typename T2>
+inline std::vector<BOOL_T> equal(const T2& a, const std::vector<T1>& v1)
+{
+	return equal(v1, a);
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> not_equal(const std::vector<T1>& v1, const std::vector<T2>& v2)
+{
+	assertsize(v1, v2);
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] != v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> not_equal(const std::vector<T1>& v1, const T2& a)
+{
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] != a);
+	return rst;
+}
+
+template <typename T1, typename T2>
+inline std::vector<BOOL_T> not_equal(const T2& a, const std::vector<T1>& v1)
+{
+	return not_equal(v1, a);
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> greater_equal(const std::vector<T1>& v1, const std::vector<T2>& v2)
+{
+	assertsize(v1, v2);
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(SIZE_T j(0); j < N; ++j)
+		rst[j] = (v1[j] >= v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> greater_equal(const std::vector<T1>& v1, const T2& a)
+{
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] >= a);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> less_equal(const std::vector<T1>& v1, const std::vector<T2>& v2)
+{
+	assertsize(v1, v2);
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] <= v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> less_equal(const std::vector<T1>& v1, const T2& a)
+{
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] <= a);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> greater(const std::vector<T1>& v1, const std::vector<T2>& v2)
+{
+	assertsize(v1, v2);
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] > v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> greater(const std::vector<T1>& v1, const T2& a)
+{
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] > a);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> less(const std::vector<T1>& v1, const std::vector<T2>& v2)
+{
+	assertsize(v1, v2);
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] < v2[j]);
+	return rst;
+}
+
+template <typename T1, typename T2>
+std::vector<BOOL_T> less(const std::vector<T1>& v1, const T2& a)
+{
+	const SIZE_T N(v1.size());
+	std::vector<BOOL_T> rst(N);
+	for(size_t j(0); j < N; ++j)
+		rst[j] = (v1[j] < a);
+	return rst;
+}
+
+template <typename T1, typename T2>
+inline std::vector<BOOL_T> greater_equal(const T2& a, const std::vector<T1>& v1)
+{
+	return less_equal(v1, a);
+}
+
+template <typename T1, typename T2>
+inline std::vector<BOOL_T> less_equal(const T2& a, const std::vector<T1>& v1)
+{
+	return greater_equal(v1, a);
+}
+
+template <typename T1, typename T2>
+inline std::vector<BOOL_T> greater(const T2& a, const std::vector<T1>& v1)
+{
+	return less(v1, a);
+}
+
+template <typename T1, typename T2>
+inline std::vector<BOOL_T> less(const T2& a, const std::vector<T1>& v1)
+{
+	return greater(v1, a);
 }
 
 // element-wise math operations
@@ -44,6 +274,13 @@ real(const std::vector< std::complex<T> >& v)
 }
 
 template <typename T>
+inline typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
+real(const std::vector<T>& v)
+{
+	return v;
+}
+
+template <typename T>
 typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
 imag(const std::vector< std::complex<T> >& v)
 {
@@ -52,6 +289,13 @@ imag(const std::vector< std::complex<T> >& v)
 	for(SIZE_T j(0); j < N; ++j) 
 		rst[j] = std::imag(v[j]);
 	return rst;
+}
+
+template <typename T>
+inline typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
+imag(const std::vector<T>& v)
+{
+	return std::vector<T>(v.size(), static_cast<T>(0.0));
 }
 
 template <typename T>
@@ -66,7 +310,7 @@ conj(const std::vector< std::complex<T> >& v)
 }
 
 template <typename T>
-typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
+inline typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
 conj(const std::vector<T>& v)
 {
 	return v;
@@ -95,7 +339,6 @@ std::vector<T> sqrt(const std::vector<T>& v)
 template <typename T1, typename T2>
 auto pow(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(std::pow(v1.at(0), v2.at(0)))>
 {
-	// pow(vec, vec)
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	std::vector<decltype(std::pow(v1.at(0), v2.at(0)))> rst(N);
@@ -107,7 +350,6 @@ auto pow(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<de
 template <typename T1, typename T2>
 auto pow(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(std::pow(v1.at(0), a))>
 {
-	// pow(vec, scal)
 	const SIZE_T N(v1.size());
 	std::vector<decltype(std::pow(v1.at(0), a))> rst(N);
 	for(size_t j(0); j < N; ++j)
@@ -118,7 +360,6 @@ auto pow(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(std::po
 template <typename T1, typename T2>
 auto pow(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(std::pow(a, v1.at(0)))>
 {
-	// pow(scal, vec)
 	const SIZE_T N(v1.size());
 	std::vector<decltype(a, std::pow(v1.at(0)))> rst(N);
 	for(size_t j(0); j < N; ++j)
@@ -259,6 +500,20 @@ std::vector<T> tanh(const std::vector<T>& v)
 // collective operations
 
 template <typename T>
+inline BOOL_T all(const std::vector<T>& v)
+{
+	// see numpy.all
+	return std::all_of(v.begin(), v.end(), [](const T& vi) { return (static_cast<BOOL_T>(vi)); });
+}
+
+template <typename T>
+inline BOOL_T any(const std::vector<T>& v)
+{
+	// see numpy.any
+	return std::any_of(v.begin(), v.end(), [](const T& vi) { return (static_cast<BOOL_T>(vi)); });
+}
+
+template <typename T>
 T sum(const std::vector<T>& v)
 {
 	// return v[0] + v[1] + ... + v[N-1]
@@ -270,16 +525,14 @@ T sum(const std::vector<T>& v)
 }
 
 template <typename T>
-T mean(const std::vector<T>& v)
+inline T mean(const std::vector<T>& v)
 {
-	// find the mean value of all elements in the std::vector
 	return sum(v) / v.size();
 }
 
 template <typename T>
 T prod(const std::vector<T>& v)
 {
-	// return v[0] * v[1] * ... * v[N-1]
 	T rst = static_cast<T>(1);
 	const SIZE_T N(v.size());
 	for(SIZE_T j(0); j < N; ++j) 
@@ -291,7 +544,6 @@ template <typename T>
 typename std::enable_if< std::is_integral<T>::value, DOUBLE_T>::type
 norm(const std::vector<T>& v)
 {
-	// norm of the std::vector<T>
 	DOUBLE_T rst(0.0);
 	const SIZE_T N(v.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -303,7 +555,6 @@ template <typename T>
 typename std::enable_if< std::is_floating_point<T>::value, T>::type
 norm(const std::vector<T>& v)
 {
-	// norm of the std::vector<T>
 	T rst(0.0);
 	const SIZE_T N(v.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -315,7 +566,6 @@ template <typename T>
 typename std::enable_if< std::is_integral<T>::value, DOUBLE_T>::type
 norm(const std::vector< std::complex<T> >& v)
 {
-	// norm of the std::vector< complex<T> >
 	DOUBLE_T rst(0.0);
 	const SIZE_T N(v.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -327,7 +577,6 @@ template <typename T>
 typename std::enable_if< std::is_floating_point<T>::value, T>::type
 norm(const std::vector< std::complex<T> >& v)
 {
-	// norm of the std::vector< complex<T> >
 	T rst(0.0);
 	const SIZE_T N(v.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -339,7 +588,6 @@ norm(const std::vector< std::complex<T> >& v)
 template <typename T>
 T min(const std::vector<T>& v)
 {
-	// find the min element in the std::vector 
 	const SIZE_T N(v.size());
 	T rst = v[0];
 	for(SIZE_T j(1); j < N; ++j)
@@ -350,7 +598,6 @@ T min(const std::vector<T>& v)
 template <typename T>
 T max(const std::vector<T>& v)
 {
-	// find the max element in the std::vector 
 	const SIZE_T N(v.size());
 	T rst = v[0];
 	for(SIZE_T j(1); j < N; ++j)
@@ -363,7 +610,6 @@ T max(const std::vector<T>& v)
 template <typename T1, typename T2>
 auto operator+(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) + v2.at(0))>
 {
-	// vec + vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1.at(0) + v2.at(0))> rst(N);
@@ -375,7 +621,6 @@ auto operator+(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template <typename T1, typename T2>
 auto operator+(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) + a)>
 {
-	// vec + scal
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1.at(0) + a)> rst(N);
 	for(SIZE_T j(0); j < N; ++j)
@@ -386,14 +631,12 @@ auto operator+(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v
 template <typename T1, typename T2>
 auto operator+(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a + v1.at(0))>
 {
-	// scal + vec
 	return v1 + a;
 }
 
 template <typename T1, typename T2>
 std::vector<T1>& operator+=(std::vector<T1>& v1, const T2& a)
 {
-	// vec += scal
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
 		v1[j] += a;
@@ -403,7 +646,6 @@ std::vector<T1>& operator+=(std::vector<T1>& v1, const T2& a)
 template <typename T1, typename T2>
 std::vector<T1>& operator+=(std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec += vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -414,7 +656,6 @@ std::vector<T1>& operator+=(std::vector<T1>& v1, const std::vector<T2>& v2)
 template <typename T1>
 std::vector<T1>& operator++(std::vector<T1>& v1)
 {
-	// ++vec
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
 		v1[j] += static_cast<T1>(1.0);
@@ -424,7 +665,6 @@ std::vector<T1>& operator++(std::vector<T1>& v1)
 template <typename T1>
 std::vector<T1> operator++(std::vector<T1>& v1, int)
 {
-	// vec++
 	std::vector<T1> rst(v1);
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -435,7 +675,6 @@ std::vector<T1> operator++(std::vector<T1>& v1, int)
 template <typename T1, typename T2>
 auto operator-(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) - v2.at(0))>
 {
-	// vec - vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1.at(0) - v2.at(0))> rst(N);
@@ -447,7 +686,6 @@ auto operator-(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template <typename T1, typename T2>
 auto operator-(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) - a)>
 {
-	// vec - scal
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1.at(0) - a)> rst(N);
 	for(SIZE_T j(0); j < N; ++j)
@@ -458,7 +696,6 @@ auto operator-(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v
 template <typename T1, typename T2>
 auto operator-(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a - v1.at(0))>
 {
-	// scal - vec
 	const SIZE_T N(v1.size());
 	std::vector<decltype(a - v1.at(0))> rst(N);
 	for(SIZE_T j(0); j < N; ++j)
@@ -469,7 +706,6 @@ auto operator-(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a
 template <typename T1, typename T2>
 std::vector<T1>& operator-=(std::vector<T1>& v1, const T2& a)
 {
-	// vec -= scal
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
 		v1[j] -= a;
@@ -479,7 +715,6 @@ std::vector<T1>& operator-=(std::vector<T1>& v1, const T2& a)
 template <typename T1, typename T2>
 std::vector<T1>& operator-=(std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec -= vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -490,7 +725,6 @@ std::vector<T1>& operator-=(std::vector<T1>& v1, const std::vector<T2>& v2)
 template <typename T1>
 std::vector<T1>& operator--(std::vector<T1>& v1)
 {
-	// --vec
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
 		v1[j] -= static_cast<T1>(1.0);
@@ -500,7 +734,6 @@ std::vector<T1>& operator--(std::vector<T1>& v1)
 template <typename T1>
 std::vector<T1> operator--(std::vector<T1>& v1, int)
 {
-	// vec--
 	std::vector<T1> rst(v1);
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -511,7 +744,6 @@ std::vector<T1> operator--(std::vector<T1>& v1, int)
 template <typename T>
 std::vector<T> operator-(const std::vector<T>& v1)
 {
-	// negetive vec
 	const SIZE_T N(v1.size());
 	std::vector<T> rst(N);
 	for(SIZE_T j(0); j < N; ++j)
@@ -522,7 +754,6 @@ std::vector<T> operator-(const std::vector<T>& v1)
 template <typename T1, typename T2>
 auto operator*(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) * v2.at(0))>
 {
-	// vec * vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1.at(0) * v2.at(0))> rst(N);
@@ -534,7 +765,6 @@ auto operator*(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template <typename T1, typename T2>
 auto operator*(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) * a)>
 {
-	// vec * scal
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1.at(0) * a)> rst(N);
 	for(SIZE_T j(0); j < N; ++j)
@@ -545,14 +775,12 @@ auto operator*(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v
 template <typename T1, typename T2>
 auto operator*(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a * v1.at(0))>
 {
-	// scal * vec
 	return v1 * a;
 }
 
 template <typename T1, typename T2>
 std::vector<T1>& operator*=(std::vector<T1>& v1, const T2& a)
 {
-	// vec *= scal
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
 		v1[j] *= a;
@@ -562,7 +790,6 @@ std::vector<T1>& operator*=(std::vector<T1>& v1, const T2& a)
 template <typename T1, typename T2>
 std::vector<T1>& operator*=(std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec *= vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -573,7 +800,6 @@ std::vector<T1>& operator*=(std::vector<T1>& v1, const std::vector<T2>& v2)
 template <typename T1, typename T2>
 auto operator/(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) / v2.at(0))>
 {
-	// vec / vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1.at(0) / v2.at(0))> rst(N);
@@ -585,14 +811,12 @@ auto operator/(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template <typename T1, typename T2>
 auto operator/(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) / a)>
 {
-	// vec / scal
 	return v1 * (static_cast<T2>(1.0) / a);
 }
 
 template <typename T1, typename T2>
 auto operator/(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a / v1.at(0))>
 {
-	// scal / vec
 	const SIZE_T N(v1.size());
 	std::vector<decltype(a / v1.at(0))> rst(N);
 	for(SIZE_T j(0); j < N; ++j)
@@ -603,7 +827,6 @@ auto operator/(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a
 template <typename T1, typename T2>
 std::vector<T1>& operator/=(std::vector<T1>& v1, const T2& a)
 {
-	// vec /= scal
 	const T2 a_inv(static_cast<T2>(1.0) / a);
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -614,7 +837,6 @@ std::vector<T1>& operator/=(std::vector<T1>& v1, const T2& a)
 template <typename T1, typename T2>
 std::vector<T1>& operator/=(std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec /= vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -625,7 +847,6 @@ std::vector<T1>& operator/=(std::vector<T1>& v1, const std::vector<T2>& v2)
 template <typename T1, typename T2>
 auto operator%(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(v1.at(0) % v2.at(0))>
 {
-	// vec % vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1.at(0) % v2.at(0))> rst(N);
@@ -637,14 +858,12 @@ auto operator%(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template <typename T1, typename T2>
 auto operator%(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) % a)>
 {
-	// vec % scal
 	return v1 * (static_cast<T2>(1.0) % a);
 }
 
 template <typename T1, typename T2>
 auto operator%(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a % v1.at(0))>
 {
-	// scal % vec
 	const SIZE_T N(v1.size());
 	std::vector<decltype(a % v1.at(0))> rst(N);
 	for(SIZE_T j(0); j < N; ++j)
@@ -655,7 +874,6 @@ auto operator%(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(a
 template <typename T1, typename T2>
 std::vector<T1>& operator%=(std::vector<T1>& v1, const T2& a)
 {
-	// vec %= scal
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
 		v1[j] %= a;
@@ -665,7 +883,6 @@ std::vector<T1>& operator%=(std::vector<T1>& v1, const T2& a)
 template <typename T1, typename T2>
 std::vector<T1>& operator%=(std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec %= vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	for(SIZE_T j(0); j < N; ++j)
@@ -676,256 +893,156 @@ std::vector<T1>& operator%=(std::vector<T1>& v1, const std::vector<T2>& v2)
 // relational operators
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator==(const std::vector<T1>& v1, const std::vector<T2>& v2)
+inline std::vector<BOOL_T> operator==(const std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec == vec
-	assertsize(v1, v2);
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] == v2[j]);
-	return rst;
+	return equal(v1, v2);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator==(const std::vector<T1>& v1, const T2& a)
+inline std::vector<BOOL_T> operator==(const std::vector<T1>& v1, const T2& a)
 {
-	// vec == scal
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] == a);
-	return rst;
+	return equal(a, v1);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator!=(const std::vector<T1>& v1, const std::vector<T2>& v2)
+inline std::vector<BOOL_T> operator==(const T2& a, const std::vector<T1>& v1)
 {
-	// vec != vec
-	assertsize(v1, v2);
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] != v2[j]);
-	return rst;
+	return equal(v1, a);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator!=(const std::vector<T1>& v1, const T2& a)
+inline std::vector<BOOL_T> operator!=(const std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec != scal
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] != a);
-	return rst;
+	return not_equal(v1, v2);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator>=(const std::vector<T1>& v1, const std::vector<T2>& v2)
+inline std::vector<BOOL_T> operator!=(const std::vector<T1>& v1, const T2& a)
 {
-	// vec >= vec
-	assertsize(v1, v2);
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(SIZE_T j(0); j < N; ++j)
-		rst[j] = (v1[j] >= v2[j]);
-	return rst;
+	return not_equal(v1, a);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator>=(const std::vector<T1>& v1, const T2& a)
+inline std::vector<BOOL_T> operator>=(const std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec >= scal
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] >= a);
-	return rst;
+	return greater_equal(v1, v2);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator<=(const std::vector<T1>& v1, const std::vector<T2>& v2)
+inline std::vector<BOOL_T> operator>=(const std::vector<T1>& v1, const T2& a)
 {
-	// vec <= vec
-	assertsize(v1, v2);
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] <= v2[j]);
-	return rst;
+	return greater_equal(v1, a);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator<=(const std::vector<T1>& v1, const T2& a)
+inline std::vector<BOOL_T> operator<=(const std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec <= scal
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] <= a);
-	return rst;
+	return less_equal(v1, v2);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator>(const std::vector<T1>& v1, const std::vector<T2>& v2)
+inline std::vector<BOOL_T> operator<=(const std::vector<T1>& v1, const T2& a)
 {
-	// vec > vec
-	assertsize(v1, v2);
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] > v2[j]);
-	return rst;
+	return less_equal(v1, a);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator>(const std::vector<T1>& v1, const T2& a)
+inline std::vector<BOOL_T> operator>(const std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec > scal
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] > a);
-	return rst;
+	return greater(v1, v2);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator<(const std::vector<T1>& v1, const std::vector<T2>& v2)
+inline std::vector<BOOL_T> operator>(const std::vector<T1>& v1, const T2& a)
 {
-	// vec < vec
-	assertsize(v1, v2);
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] < v2[j]);
-	return rst;
+	return greater(v1, a);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator<(const std::vector<T1>& v1, const T2& a)
+inline std::vector<BOOL_T> operator<(const std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec < scal
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = (v1[j] < a);
-	return rst;
+	return less(v1, v2);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator==(const T2& a, const std::vector<T1>& v1)
+inline std::vector<BOOL_T> operator<(const std::vector<T1>& v1, const T2& a)
 {
-	// scal == vec
-	return (v1 == a);
+	return less(v1, a);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator!=(const T2& a, const std::vector<T1>& v1)
+inline std::vector<BOOL_T> operator!=(const T2& a, const std::vector<T1>& v1)
 {
-	// scal != vec
-	return (v1 != a);
+	return not_equal(a, v1);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator>=(const T2& a, const std::vector<T1>& v1)
+inline std::vector<BOOL_T> operator>=(const T2& a, const std::vector<T1>& v1)
 {
-	// scal >= vec
-	return (v1 <= a);
+	return greater_equal(a, v1);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator<=(const T2& a, const std::vector<T1>& v1)
+inline std::vector<BOOL_T> operator<=(const T2& a, const std::vector<T1>& v1)
 {
-	// scal <= vec
-	return (v1 >= a);
+	return less_equal(a, v1);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator>(const T2& a, const std::vector<T1>& v1)
+inline std::vector<BOOL_T> operator>(const T2& a, const std::vector<T1>& v1)
 {
-	// scal > vec
-	return (v1 < a);
+	return greater(a, v1);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator<(const T2& a, const std::vector<T1>& v1)
+inline std::vector<BOOL_T> operator<(const T2& a, const std::vector<T1>& v1)
 {
-	// scal < vec
-	return (v1 > a);
+	return less(v1, a);
 }
 
 // logical operators
 
 template <typename T>
-std::vector<BOOL_T> operator!(const std::vector<T>& v) 
+inline std::vector<BOOL_T> operator!(const std::vector<T>& v) 
 {
-	// !vec
-	const SIZE_T N(v.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = static_cast<BOOL_T>(!v[j]);
-	return rst;
+	return logical_not(v);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator&&(const std::vector<T1>& v1, const std::vector<T2>& v2) 
+inline std::vector<BOOL_T> operator&&(const std::vector<T1>& v1, const std::vector<T2>& v2) 
 {
-	// vec && vec
-	assertsize(v1, v2);
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = static_cast<BOOL_T>(v1[j] && v2[j]);
-	return rst;
+	// here overloading operator&& (as well as || below) shoule be fine since it does not return bool
+	return logical_and(v1, v2);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator&&(const std::vector<T1>& v1, const T2& a) 
+inline std::vector<BOOL_T> operator&&(const std::vector<T1>& v1, const T2& a) 
 {
-	// vec && scal
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = static_cast<BOOL_T>(v1[j] && a);
-	return rst;
+	return logical_and(v1, a);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator&&(const T2& a, const std::vector<T1>& v1) 
+inline std::vector<BOOL_T> operator&&(const T2& a, const std::vector<T1>& v1) 
 {
-	// scal && vec
-	return v1 && a;
+	return logical_and(a, v1);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator||(const std::vector<T1>& v1, const std::vector<T2>& v2) 
+inline std::vector<BOOL_T> operator||(const std::vector<T1>& v1, const std::vector<T2>& v2) 
 {
-	// vec || vec
-	assertsize(v1, v2);
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = static_cast<BOOL_T>(v1[j] || v2[j]);
-	return rst;
+	return logical_or(v1, v2);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator||(const std::vector<T1>& v1, const T2& a) 
+inline std::vector<BOOL_T> operator||(const std::vector<T1>& v1, const T2& a) 
 {
-	// vec || scal
-	const SIZE_T N(v1.size());
-	std::vector<BOOL_T> rst(N);
-	for(size_t j(0); j < N; ++j)
-		rst[j] = static_cast<BOOL_T>(v1[j] || a);
-	return rst;
+	return logical_or(v1, a);
 }
 
 template <typename T1, typename T2>
-std::vector<BOOL_T> operator||(const T2& a, const std::vector<T1>& v1) 
+inline std::vector<BOOL_T> operator||(const T2& a, const std::vector<T1>& v1) 
 {
-	// scal || vec
-	return v1 || a;
+	return logical_or(a, v1);
 }
 
 // other operators
@@ -933,28 +1050,25 @@ std::vector<BOOL_T> operator||(const T2& a, const std::vector<T1>& v1)
 template <typename T1, typename T2>
 auto operator^(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vector<decltype(std::pow(v1.at(0), v2.at(0)))>
 {
-	// vec^vec
+	// pay attention to operator priority when using!
 	return pow(v1, v2);
 }
 
 template <typename T1, typename T2>
 auto operator^(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(std::pow(v1.at(0), a))>
 {
-	// vec^scal
 	return pow(v1, a);
 }
 
 template <typename T1, typename T2>
 auto operator^(const T2& a, const std::vector<T1>& v1) -> std::vector<decltype(std::pow(a, v1.at(0)))>
 {
-	// scal^vec
 	return pow(a, v1);
 }
 
 template <typename T1, typename T2>
 std::vector<T1>& operator^=(std::vector<T1>& v1, const std::vector<T2>& v2)
 {
-	// vec^=vec
 	assertsize(v1, v2);
 	const SIZE_T N(v1.size());
 	for(size_t j(0); j < N; ++j)
@@ -965,7 +1079,6 @@ std::vector<T1>& operator^=(std::vector<T1>& v1, const std::vector<T2>& v2)
 template <typename T1, typename T2>
 std::vector<T1> operator^=(std::vector<T1>& v1, const T2& a)
 {
-	// vec^=scal
 	const SIZE_T N(v1.size());
 	for(size_t j(0); j < N; ++j)
 		v1[j] = std::pow(v1[j], a);
@@ -975,7 +1088,7 @@ std::vector<T1> operator^=(std::vector<T1>& v1, const T2& a)
 template <typename T1>
 std::vector<T1> operator|(const std::vector<T1>& v1, const std::vector<T1>& v2)
 {
-	// vec|vec
+	// connect vector elements, pay attention to operator priority when using!
 	std::vector<T1> rst(v1);
 	rst.insert(rst.end(), v2.begin(), v2.end());
 	return rst;
@@ -984,7 +1097,6 @@ std::vector<T1> operator|(const std::vector<T1>& v1, const std::vector<T1>& v2)
 template <typename T1, typename T2>
 std::vector<T1> operator|(const std::vector<T1>& v1, const T2& a)
 {
-	// vec|scal
 	std::vector<T1> rst;
 	rst.reserve(v1.size() + 1);
 	rst.insert(rst.end(), v1.begin(), v1.end());
@@ -995,7 +1107,6 @@ std::vector<T1> operator|(const std::vector<T1>& v1, const T2& a)
 template <typename T1, typename T2>
 std::vector<T1> operator|(const T2& a, const std::vector<T1>& v1)
 {
-	// scal|vec
 	std::vector<T1> rst(1, static_cast<T1>(a));
 	rst.reserve(v1.size() + 1);
 	rst.insert(rst.end(), v1.begin(), v1.end());
@@ -1003,17 +1114,15 @@ std::vector<T1> operator|(const T2& a, const std::vector<T1>& v1)
 }
 
 template <typename T1>
-std::vector<T1>& operator|=(std::vector<T1>& v1, const std::vector<T1>& v2)
+inline std::vector<T1>& operator|=(std::vector<T1>& v1, const std::vector<T1>& v2)
 {
-	// vec|=vec
 	v1.insert(v1.end(), v2.begin(), v2.end());
 	return v1;
 }
 
 template <typename T1, typename T2>
-std::vector<T1>& operator|=(std::vector<T1>& v1, const T2& a)
+inline std::vector<T1>& operator|=(std::vector<T1>& v1, const T2& a)
 {
-	// vec|=scal
 	v1.push_back(static_cast<T1>(a));
 	return v1;
 }
@@ -1022,7 +1131,7 @@ template <typename T1, typename T2>
 typename std::enable_if< std::is_integral<T2>::value, std::vector<T1> >::type
 operator<<(const std::vector<T1>& v1, const T2& a)
 {
-	// vec<<scal
+	// element rotation pay attention to operator priority when using!
 	const SIZE_T N(v1.size());
 	if (N < 2) {
 		return v1;
@@ -1047,7 +1156,6 @@ template <typename T1, typename T2>
 typename std::enable_if< std::is_integral<T2>::value, std::vector<T1>& >::type
 operator<<=(std::vector<T1>& v1, const T2& a)
 {
-	// vec<<=scal
 	const SIZE_T N(v1.size());
 	if (N < 2) {
 		return v1;
@@ -1064,17 +1172,15 @@ operator<<=(std::vector<T1>& v1, const T2& a)
 
 template <typename T1, typename T2>
 typename std::enable_if< std::is_integral<T2>::value, std::vector<T1> >::type
-operator>>(const std::vector<T1>& v1, const T2& a)
+inline operator>>(const std::vector<T1>& v1, const T2& a)
 {
-	// vec>>scal
 	return v1 << -a;
 }
 
 template <typename T1, typename T2>
 typename std::enable_if< std::is_integral<T2>::value, std::vector<T1>& >::type
-operator>>=(std::vector<T1>& v1, const T2& a)
+inline operator>>=(std::vector<T1>& v1, const T2& a)
 {
-	// vec>>=scal
 	v1<<=-a;
 	return v1;
 }
@@ -1082,7 +1188,8 @@ operator>>=(std::vector<T1>& v1, const T2& a)
 template <typename T1>
 auto operator~(const std::vector<T1>& v1) -> std::vector<decltype(v1.at(0) / norm(v1))>
 {
-	// ~v => extract unit vector along v1 direction
+	// extract unit vector along v1 direction
+	// pay attention to operator priority when using!
 	const auto v1nrm(norm(v1));
 	const SIZE_T N(v1.size());
 	std::vector<decltype(v1[0] / v1nrm)> rst(N);
@@ -1097,6 +1204,7 @@ typename std::enable_if< std::is_floating_point<T1>::value and std::is_arithmeti
 operator&(const std::vector<T1>& v, const std::vector<T2>& n)
 {
 	// vec&vec => get projection of v along the direction n
+	// pay attention to operator priority when using!
 	assertsize(v, n);
 
 	const auto nnrm2(pow(norm(n), 2));
@@ -1119,7 +1227,6 @@ template <typename T1, typename T2>
 typename std::enable_if< std::is_floating_point<T1>::value and std::is_arithmetic<T2>::value, std::vector<T1>& >::type
 operator&=(std::vector<T1>& v, const std::vector<T2>& n)
 {
-	// vec&=vec 
 	assertsize(v, n);
 
 	const auto nnrm2(pow(norm(n), 2));
@@ -1140,7 +1247,7 @@ operator&=(std::vector<T1>& v, const std::vector<T2>& n)
 // other utilities
 
 template <typename T>
-std::vector<T> subvec(const std::vector<T>& v, SIZE_T start, SIZE_T N)
+inline std::vector<T> subvec(const std::vector<T>& v, SIZE_T start, SIZE_T N)
 {
 	// get sub-vector (v[start], v[start+1], ..., v[start + N - 1])
 	return std::vector<T>(v.begin() + start, v.begin() + start + N);
@@ -1216,7 +1323,7 @@ std::vector<T> arange(T start, T end, T step = 1)
 }
 
 template <typename T>
-std::vector<T> arange(T end) 
+inline std::vector<T> arange(T end) 
 {
 	// see numpy.arange
 	return arange(static_cast<T>(0), end);
@@ -1244,14 +1351,14 @@ void meshgrid(const std::vector<T>& X, const std::vector<T>& Y, std::vector<T>& 
 
 template <typename T1, typename T2>
 typename std::enable_if< std::is_floating_point<T1>::value and std::is_arithmetic<T2>::value, std::vector<T1> >::type
-component(const std::vector<T1>& v, const std::vector<T2>& n)
+inline component(const std::vector<T1>& v, const std::vector<T2>& n)
 {
 	// extract projection of v on n direction
 	return v&n;
 }
 
 template <typename T>
-auto unit(const std::vector<T>& v) -> std::vector<decltype(v.at(0) / norm(v))>
+inline auto unit(const std::vector<T>& v) -> std::vector<decltype(v.at(0) / norm(v))>
 {
 	// return unit vector on v direction
 	return ~v; 
