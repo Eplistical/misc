@@ -63,6 +63,11 @@ namespace matrixop {
 				&work[0], &lwork, &iwork[0], &liwork, &info);
 	}
 
+	VOID _eig(STYPE* A, STYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
+    {
+        // TODO: write _eig!
+    }
+
     // double
 	VOID _eigh(DTYPE* A, DTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
 	{
@@ -84,6 +89,11 @@ namespace matrixop {
 		DSYEVD(&jobz, &CHARL, &N, A, &N, eva, 
 				&work[0], &lwork, &iwork[0], &liwork, &info);
 	}
+
+	VOID _eig(DTYPE* A, DTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
+    {
+        // TODO: write _eig!
+    }
 
     // complex
 	VOID _eigh(CTYPE* A, STYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
@@ -113,6 +123,12 @@ namespace matrixop {
 				&iwork[0], &liwork, &info);
 	}
 
+	VOID _eig(CTYPE* A, CTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
+    {
+        // TODO: write _eig!
+    }
+
+
     // complex*16
 	VOID _eigh(ZTYPE* A, DTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
 	{
@@ -140,6 +156,12 @@ namespace matrixop {
 				&work[0], &lwork, &rwork[0], &lrwork, 
 				&iwork[0], &liwork, &info);
 	}
+
+	VOID _eig(ZTYPE* A, ZTYPE* eva, CNST_ITYPE N, CNST_CHAR jobz)
+    {
+        // TODO: write _eig!
+    }
+
 
     // interfaces
     template <typename T1, typename T2>
