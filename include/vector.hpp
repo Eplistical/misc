@@ -856,9 +856,13 @@ auto operator%(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 }
 
 template <typename T1, typename T2>
-auto operator%(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) % a)>
+inline auto operator%(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) % a)>
 {
-	return v1 * (static_cast<T2>(1.0) % a);
+	const SIZE_T N(v1.size());
+	std::vector<decltype(v1.at(0) % a)> rst(N);
+	for(SIZE_T j(0); j < N; ++j)
+		rst[j] = v1[j] % a;
+	return rst;
 }
 
 template <typename T1, typename T2>
@@ -1133,23 +1137,16 @@ operator<<(const std::vector<T1>& v1, const T2& a)
 {
 	// element rotation pay attention to operator priority when using!
 	const SIZE_T N(v1.size());
-	if (N < 2) {
-		return v1;
-	}
-
-	if (a == 0) {
-		return v1;
-	}
-	else {
-		std::vector<T1> rst(v1);
+	std::vector<T1> rst(v1);
+	if (N >= 2) {
 		if (a > 0) {
 			std::rotate(rst.begin(), rst.begin() + a % N, rst.end());
 		}
-		else {
+		else if (a < 0) {
 			std::rotate(rst.begin(), rst.begin() + N - (-a) % N, rst.end());
 		}
-		return rst;
 	}
+	return rst;
 }
 
 template <typename T1, typename T2>
@@ -1157,29 +1154,27 @@ typename std::enable_if< std::is_integral<T2>::value, std::vector<T1>& >::type
 operator<<=(std::vector<T1>& v1, const T2& a)
 {
 	const SIZE_T N(v1.size());
-	if (N < 2) {
-		return v1;
-	}
-
-	if (a > 0) {
-		std::rotate(v1.begin(), v1.begin() + a % N, v1.end());
-	}
-	else if (a < 0) {
-		std::rotate(v1.begin(), v1.begin() + N - (-a) % N, v1.end());
+	if (N >= 2) {
+		if (a > 0) {
+			std::rotate(v1.begin(), v1.begin() + a % N, v1.end());
+		}
+		else if (a < 0) {
+			std::rotate(v1.begin(), v1.begin() + N - (-a) % N, v1.end());
+		}
 	}
 	return v1;
 }
 
 template <typename T1, typename T2>
-typename std::enable_if< std::is_integral<T2>::value, std::vector<T1> >::type
-inline operator>>(const std::vector<T1>& v1, const T2& a)
+inline typename std::enable_if< std::is_integral<T2>::value, std::vector<T1> >::type
+operator>>(const std::vector<T1>& v1, const T2& a)
 {
 	return v1 << -a;
 }
 
 template <typename T1, typename T2>
-typename std::enable_if< std::is_integral<T2>::value, std::vector<T1>& >::type
-inline operator>>=(std::vector<T1>& v1, const T2& a)
+inline typename std::enable_if< std::is_integral<T2>::value, std::vector<T1>& >::type
+operator>>=(std::vector<T1>& v1, const T2& a)
 {
 	v1<<=-a;
 	return v1;
