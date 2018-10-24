@@ -61,12 +61,12 @@ namespace matrixop {
 
     inline vector<STYPE> _adjoint(const vector<STYPE>& A, CNST_ITYPE M, CNST_ITYPE N)
     {
-        return _transpose(A);
+        return _transpose(A, M, N);
     }
 
     inline vector<DTYPE> _adjoint(const vector<DTYPE>& A, CNST_ITYPE M, CNST_ITYPE N)
     {
-        return _transpose(A);
+        return _transpose(A, M, N);
     }
 
     // interfaces
