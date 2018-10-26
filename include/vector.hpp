@@ -317,7 +317,19 @@ conj(const std::vector<T>& v)
 }
 
 template <typename T>
-std::vector<T> abs(const std::vector<T>& v)
+inline typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
+abs(const std::vector< std::complex<T> >& v)
+{
+	const SIZE_T N(v.size());
+	std::vector<T> rst(N);
+	for(SIZE_T j(0); j < N; ++j) 
+		rst[j] = std::abs(v[j]);
+	return rst;
+}
+
+template <typename T>
+inline typename std::enable_if< std::is_arithmetic<T>::value, std::vector<T> >::type
+abs(const std::vector<T>& v)
 {
 	const SIZE_T N(v.size());
 	std::vector<T> rst(N);
@@ -542,48 +554,75 @@ T prod(const std::vector<T>& v)
 
 template <typename T>
 typename std::enable_if< std::is_integral<T>::value, DOUBLE_T>::type
-norm(const std::vector<T>& v)
+norm2(const std::vector<T>& v)
 {
 	DOUBLE_T rst(0.0);
 	const SIZE_T N(v.size());
 	for(SIZE_T j(0); j < N; ++j)
 		rst += v[j] * v[j];
-	return std::sqrt(rst);
+	return rst;
+}
+
+template <typename T>
+inline typename std::enable_if< std::is_integral<T>::value, DOUBLE_T>::type
+norm(const std::vector<T>& v) 
+{
+	return std::sqrt(norm2(v));
 }
 
 template <typename T>
 typename std::enable_if< std::is_floating_point<T>::value, T>::type
-norm(const std::vector<T>& v)
+norm2(const std::vector<T>& v)
 {
 	T rst(0.0);
 	const SIZE_T N(v.size());
 	for(SIZE_T j(0); j < N; ++j)
 		rst += v[j] * v[j];
-	return std::sqrt(rst);
+	return rst;
+}
+
+template <typename T>
+inline typename std::enable_if< std::is_floating_point<T>::value, T>::type
+norm(const std::vector<T>& v) 
+{
+	return std::sqrt(norm2(v));
 }
 
 template <typename T>
 typename std::enable_if< std::is_integral<T>::value, DOUBLE_T>::type
-norm(const std::vector< std::complex<T> >& v)
+norm2(const std::vector< std::complex<T> >& v)
 {
 	DOUBLE_T rst(0.0);
 	const SIZE_T N(v.size());
 	for(SIZE_T j(0); j < N; ++j)
 		rst += std::pow(v[j].real(), 2) + pow(v[j].imag(), 2);
-	return std::sqrt(rst);
+	return rst;
+}
+
+template <typename T>
+inline typename std::enable_if< std::is_integral<T>::value, DOUBLE_T>::type
+norm(const std::vector< std::complex<T> >& v)
+{
+	return std::sqrt(norm2(v));
 }
 
 template <typename T>
 typename std::enable_if< std::is_floating_point<T>::value, T>::type
-norm(const std::vector< std::complex<T> >& v)
+norm2(const std::vector< std::complex<T> >& v)
 {
 	T rst(0.0);
-	const SIZE_T N(v.size());
-	for(SIZE_T j(0); j < N; ++j)
+	const size_t n(v.size());
+	for(size_t j(0); j < n; ++j)
 		rst += std::pow(v[j].real(), 2) + pow(v[j].imag(), 2);
-	return std::sqrt(rst);
+	return rst;
 }
 
+template <typename T>
+inline typename std::enable_if< std::is_floating_point<T>::value, T>::type
+norm(const std::vector< std::complex<T> >& v) 
+{
+	return std::sqrt(norm2(v));
+}
 
 template <typename T>
 T min(const std::vector<T>& v)

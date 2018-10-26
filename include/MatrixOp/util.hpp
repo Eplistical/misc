@@ -58,8 +58,28 @@ namespace matrixop {
 	using std::vector;
 
     template <typename T>
+        inline T vecmatvec(const vector<T>& V, const vector<T>& A, const vector<T>& W) {
+            return dot(V, matvec(A, W));
+        }
+
+    template <typename T>
         inline T vecCmatvec(const vector<T>& V, const vector<T>& A, const vector<T>& W) {
             return dotc(V, matvec(A, W));
+        }
+
+    template <typename T>
+        inline T vecmatCvec(const vector<T>& V, const vector<T>& A, const vector<T>& W) {
+            return dot(V, matCvec(A, W));
+        }
+
+    template <typename T>
+        inline T vecCmatCvec(const vector<T>& V, const vector<T>& A, const vector<T>& W) {
+            return dotc(V, matCvec(A, W));
+        }
+
+    template <typename T>
+        inline vector<T> matmatmat(const vector<T>& A, const vector<T>& B, const vector<T>& C, CNST_ITYPE L, CNST_ITYPE K) {
+            return matmat(A, matmat(B, C, K), L);
         }
 
     template <typename T>
@@ -69,7 +89,22 @@ namespace matrixop {
 
     template <typename T>
         inline vector<T> matmatmatC(const vector<T>& A, const vector<T>& B, const vector<T>& C, CNST_ITYPE L, CNST_ITYPE K) {
-            return matmat(matmat(A, B, L), adjoint(C), K);
+            return matmat(A, matmatC(B, C, K), L);
+        }
+
+    template <typename T>
+        inline vector<T> matmatCmat(const vector<T>& A, const vector<T>& B, const vector<T>& C, CNST_ITYPE L, CNST_ITYPE K) {
+            return matmat(A, matCmat(B, C, K), L);
+        }
+
+    template <typename T>
+        inline vector<T> matCmatmatC(const vector<T>& A, const vector<T>& B, const vector<T>& C, CNST_ITYPE L, CNST_ITYPE K) {
+            return matCmat(A, matmatC(B, C, K), L);
+        }
+
+    template <typename T>
+        inline vector<T> matCmatCmatC(const vector<T>& A, const vector<T>& B, const vector<T>& C, CNST_ITYPE L, CNST_ITYPE K) {
+            return matCmat(A, matCmatC(B, C, K), L);
         }
 };
 

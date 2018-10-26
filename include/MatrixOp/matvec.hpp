@@ -9,6 +9,8 @@
  * 	param   A:  matrix (M*N)
  * 	param   V:  vector (N)
  *
+ * 	return  A * v
+ *
  */
 
 
@@ -55,7 +57,7 @@ namespace matrixop {
         vector<T> matvec(const vector<T>& A, const vector<T>& V) {
             CNST_ITYPE N(static_cast<ITYPE>(V.size()));
             CNST_ITYPE M(static_cast<ITYPE>(A.size() / N));
-            vector<T> rst(N * M);
+            vector<T> rst(N);
             _matvec(&A[0], &V[0], M, N, &rst[0]);
             return rst;
         }

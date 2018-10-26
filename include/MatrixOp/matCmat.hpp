@@ -10,7 +10,7 @@
  * 	param   B:  matrix B (K*N)
  * 	param   K:  matrix dimensions
  *
- * 	return A * B
+ * 	return A' * B
  *
  */
 

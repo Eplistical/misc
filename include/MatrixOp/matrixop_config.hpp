@@ -321,8 +321,8 @@ namespace matrixop {
 	static CNST_CTYPE ZEROC(0.0, 0.0);
 	static CNST_ZTYPE ZEROZ(0.0, 0.0);
 
-	static CNST_ZTYPE IMAGIC(0.0, 1.0);
-	static CNST_CTYPE IMAGIZ(0.0, 1.0);
+	static CNST_CTYPE IMAGIC(0.0, 1.0);
+	static CNST_ZTYPE IMAGIZ(0.0, 1.0);
 
     // BLAS/LAPACK interfaces
 	extern "C" {
