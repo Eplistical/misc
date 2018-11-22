@@ -41,26 +41,6 @@ namespace misc {
         fftw_destroy_plan(my_plan);
     }
 
-    VOID_T _fft(const DOUBLE_T* in, COMPLEX_T* out, const INT_T rank, const INT_T* N) {
-        /* fast fourier transform, r2c
-         *
-         *  param     in: double input pointer
-         *  param    out: complex output pointer
-         *  param   rank: dimension of fft
-         *  param      N: length of array on each dimension
-         *
-         */
-        fftw_plan my_plan;
-        DOUBLE_T* in_cast(const_cast<DOUBLE_T*>(in));
-        my_plan = fftw_plan_dft_r2c(    rank, N, 
-                                        in_cast,
-                                        reinterpret_cast<fftw_complex*>(out), 
-                                        FFTW_ESTIMATE
-                                        );
-        fftw_execute(my_plan);
-        fftw_destroy_plan(my_plan);
-    }
-
     VOID_T _ifft(const COMPLEX_T* in, COMPLEX_T* out, const INT_T rank, const INT_T* N) {
         /* inverse fast fourier transform
          *
@@ -81,26 +61,6 @@ namespace misc {
         fftw_destroy_plan(my_plan);
     }
 
-    VOID_T _ifft(const COMPLEX_T* in, DOUBLE_T* out, const INT_T rank, const INT_T* N) {
-        /* inverse fast fourier transform, c2r
-         *
-         *  param     in: complex input pointer
-         *  param    out: double output pointer
-         *  param   rank: dimension of fft
-         *  param      N: length of array on each dimension
-         *
-         */
-        fftw_plan my_plan;
-        COMPLEX_T* in_cast(const_cast<COMPLEX_T*>(in));
-        my_plan = fftw_plan_dft_c2r(    rank, N, 
-                                        reinterpret_cast<fftw_complex*>(in_cast), 
-                                        out,
-                                        FFTW_ESTIMATE
-                                        );
-        fftw_execute(my_plan);
-        fftw_destroy_plan(my_plan);
-    }
-
     template <typename T>
         VOID_T _fftshift(T* data, const INT_T rank, const INT_T* N) {
         /* swap data along each dimension
@@ -116,33 +76,31 @@ namespace misc {
     // -- interfaces -- //
     
     // 1d fft
-    template <typename T>
-        std::vector<COMPLEX_T> fft(const std::vector<T>& in) {
-            const INT_T N(in.size());
-            crasher::confirm<> (in.size() >= N, "fft: insufficient data in the array!");
+    std::vector<COMPLEX_T> fft(const std::vector<COMPLEX_T>& in) {
+        const INT_T N(in.size());
+        crasher::confirm<> (in.size() >= N, "fft: insufficient data in the array!");
 
-            std::vector<COMPLEX_T> out(N);
-            _fft(&in[0], &out[0], 1, &N);
-            return out;
-        }
+        std::vector<COMPLEX_T> out(N);
+        _fft(&in[0], &out[0], 1, &N);
+        return out;
+    }
 
     // nd fft
-    template <typename T>
-        std::vector<COMPLEX_T> fftn(const std::vector<T>& in, const std::vector<INT_T>& N) {
-            const INT_T rank(N.size());
-            SIZE_T Ntot(1);
-            for (INT_T i(0); i < rank; ++i) {
-                Ntot *= N[i];
-            }
-            crasher::confirm<> (in.size() >= Ntot, "fftn: insufficient data in the array!");
-
-            std::vector<INT_T> Nrev(N);
-            std::reverse(Nrev.begin(), Nrev.end());
-            std::vector<COMPLEX_T> out(in.size());
-            _fft(&in[0], &out[0], rank, &Nrev[0]);
-
-            return out;
+    std::vector<COMPLEX_T> fftn(const std::vector<COMPLEX_T>& in, const std::vector<INT_T>& N) {
+        const INT_T rank(N.size());
+        SIZE_T Ntot(1);
+        for (INT_T i(0); i < rank; ++i) {
+            Ntot *= N[i];
         }
+        crasher::confirm<> (in.size() >= Ntot, "fftn: insufficient data in the array!");
+
+        std::vector<INT_T> Nrev(N);
+        std::reverse(Nrev.begin(), Nrev.end());
+        std::vector<COMPLEX_T> out(in.size());
+        _fft(&in[0], &out[0], rank, &Nrev[0]);
+
+        return out;
+    }
 
     // 1d ifft
     std::vector<COMPLEX_T> ifft(const std::vector<COMPLEX_T>& in) {
@@ -153,17 +111,6 @@ namespace misc {
         _ifft(&in[0], &out[0], 1, &N);
         // normalize
         out /= COMPLEX_T(static_cast<DOUBLE_T>(N), 0.0);
-        return out;
-    }
-
-    std::vector<DOUBLE_T> irfft(const std::vector<COMPLEX_T>& in) {
-        const INT_T N(in.size());
-        crasher::confirm<> (in.size() >= N, "irfft: insufficient data in the array!");
-
-        std::vector<DOUBLE_T> out(N);
-        _ifft(&in[0], &out[0], 1, &N);
-        // normalize
-        out /= N;
         return out;
     }
 
@@ -183,23 +130,6 @@ namespace misc {
         _ifft(&in[0], &out[0], rank, &Nrev[0]);
         // normalize
         out /= COMPLEX_T(static_cast<DOUBLE_T>(Ntot), 0.0);
-        return out;
-    }
-
-    std::vector<DOUBLE_T> irfftn(const std::vector<COMPLEX_T>& in, const std::vector<INT_T>& N) {
-        const INT_T rank(N.size());
-        SIZE_T Ntot(1);
-        for (INT_T i(0); i < rank; ++i) {
-            Ntot *= N[i];
-        }
-        crasher::confirm<> (in.size() >= Ntot, "irfftn: insufficient data in the array!");
-
-        std::vector<INT_T> Nrev(N);
-        std::reverse(Nrev.begin(), Nrev.end());
-        std::vector<DOUBLE_T> out(in.size());
-        _ifft(&in[0], &out[0], rank, &Nrev[0]);
-        // normalize
-        out /= Ntot;
         return out;
     }
 };
