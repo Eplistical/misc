@@ -846,7 +846,7 @@ auto operator/(const std::vector<T1>& v1, const std::vector<T2>& v2) -> std::vec
 template <typename T1, typename T2>
 auto operator/(const std::vector<T1>& v1, const T2& a) -> std::vector<decltype(v1.at(0) / a)>
 {
-	return v1 * (static_cast<T2>(1.0) / a);
+	return v1 * (static_cast<decltype(v1.at(0) / a)>(1.0) / a);
 }
 
 template <typename T1, typename T2>

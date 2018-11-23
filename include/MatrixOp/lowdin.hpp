@@ -41,7 +41,7 @@ namespace matrixop {
     template <typename T>
 	inline vector<T> lowdin(const vector<T>& A, CNST_ITYPE N) 
 	{
-		//return matmat(A, mpower(matCmat(A, A, N), -0.5), N);
+		//return matmat(A, mpowerh(matCmat(A, A, N), -0.5), N);
 	}
 };
 

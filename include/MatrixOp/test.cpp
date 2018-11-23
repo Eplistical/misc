@@ -1,14 +1,20 @@
 #include "misc/ioer.hpp"
 #include "misc/vector.hpp"
 #include "matrixop_config.hpp"
+#include "matvec.hpp"
+#include "matCvec.hpp"
 #include "matmat.hpp"
 #include "matCmat.hpp"
+#include "matmatC.hpp"
+#include "matCmatC.hpp"
 #include "eig.hpp"
 #include "scal.hpp"
 #include "nrm.hpp"
 #include "dot.hpp"
 #include "inverse.hpp"
 #include "solve.hpp"
+#include "eye.hpp"
+#include "zeros.hpp"
 using namespace std;
 
 using T = double;
@@ -55,6 +61,23 @@ int main(int argc, char** argv) {
 
     matrixop::solve_inplace(A, b);
     ioer::info("solve inplace AX=b, X = ", b);
+
+    ioer::info("eye: ", matrixop::eye<double>(2,3));
+    ioer::info("zero: ", matrixop::zeros<double>(2,3));
+
+    A = invA;
+    ioer::info("A = ", A);
+    ioer::info("b = ", b);
+    ioer::info("A * b = ", matrixop::matvec(A, b));
+    ioer::info("A'* b = ", matrixop::matCvec(A, b));
+
+    vector<T> C{ 1,8,3,0,4,1,2,5,3};
+    ioer::info("C = ", C);
+    ioer::info("A * C = ", matrixop::matmat(A, C, 3));
+    ioer::info("A'* C = ", matrixop::matCmat(A, C, 3));
+    ioer::info("A * C'= ", matrixop::matmatC(A, C, 3));
+    ioer::info("A'* C'= ", matrixop::matCmatC(A, C, 3));
+
 
     return 0;
 }

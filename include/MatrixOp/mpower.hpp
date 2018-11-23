@@ -2,22 +2,22 @@
 #define _MATRIXOP_MPOWER_HPP
 
 /*  
- *  matrixop::mpower(A, p) 
+ *  matrixop::mpowerh(A, p) 
  *
  *  function for calculating matrix power A^p
  *
- *  param   A: matrix A (N*N)
+ *  param   A: Hermitian matrix A (N*N)
  *  param   p: power
  *
  *  return A^p
  *
  ****************************************
  *
- *  matrixop::mpower_inplace(A, p) 
+ *  matrixop::mpowerh_inplace(A, p) 
  *
  *  function for calculating matrix power A^p inplace
  *
- *  param   A: matrix A (N*N)
+ *  param   A: Hermitian matrix A (N*N)
  *              on exit, A is A^p
  *  param   p: power
  *
@@ -35,12 +35,12 @@ namespace matrixop {
 
     // TODO: write mpower and mpower_inplace
     template <typename T1, typename T2>
-	inline vector<T1> mpower(const vector<T1>& A, const T2& p) 
+	inline vector<T1> mpowerh(const vector<T1>& A, const T2& p) 
 	{
 	}
 
     template <typename T1, typename T2>
-	inline VOID mpower_inplace(vector<T1>& A, const T2& p) 
+	inline VOID mpowerh_inplace(vector<T1>& A, const T2& p) 
 	{
 	}
 };
