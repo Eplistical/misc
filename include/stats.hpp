@@ -33,7 +33,7 @@ namespace misc {
         }
 
         template <typename T>
-        DOUBLE_T moment(const std::vector<T>& v, const int n)
+        DOUBLE_T moment(const std::vector<T>& v, const INT_T n)
         {
             /*
              * calc n^th central moment of the vector v
@@ -46,7 +46,7 @@ namespace misc {
         }
 
         template <typename T>
-        DOUBLE_T moment_normalized(const std::vector<T>& v, const int n)
+        DOUBLE_T moment_normalized(const std::vector<T>& v, const INT_T n)
         {
             /*
              * calc normalized n^th central moment of the vector v
@@ -108,6 +108,42 @@ namespace misc {
             if (fisher) {
                 rst -= 3.0;
             }
+            return rst;
+        }
+
+
+        template <typename T1, typename T2>
+        std::vector<DOUBLE_T> percentile(const std::vector<T1>& v, const std::vector<T2>& raw_idx) {
+            /*
+             * calc percentiles of the vector v
+             *  raw_idx: percentile q's, each element is in [0, 100]
+             */
+            const SIZE_T N = v.size();
+            const SIZE_T Nidx = raw_idx.size();
+            std::vector<DOUBLE_T> q(Nidx);
+
+            // convert indices to q
+            for (SIZE_T i(0); i < Nidx; ++i) {
+                misc::crasher::confirm(raw_idx[i] >= 0.0 and raw_idx[i] <= 100.0, "misc::stats::percentile: indices must be in [0, 100]");
+                q[i] = (raw_idx[i] / 100.0 * (N - 1));
+            }
+
+            // sort v
+            std::vector<T1> v_sorted(v);
+            std::sort(v_sorted.begin(), v_sorted.end());
+
+            // calculate rst
+            std::vector<DOUBLE_T> rst(Nidx);
+            for (SIZE_T i(0); i < Nidx; ++i) {
+                const INT_T idx0 = static_cast<INT_T>(q[i]);
+                if (idx0 == N - 1) {
+                    rst[i] = v_sorted[idx0];
+                }
+                else {
+                    rst[i] = v_sorted[idx0] + (v_sorted[idx0 + 1] - v_sorted[idx0]) * (q[i] - idx0);
+                }
+            }
+
             return rst;
         }
 
