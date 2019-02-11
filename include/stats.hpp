@@ -111,20 +111,62 @@ namespace misc {
             return rst;
         }
 
+        template <typename T1, typename T2>
+        DOUBLE_T percentile(const std::vector<T1>& v, const T2& raw_idx) {
+            /*
+             * calc percentiles of the vector v, scalar index form
+             *  raw_idx: the percentile, [0,100]
+             */
+            const SIZE_T N = v.size();
+            misc::crasher::confirm(N > 0, "misc::stats::percentile: vector size must > 0.");
+            misc::crasher::confirm(raw_idx >= 0.0 and raw_idx <= 100.0, "misc::stats::percentile: indices must be in [0, 100]");
+
+            if (N == 1) {
+                return v[0];
+            }
+
+            const DOUBLE_T q = raw_idx / 100.0 * (N - 1);
+
+            // sort v
+            std::vector<T1> v_sorted(v);
+            std::sort(v_sorted.begin(), v_sorted.end());
+
+            // calculate rst
+            DOUBLE_T rst;
+            const INT_T idx0 = static_cast<INT_T>(q);
+            if (idx0 == N - 1) {
+                rst = v_sorted[idx0];
+            }
+            else {
+                rst = v_sorted[idx0] + (v_sorted[idx0 + 1] - v_sorted[idx0]) * (q - idx0); 
+            }
+
+            return rst;
+        }
 
         template <typename T1, typename T2>
         std::vector<DOUBLE_T> percentile(const std::vector<T1>& v, const std::vector<T2>& raw_idx) {
             /*
-             * calc percentiles of the vector v
+             * calc percentiles of the vector v, vector indices form
              *  raw_idx: percentile q's, each element is in [0, 100]
              */
             const SIZE_T N = v.size();
             const SIZE_T Nidx = raw_idx.size();
+
+            misc::crasher::confirm(N > 1, "misc::stats::percentile: vector size must > 1.");
+            for (SIZE_T i(0); i < Nidx; ++i) {
+                misc::crasher::confirm(raw_idx[i] >= 0.0 and raw_idx[i] <= 100.0, 
+                                        "misc::stats::percentile: indices must be in [0, 100]");
+            }
+
+            if (N == 1) {
+                return std::vector<double>(Nidx, v[0]);
+            }
+
             std::vector<DOUBLE_T> q(Nidx);
 
             // convert indices to q
             for (SIZE_T i(0); i < Nidx; ++i) {
-                misc::crasher::confirm(raw_idx[i] >= 0.0 and raw_idx[i] <= 100.0, "misc::stats::percentile: indices must be in [0, 100]");
                 q[i] = (raw_idx[i] / 100.0 * (N - 1));
             }
 
