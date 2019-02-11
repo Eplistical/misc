@@ -32,8 +32,8 @@ namespace misc {
             return std::accumulate(v.begin(), v.end(), static_cast<T>(0)) * 1.0 / v.size();
         }
 
-        template <typename T>
-        DOUBLE_T moment(const std::vector<T>& v, const INT_T n)
+        template <typename T1, typename T2>
+        DOUBLE_T moment(const std::vector<T1>& v, const T2& n)
         {
             /*
              * calc n^th central moment of the vector v
@@ -41,18 +41,48 @@ namespace misc {
              */
             misc::crasher::confirm(v.size() > 0, "misc::stats::moments: vector size must be positive.");
             const DOUBLE_T mu = mean(v);
-            return std::accumulate(v.begin(), v.end(), static_cast<T>(0), 
-                                    [mu, n](const T& x, const T& y){ return x + std::pow(y - mu, n); }) * 1.0 / v.size();
+            return std::accumulate(v.begin(), v.end(), static_cast<DOUBLE_T>(0), 
+                                    [mu, n](const T1& x, const T1& y){ return x + std::pow(y - mu, n); }) * 1.0 / v.size();
         }
 
-        template <typename T>
-        DOUBLE_T moment_normalized(const std::vector<T>& v, const INT_T n)
+        template <typename T1, typename T2>
+        std::vector<DOUBLE_T> moment(const std::vector<T1>& v, const std::vector<T2>& n)
+        {
+            /*
+             * calc n^th central moment of the vector v, vector indices
+             *  \sum_{i=0}^{N-1} (v[i] - mu)^n / N
+             */
+            const SIZE_T Nidx = n.size();
+            std::vector<DOUBLE_T> rst(Nidx);
+            for (SIZE_T i(0); i < Nidx; ++i) {
+                rst[i] = moment(v, n[i]);
+            }
+            return rst;
+        }
+
+        template <typename T1, typename T2>
+        DOUBLE_T moment_normalized(const std::vector<T1>& v, const T2& n)
         {
             /*
              * calc normalized n^th central moment of the vector v
              *  moment(v, n) / moment(v, 2)**(n/2)
              */
             return moment(v, n) / std::pow(moment(v, 2), 0.5 * n);
+        }
+
+        template <typename T1, typename T2>
+        std::vector<DOUBLE_T> moment_normalized(const std::vector<T1>& v, const std::vector<T2>& n)
+        {
+            /*
+             * calc normalized n^th central moment of the vector v, vector indices
+             *  \sum_{i=0}^{N-1} (v[i] - mu)^n / N
+             */
+            const SIZE_T Nidx = n.size();
+            std::vector<DOUBLE_T> rst(Nidx);
+            for (SIZE_T i(0); i < Nidx; ++i) {
+                rst[i] = moment_normalized(v, n[i]);
+            }
+            return rst;
         }
 
         template <typename T>
@@ -112,7 +142,8 @@ namespace misc {
         }
 
         template <typename T1, typename T2>
-        DOUBLE_T percentile(const std::vector<T1>& v, const T2& raw_idx) {
+        DOUBLE_T percentile(const std::vector<T1>& v, const T2& raw_idx) 
+        {
             /*
              * calc percentiles of the vector v, scalar index form
              *  raw_idx: the percentile, [0,100]
@@ -145,7 +176,8 @@ namespace misc {
         }
 
         template <typename T1, typename T2>
-        std::vector<DOUBLE_T> percentile(const std::vector<T1>& v, const std::vector<T2>& raw_idx) {
+        std::vector<DOUBLE_T> percentile(const std::vector<T1>& v, const std::vector<T2>& raw_idx) 
+        {
             /*
              * calc percentiles of the vector v, vector indices form
              *  raw_idx: percentile q's, each element is in [0, 100]
