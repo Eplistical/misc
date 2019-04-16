@@ -13,6 +13,8 @@
 #include "matCmat.hpp"
 #include "matmatC.hpp"
 #include "matCmatC.hpp"
+#include "commutator.hpp"
+#include "anticommutator.hpp"
 #include "adjoint.hpp"
 #include "trace.hpp"
 
