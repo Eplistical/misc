@@ -28,6 +28,7 @@
 
 #include "zeros.hpp"
 #include "eye.hpp"
+#include "diag.hpp"
 #include "util.hpp"
 
 

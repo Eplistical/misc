@@ -1394,4 +1394,19 @@ inline auto unit(const std::vector<T>& v) -> std::vector<decltype(v.at(0) / norm
 	return ~v; 
 }
 
+template <typename T>
+std::vector<T> outer_product(const std::vector<T>& v1, const std::vector<T>& v2)
+{
+	// get outer product of v1 and v2
+	const SIZE_T Nrow(v1.size());
+	const SIZE_T Ncol(v2.size());
+	std::vector<T> rst(Nrow * Ncol);
+	for (SIZE_T r(0); r < Nrow; ++r) {
+        for (SIZE_T c(0); c < Ncol; ++c) {
+            rst[r+c*Nrow] = v1[r] * v2[c];
+        }
+	}
+	return rst;
+}
+
 #endif
