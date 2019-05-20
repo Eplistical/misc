@@ -15,9 +15,11 @@
 #include "solve.hpp"
 #include "eye.hpp"
 #include "zeros.hpp"
+#include "logm.hpp"
+#include "lowdin.hpp"
 using namespace std;
 
-using T = double;
+using T = complex<double>;
 using T2 = double;
 
 int main(int argc, char** argv) {
@@ -78,6 +80,13 @@ int main(int argc, char** argv) {
     ioer::info("A * C'= ", matrixop::matmatC(A, C, 3));
     ioer::info("A'* C'= ", matrixop::matCmatC(A, C, 3));
 
+    ioer::info("logm:");
+    A = vector<T> { 1.0, -2.0, 2.0, 3.0 };
+    ioer::info("A = ", A);
+    A = matrixop::lowdin(A, 2);
+    ioer::info("oth A = ", A);
+    A = matrixop::logmh(A);
+    ioer::info("log(oth A) = ", A);
 
     return 0;
 }

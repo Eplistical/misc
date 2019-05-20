@@ -12,18 +12,6 @@
  *
  *  return orthogonalized matrix
  *  
- *
- ****************************************
- *
- *  matrixop::lowdin_inplace(A, N) 
- *
- *  function for orthogonalizing matrix A inplace (Lowdin algorithm)
- *  i.e. A => A * (A^H * A)^(-1/2)
- *
- *  param   A: matrix A (M*N)
- *              on exit, A is orthogonalized M*N matrix
- *  param   N: # columns in A
- *
  */
 
 #include <vector>
@@ -37,11 +25,10 @@
 namespace matrixop {
 	using std::vector;
 
-    // TODO: write lowdin and lowdin_inplace
     template <typename T>
 	inline vector<T> lowdin(const vector<T>& A, CNST_ITYPE N) 
 	{
-		//return matmat(A, mpowerh(matCmat(A, A, N), -0.5), N);
+		return matmat(A, mpowerh(matCmat(A, A, N), -0.5), N);
 	}
 };
 
