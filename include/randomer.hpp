@@ -167,11 +167,50 @@ namespace randomer {
         }
 
 	template<size_t dim = 3>
-		inline std::vector<double> maxwell_dist(double mass, double kT, size_t N = 1)
+		inline std::vector<DOUBLE_T> maxwell_dist(DOUBLE_T mass, DOUBLE_T kT, SIZE_T N = 1)
 		// dim-dimensional maxwell distribution of velocisties for N particles
 		{
 			return vnormal(N * dim, 0.0, std::sqrt(kT / mass));
 		}
+
+
+    std::vector<DOUBLE_T> MHsample(DOUBLE_T (*target_func)(DOUBLE_T), 
+            SIZE_T N, 
+            SIZE_T Nstep_eql = 10000, 
+            SIZE_T Nstep_collect = 100, 
+            DOUBLE_T x0 = 0.0, 
+            DOUBLE_T sigma = 1.0
+            ) {
+        // Sample 1D function with the Metropolis–Hastings algorithm
+        DOUBLE_T xnow = x0;
+        DOUBLE_T fxnow = target_func(xnow);
+        DOUBLE_T xnext, fxnext;
+        // equilibrate
+        for (SIZE_T istep(0); istep < Nstep_eql; ++istep) {
+            xnext = xnow + randomer::normal(0.0, sigma);
+            fxnext = target_func(xnext);
+            if (randomer::rand() < fxnext / fxnow) {
+                xnow = xnext;
+                fxnow = fxnext;
+            }
+        }
+        // sampling
+        std::vector<DOUBLE_T> rst;
+        rst.reserve(N);
+        SIZE_T Nstep_sample = Nstep_collect * N;
+        for (SIZE_T istep(0); istep < Nstep_sample; ++istep) {
+            xnext = xnow + randomer::normal(0.0, sigma);
+            fxnext = target_func(xnext);
+            if (randomer::rand() < fxnext / fxnow) {
+                xnow = xnext;
+                fxnow = fxnext;
+            }
+            if (istep % Nstep_collect == 0) {
+                rst.push_back(xnow);
+            }
+        }
+        return rst;
+    }
 
 };
 #endif // _RANDOMER_HPP
