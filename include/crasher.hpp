@@ -7,14 +7,13 @@
 #include <exception>
 #include <string>
 #include "types.hpp"
-#include "ioer.hpp"
 
 namespace misc{
 
     namespace crasher {
 
         template <typename ExceptType = std::runtime_error>
-            inline void crash(BOOL_T condition, const STRING_T& info, ioer::output_t& out = ioer::STDOUT) 
+            inline void crash(BOOL_T condition, const STRING_T& info) 
             {
                 if (condition) {
                     throw(ExceptType(info));
@@ -22,9 +21,9 @@ namespace misc{
             }
 
         template <typename ExceptType = std::runtime_error>
-            inline void confirm(BOOL_T condition, const STRING_T& info, ioer::output_t& out = ioer::STDOUT) 
+            inline void confirm(BOOL_T condition, const STRING_T& info) 
             {
-                crash<ExceptType>((not condition), info, out);
+                crash<ExceptType>((not condition), info);
             }
     };
 
