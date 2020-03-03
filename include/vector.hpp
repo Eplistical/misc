@@ -13,6 +13,7 @@
 #include <type_traits>
 #include <stdexcept>
 #include "types.hpp"
+#include "type_traiter.hpp"
 #include "crasher.hpp"
 
 // helpers

@@ -12,12 +12,39 @@
 #include <complex>
 #include <algorithm>
 #include "crasher.hpp"
-#include "fftw3.h"
 #include "types.hpp"
+#include "fftw3.h"
+
+#ifdef MISC_FFT_ENABLE_THREAD
+#include "omp.h"
+#define _FFT_ENABLE_THREAD 1
+#endif
+
 
 namespace misc {
 
     // -- FFTW wrappers -- //
+
+    VOID_T fft_setup() {
+        static bool firsttime = true;
+        if (firsttime) {
+            firsttime = false;
+#ifdef _FFT_ENABLE_THREAD 
+            fftw_init_threads();
+#endif
+        }
+#ifdef _FFT_ENABLE_THREAD 
+        fftw_plan_with_nthreads(omp_get_max_threads());
+#endif
+    }
+
+    VOID_T fft_cleanup() {
+#ifdef _FFT_ENABLE_THREAD 
+        fftw_cleanup_threads();
+#else
+        fftw_cleanup();
+#endif
+    }
 
     VOID_T _fft(const COMPLEX_T* in, COMPLEX_T* out, const int rank, const INT_T* N) {
         /* fast fourier transform
@@ -28,6 +55,7 @@ namespace misc {
          *  param      N: length of array on each dimension
          *
          */
+        fft_setup();
         fftw_plan my_plan;
         COMPLEX_T* in_cast(const_cast<COMPLEX_T*>(in));
 
@@ -50,6 +78,7 @@ namespace misc {
          *  param      N: length of array on each dimension
          *
          */
+        fft_setup();
         fftw_plan my_plan;
         COMPLEX_T* in_cast(const_cast<COMPLEX_T*>(in));
         my_plan = fftw_plan_dft(    rank, N, 
