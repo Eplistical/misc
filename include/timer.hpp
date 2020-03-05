@@ -58,9 +58,7 @@ namespace timer {
 		if (tic_time.find(index) == tic_time.end()) {
 			return STRING_T("timer::toc: error!, index not found");
 		}
-		//duration<DOUBLE_T> elapsed = system_clock::now() - tic_time[index];
 		ostringstream buf;
-		//buf << "Time elapsed: " << elapsed.count() << " s" ;
 		buf << "Time elapsed: " << s2dhms(elapsed(index));
 		return buf.str();
 	}
@@ -69,7 +67,7 @@ namespace timer {
     {
 		const time_t _now = system_clock::to_time_t(system_clock::now());
 		ostringstream buf;
-		buf << "now: " << ctime(&_now);
+		buf << "Now: " << ctime(&_now);
 		return buf.str();
 	}
 
